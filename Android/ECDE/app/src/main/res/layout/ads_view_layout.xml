@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.cardview.widget.CardView android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_margin="5dp"
+    app:cardCornerRadius="6dp"
+    xmlns:android="http://schemas.android.com/apk/res/android">
+    <RelativeLayout android:layout_width="match_parent"
+        android:id="@+id/adsView"
+        android:layout_height="match_parent"
+        android:padding="4dp"
+        android:background="@drawable/product_back_view">
+
+        <!--  This is your template view -->
+        <com.google.android.ads.nativetemplates.TemplateView
+            android:id="@+id/my_template"
+
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            app:gnt_template_type="@layout/gnt_medium_template_view" />
+    </RelativeLayout>
+
+
+</androidx.cardview.widget.CardView>

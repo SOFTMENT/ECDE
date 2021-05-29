@@ -1,0 +1,99 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+
+    tools:context=".Fragments.HomeFragment">
+
+    <EditText
+        android:maxLines="1"
+        android:imeOptions="actionDone"
+        android:inputType="textPersonName"
+        android:singleLine="true"
+        android:id="@+id/searchEditText"
+        android:layout_marginStart="16dp"
+        android:layout_marginEnd="16dp"
+        android:layout_marginTop="20dp"
+        android:layout_width="match_parent"
+        android:layout_height="40dp"
+        android:background="@drawable/edittext_back"
+        android:hint="@string/search_for_items"
+        android:fontFamily="@font/sfpromedium"
+        android:textSize="13sp"
+       android:drawableStart="@drawable/ic_baseline_search_24"
+        android:paddingStart="10dp"
+        android:paddingEnd="10dp"
+        android:drawablePadding="4dp"
+        />
+
+
+
+    <TextView
+        android:id="@+id/categoriesText"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/searchEditText"
+        android:layout_alignStart="@+id/searchEditText"
+        android:textSize="18sp"
+        android:text="@string/categories"
+        android:layout_marginTop="24dp"
+        android:fontFamily="@font/sfprosemibold"
+        android:textColor="#040404"
+        />
+
+    <TextView
+        android:id="@+id/seeAllText"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/searchEditText"
+        android:layout_marginEnd="16dp"
+        android:textSize="13sp"
+        android:text="@string/see_all"
+        android:layout_alignParentEnd="true"
+        android:layout_alignBaseline="@id/categoriesText"
+        android:fontFamily="@font/sfprosemibold"
+        android:textColor="@color/salmon"
+        />
+
+    <androidx.recyclerview.widget.RecyclerView
+
+        android:id="@+id/cat_recyclerview"
+       android:layout_marginStart="12dp"
+        android:layout_marginEnd="12dp"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:layout_below="@+id/categoriesText"
+        android:layout_marginTop="16dp"
+        />
+
+<androidx.core.widget.NestedScrollView
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:layout_marginTop="20dp"
+    android:layout_below="@+id/cat_recyclerview"
+    >
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/product_recyclerview"
+        android:clipToPadding="false"
+        android:layout_marginStart="11dp"
+        android:layout_marginEnd="11dp"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+
+        />
+
+    <RelativeLayout
+        android:layout_below="@+id/product_recyclerview"
+        android:layout_width="match_parent"
+        android:layout_height="50dp"
+        />
+    </RelativeLayout>
+</androidx.core.widget.NestedScrollView>
+
+</RelativeLayout>

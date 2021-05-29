@@ -1,0 +1,157 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:background="#fff"
+    android:layout_height="match_parent"
+    tools:context=".SignInActivity">
+
+
+    <LinearLayout
+        android:layout_marginStart="45dp"
+        android:layout_marginEnd="45dp"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_centerInParent="true"
+        android:gravity="center"
+        android:orientation="vertical"
+        >
+        <ImageView
+            android:layout_width="100dp"
+            android:layout_height="100dp"
+            android:src="@drawable/applogo"
+            />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/welcome_to_ecde"
+            android:layout_marginTop="20dp"
+            android:fontFamily="@font/sfprosemibold"
+            android:textSize="18sp"
+            android:textColor="#040404"
+            />
+        <TextView
+            android:lineSpacingExtra="1dp"
+            android:textAlignment="center"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/sell_within_the_app_make_offers_and_nbuy_from_people_you_trust"
+            android:layout_marginTop="6dp"
+            android:fontFamily="@font/sfpromedium2"
+            android:textSize="12sp"
+            android:textColor="#616161"
+            />
+
+        <LinearLayout
+            android:layout_marginTop="30dp"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            >
+            <TextView
+
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/if_you_are_new"
+                android:layout_marginTop="6dp"
+                android:fontFamily="@font/sfpromedium2"
+                android:textSize="13sp"
+                android:textColor="#616161"
+                />
+            <TextView
+               android:id="@+id/createNew"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/create_new"
+                android:layout_marginTop="6dp"
+                android:fontFamily="@font/sfpromedium2"
+                android:textSize="13sp"
+                android:textColor="@color/salmon"
+                />
+        </LinearLayout>
+
+        <EditText
+            android:id="@+id/emailAddress"
+            android:layout_width="match_parent"
+            android:layout_height="40dp"
+            android:layout_marginTop="12dp"
+          android:background="@drawable/edittext_back"
+            android:hint="@string/email_address"
+            android:fontFamily="@font/sfpromedium2"
+            android:textSize="13sp"
+            android:paddingStart="10dp"
+            android:paddingEnd="10dp"
+            android:inputType="textEmailAddress"
+            />
+        <EditText
+            android:id="@+id/password"
+            android:layout_width="match_parent"
+            android:layout_height="40dp"
+            android:layout_marginTop="10dp"
+            android:background="@drawable/edittext_back"
+            android:hint="@string/password"
+            android:fontFamily="@font/sfpromedium2"
+            android:textSize="13sp"
+            android:paddingStart="10dp"
+            android:paddingEnd="10dp"
+            android:inputType="textPassword"
+            />
+
+        <LinearLayout
+
+            android:layout_marginTop="12dp"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            >
+            <TextView
+
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/forgot_password"
+                android:fontFamily="@font/sfpromedium2"
+                android:textSize="13sp"
+                android:textColor="#616161"
+                />
+            <TextView
+                android:id="@+id/resetPassword"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/reset"
+                android:fontFamily="@font/sfpromedium2"
+                android:textSize="13sp"
+                android:textColor="@color/salmon"
+                />
+        </LinearLayout>
+
+        <androidx.appcompat.widget.AppCompatButton
+            android:id="@+id/login"
+            android:layout_width="match_parent"
+            android:layout_height="40dp"
+            android:layout_marginTop="40dp"
+            android:background="@drawable/transparent_back"
+            android:backgroundTint="@color/marsala"
+            android:fontFamily="@font/sfpromedium2"
+            android:text="@string/login"
+            android:textColor="#fff"
+            android:textSize="12sp" />
+
+        <TextView
+            android:lineSpacingExtra="1dp"
+            android:textAlignment="center"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/by_clicking_on_login_you_are_accepting_our_nterms_amp_conditions"
+            android:layout_marginTop="40dp"
+            android:fontFamily="@font/sfpromedium2"
+            android:textSize="12sp"
+            android:textColor="#616161"
+            />
+
+    </LinearLayout>
+
+
+
+</RelativeLayout>

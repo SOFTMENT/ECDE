@@ -1,0 +1,119 @@
+<?xml version="1.0" encoding="utf-8"?>
+<manifest xmlns:android="http://schemas.android.com/apk/res/android"
+    package="in.softment.ecde">
+
+    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
+    <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
+    <uses-permission android:name="android.permission.INTERNET" />
+    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
+
+    <application
+
+        android:allowBackup="true"
+        android:hardwareAccelerated="true"
+        android:icon="@mipmap/ic_launcher"
+        android:label="@string/app_name"
+        android:requestLegacyExternalStorage="true"
+        android:roundIcon="@mipmap/ic_launcher_round"
+        android:supportsRtl="true"
+        android:theme="@style/Theme.EsquerdaCompraDaEsquerda"
+        android:usesCleartextTraffic="true">
+        <activity android:name=".EditCategoriesActivity"
+            android:screenOrientation="portrait"
+            />
+        <activity android:name=".ManageCategoryActivity"
+            android:screenOrientation="portrait"
+            />
+        <activity android:name=".TermsAndConditions"
+            android:screenOrientation="portrait"/>
+        <activity android:name=".PrivacyPolicyActivity"
+            android:screenOrientation="portrait"
+            />
+        <activity android:name=".SeeAllCategoryActivity"
+            android:screenOrientation="portrait"
+            />
+        <activity android:name=".SingleCategoryActivity"
+            android:screenOrientation="portrait"
+            />
+        <activity android:name=".ChatScreenActivity"
+            android:screenOrientation="portrait"
+            />
+        <activity android:name=".ViewProductActivity"
+            android:screenOrientation="portrait"
+            />
+        <activity android:name=".EditProductActivity"
+            android:screenOrientation="portrait"
+            />
+        <activity android:name=".AddCateogryScreen"
+            android:screenOrientation="portrait"
+            />
+        <activity
+
+            android:name=".CreateNewAccount"
+            android:screenOrientation="portrait"
+            android:windowSoftInputMode="adjustPan" />
+        <activity
+            android:name=".SignInActivity"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name=".WelcomeActivity"
+            android:screenOrientation="portrait">
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
+        </activity>
+        <activity
+            android:name=".MainActivity"
+            android:screenOrientation="portrait"
+            android:windowSoftInputMode="adjustPan|stateHidden" />
+
+        <provider
+            android:name="androidx.core.content.FileProvider"
+            android:authorities="in.softment.ecde.android.fileprovider"
+            android:exported="false"
+            android:grantUriPermissions="true">
+            <meta-data
+                android:name="android.support.FILE_PROVIDER_PATHS"
+                android:resource="@xml/provider_path" />
+        </provider>
+
+        <meta-data
+            android:name="firebase_crashlytics_collection_enabled"
+            android:value="false" />
+
+        <activity
+            android:name="com.theartofdev.edmodo.cropper.CropImageActivity"
+            android:theme="@style/Base.Theme.AppCompat" />
+
+        <meta-data
+            android:name="com.google.firebase.messaging.default_notification_channel_id"
+            android:value="OnlineDDGames" />
+        <meta-data
+            android:name="com.google.firebase.messaging.default_notification_icon"
+            android:resource="@drawable/ic_baseline_message_24" />
+        <meta-data
+            android:name="com.google.firebase.messaging.default_notification_color"
+            android:resource="@color/salmon" />
+
+        <service
+            android:name=".Utils.MyFirebaseMessagingService"
+            android:directBootAware="true"
+            android:exported="false"
+            android:permission="com.google.android.c2dm.permission.SEND">
+            <intent-filter>
+                <action android:name="com.google.firebase.MESSAGING_EVENT" />
+                <action android:name="com.google.firebase.INSTANCE_ID_EVENT" />
+                <action android:name="com.google.android.c2dm.intent.RECEIVE" />
+            </intent-filter>
+        </service>
+
+        <meta-data
+            android:name="com.google.android.gms.ads.APPLICATION_ID"
+            android:value="ca-app-pub-4469098252692270~5160274171"/>
+
+
+    </application>
+
+</manifest>

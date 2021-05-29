@@ -1,0 +1,39 @@
+{
+  "project_info": {
+    "project_number": "1011471451721",
+    "project_id": "ecde-24c9c",
+    "storage_bucket": "ecde-24c9c.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:1011471451721:android:658551d1a2d540c62e2198",
+        "android_client_info": {
+          "package_name": "in.softment.ecde"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "1011471451721-njh0hcvbdl17p59s3qo75srp8fu9gju9.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBcMIKN53HyOC1OSBpXbKNPv8egIWzfc2k"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "1011471451721-njh0hcvbdl17p59s3qo75srp8fu9gju9.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
