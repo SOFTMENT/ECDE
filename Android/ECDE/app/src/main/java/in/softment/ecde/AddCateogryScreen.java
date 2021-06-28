@@ -16,9 +16,11 @@ import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.widget.AppCompatButton;
 import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
 
+import com.canhub.cropper.CropImage;
 import com.google.android.gms.tasks.Continuation;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
@@ -26,7 +28,7 @@ import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
 import com.google.firebase.storage.UploadTask;
-import com.theartofdev.edmodo.cropper.CropImage;
+
 
 import java.io.IOException;
 import java.util.HashMap;
@@ -44,14 +46,13 @@ public class AddCateogryScreen extends AppCompatActivity {
     private EditText cat_title_pt;
     private EditText cat_title_en;
     private boolean isImageSelected = false;
+    AppCompatButton addCategory;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_add_cateogry_screen);
 
-
         requestStoragePermission();
-
         findViewById(R.id.back).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -61,19 +62,15 @@ public class AddCateogryScreen extends AppCompatActivity {
 
         //Cat_image
         cat_image = findViewById(R.id.categoryImage);
-        cat_image.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                showFileChooser();
-            }
-        });
+        cat_image.setOnClickListener(view -> showFileChooser());
 
         //Cat_title
         cat_title_pt = findViewById(R.id.categoryNamePT);
         cat_title_en = findViewById(R.id.categoryNameEN);
 
         //AddCategory
-        findViewById(R.id.addCategory).setOnClickListener(new View.OnClickListener() {
+        addCategory = findViewById(R.id.addCategory);
+        addCategory.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 String title_pt = cat_title_pt.getText().toString().trim();
@@ -90,6 +87,7 @@ public class AddCateogryScreen extends AppCompatActivity {
                             Services.showCenterToast(AddCateogryScreen.this,"Enter English Title");
                         }
                         else {
+                            addCategory.setEnabled(false);
                             ProgressHud.show(AddCateogryScreen.this,"Adding...");
                             String cat_id =  FirebaseFirestore.getInstance().collection("Categories").document().getId();
                             uploadImageOnFirebase(cat_id,title_pt,title_en);
@@ -108,23 +106,18 @@ public class AddCateogryScreen extends AppCompatActivity {
         if (ContextCompat.checkSelfPermission(this, Manifest.permission.READ_EXTERNAL_STORAGE) == PackageManager.PERMISSION_GRANTED)
             return;
 
-        if (ActivityCompat.shouldShowRequestPermissionRationale(this, Manifest.permission.READ_EXTERNAL_STORAGE)) {
-            //If the user has denied the permission previously your code will come to this block
-            //Here you can explain why you need this permission
-            //Explain here why you need this permission
-        }
+
         ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.READ_EXTERNAL_STORAGE}, STORAGE_PERMISSION_CODE);
     }
 
     @Override
     public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
         if (requestCode == STORAGE_PERMISSION_CODE) {
             if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
 
 
-            }
-
-            else {
+            } else {
                 Toast.makeText(this, "Oops you just denied the permission", Toast.LENGTH_LONG).show();
             }
 
@@ -149,6 +142,7 @@ public class AddCateogryScreen extends AppCompatActivity {
             public Task<Uri> then(@NonNull Task<UploadTask.TaskSnapshot> task) throws Exception {
                 if (!task.isSuccessful()) {
                     ProgressHud.dialog.dismiss();
+                    addCategory.setEnabled(true);
                     throw  task.getException();
                 }
                 return storageReference.getDownloadUrl();
@@ -163,6 +157,7 @@ public class AddCateogryScreen extends AppCompatActivity {
 
                 }
                 else{
+                    addCategory.setEnabled(true);
                     ProgressHud.dialog.dismiss();
                     Toast toast = Toast.makeText(AddCateogryScreen.this, task.getException().getMessage(), Toast.LENGTH_SHORT);
                     toast.setGravity(Gravity.CENTER, 0, 0);
@@ -185,15 +180,19 @@ public class AddCateogryScreen extends AppCompatActivity {
             @Override
             public void onComplete(@NonNull Task<Void> task) {
                 ProgressHud.dialog.dismiss();
+
                 if (task.isSuccessful()) {
                     Services.showCenterToast(AddCateogryScreen.this,"Category Added");
                     cat_image.setImageResource(R.drawable.placeholder);
                     isImageSelected = false;
                     cat_title_pt.setText("");
                     cat_title_en.setText("");
+                    addCategory.setEnabled(true);
 
                 }
                 else {
+                    addCategory.setEnabled(true);
+
                     Services.showDialog(AddCateogryScreen.this,"ERROR",task.getException().getLocalizedMessage());
                 }
             }
@@ -213,14 +212,13 @@ public class AddCateogryScreen extends AppCompatActivity {
                 bitmap = MediaStore.Images.Media.getBitmap(getContentResolver(), resultUri);
                 cat_image.setImageBitmap(bitmap);
             } catch (IOException e) {
-
             }
          //            CropImage.activity(filepath).setOutputCompressQuality(100)
 //                    .start(this);
         } else if (requestCode == CropImage.CROP_IMAGE_ACTIVITY_REQUEST_CODE) {
             CropImage.ActivityResult result = CropImage.getActivityResult(data);
             if (resultCode == RESULT_OK) {
-                resultUri = result.getUri();
+                resultUri = result.getUriContent();
 
                 isImageSelected = true;
                 Bitmap bitmap = null;

@@ -10,6 +10,7 @@ import android.net.Uri;
 import android.os.Bundle;
 
 import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
 import androidx.fragment.app.Fragment;
@@ -23,32 +24,47 @@ import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.AutoCompleteTextView;
+import android.widget.EditText;
 import android.widget.LinearLayout;
+import android.widget.RadioGroup;
 import android.widget.Toast;
 
+import com.canhub.cropper.CropImage;
 import com.google.android.gms.tasks.Continuation;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
+import com.google.android.material.textfield.TextInputEditText;
+import com.google.android.material.textfield.TextInputLayout;
 import com.google.common.util.concurrent.Service;
 import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.firestore.DocumentSnapshot;
+import com.google.firebase.firestore.EventListener;
 import com.google.firebase.firestore.FieldValue;
 import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.firestore.FirebaseFirestoreException;
+import com.google.firebase.firestore.MetadataChanges;
+import com.google.firebase.firestore.Query;
+import com.google.firebase.firestore.QuerySnapshot;
 import com.google.firebase.firestore.SetOptions;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
 import com.google.firebase.storage.UploadTask;
 import com.makeramen.roundedimageview.RoundedImageView;
-import com.theartofdev.edmodo.cropper.CropImage;
+
 
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Objects;
+
 
 import in.softment.ecde.MainActivity;
+import in.softment.ecde.ManageSubcategoryActivity;
 import in.softment.ecde.Models.CategoryModel;
 import in.softment.ecde.Models.MyLanguage;
+import in.softment.ecde.Models.SubcategoryModel;
 import in.softment.ecde.Models.UserModel;
 import in.softment.ecde.R;
 import in.softment.ecde.Utils.ProgressHud;
@@ -64,13 +80,25 @@ public class PostFragment extends Fragment {
     private LinearLayout oneLL, twoLL, threeLL, fourLL;
     private boolean oneImageSelected,twoImageSelected;
     private Context context;
-    private AutoCompleteTextView chooseCategory, p_title, p_description, p_price;
+    private EditText p_title, p_description, p_price;
+    private EditText p_quantity;
+    private EditText maxDeliveryDays;
+    private EditText deliveryCharge;
+    private RadioGroup willYouDeliverRadio;
+    private RadioGroup productIsNewRadio;
+    private RadioGroup canYouDeliverSameDayRadio;
+    private LinearLayout canYouDeliverSameDayLL;
     private int selectedCategoryIndex = -1;
+    private int selectedSubCategoryIndex = -1;
     public PostFragment(Context context) {
         this.context = context;
     }
+    private ArrayList<SubcategoryModel> subcategoryModels;
+    private AutoCompleteTextView chooseCategory, chooseSubcategory;
 
+    public PostFragment(){
 
+    }
 
 
     @Override
@@ -81,10 +109,65 @@ public class PostFragment extends Fragment {
 
 
 
+        subcategoryModels = new ArrayList<>();
         chooseCategory = view.findViewById(R.id.chooseCategory);
         p_title = view.findViewById(R.id.p_title);
         p_description = view.findViewById(R.id.p_description);
         p_price = view.findViewById(R.id.p_price);
+        p_quantity = view.findViewById(R.id.quantity);
+        maxDeliveryDays = view.findViewById(R.id.delivery_day);
+        deliveryCharge = view.findViewById(R.id.delivery_charge);
+        chooseSubcategory = view.findViewById(R.id.chooseSubcategory);
+        willYouDeliverRadio = view.findViewById(R.id.willYouDeliverRadioBtn);
+        productIsNewRadio = view.findViewById(R.id.isProductFreshRadioGroup);
+        canYouDeliverSameDayRadio = view.findViewById(R.id.canYouDeliverOnSameDayRadioBtn);
+        canYouDeliverSameDayLL = view.findViewById(R.id.sameDayLL);
+
+        willYouDeliverRadio.setOnCheckedChangeListener(new RadioGroup.OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(RadioGroup group, int checkedId) {
+                if (checkedId == R.id.yes_deliver) {
+
+                    canYouDeliverSameDayLL.setVisibility(View.VISIBLE);
+                    deliveryCharge.setVisibility(View.VISIBLE);
+
+                }
+                else {
+                    canYouDeliverSameDayLL.setVisibility(View.GONE);
+                    deliveryCharge.setVisibility(View.GONE);
+                }
+            }
+        });
+
+
+        chooseSubcategory.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                chooseSubcategory.showDropDown();
+            }
+        });
+
+
+
+        chooseCategory.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                chooseCategory.showDropDown();
+            }
+        });
+
+        canYouDeliverSameDayRadio.setOnCheckedChangeListener(new RadioGroup.OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(RadioGroup group, int checkedId) {
+                if (checkedId == R.id.yes_same_day) {
+                   maxDeliveryDays.setVisibility(View.GONE);
+                }
+                else {
+                    maxDeliveryDays.setVisibility(View.VISIBLE);
+                }
+            }
+        });
+
         view.findViewById(R.id.addProduct).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -92,42 +175,103 @@ public class PostFragment extends Fragment {
                 String description = p_description.getText().toString().trim();
                 String price = p_price.getText().toString();
                 String category = chooseCategory.getText().toString();
+                String sSubCategory = chooseSubcategory.getText().toString();
+                String sQuantity = p_quantity.getText().toString();
+                int isProductNewId = productIsNewRadio.getCheckedRadioButtonId();
+                int willYouDeliverItem = willYouDeliverRadio.getCheckedRadioButtonId();
+                int sameDayId = canYouDeliverSameDayRadio.getCheckedRadioButtonId();
+                String maxDayDelivery = maxDeliveryDays.getText().toString();
+                String deliveryFee = deliveryCharge.getText().toString();
 
                 if (title.isEmpty()) {
                     Services.showCenterToast(context,"Enter Product Title");
+                    return;
                 }
-                else{
-                    if (description.isEmpty()) {
-                        Services.showCenterToast(context,"Enter Product Description");
-                    }
-                    else {
-                        if (price.isEmpty()) {
-                            Services.showCenterToast(context,"Enter Product Price");
+                else if (description.isEmpty()) {
+                    Services.showCenterToast(context,"Enter Product Description");
+                    return;
+                }
+                else if (price.isEmpty()) {
+                    Services.showCenterToast(context,"Enter Product Price");
+                    return;
+                }
+                else if (sQuantity.isEmpty()) {
+                    Services.showCenterToast(context,"Enter Product Quanity");
+                    return;
+                }
+                else if (category.isEmpty()) {
+                    Services.showCenterToast(context,"Choose Product Category");
+                    return;
+                }
+                else if (sSubCategory.isEmpty()) {
+                    Services.showCenterToast(context,"Choose Product Subcategory");
+                    return;
+                }
+
+                else if (isProductNewId == -1){
+                    Services.showCenterToast(context,"Choose Product is New Or Used");
+                    return;
+                }
+                else if (!oneImageSelected || !twoImageSelected){
+                    Services.showCenterToast(context,"Please Choose Product Image");
+                    return;
+                }
+                if (willYouDeliverItem == -1) {
+                    Services.showCenterToast(context,"Choose Will You Deliver");
+                }
+                else {
+                    boolean willYouDeliver = false;
+                    boolean sameDay  = false;
+                    boolean isProductNew = false;
+                    if (willYouDeliverItem == R.id.yes_deliver) {
+                        willYouDeliver = true;
+
+                        if (sameDayId == -1) {
+                            Services.showCenterToast(context,"Choose Can You Deliver Same Day?");
+                            return;
+                        }
+                        if (deliveryFee.isEmpty()) {
+                            Services.showCenterToast(context,"Enter Delivery Charge");
+                            return;
                         }
                         else {
-                            if (category.isEmpty()) {
-                                Services.showCenterToast(context,"Choose Product Category");
+                            if (sameDayId == R.id.yes_same_day) {
+                                sameDay = true;
+                                maxDayDelivery = "0";
                             }
                             else {
-                                if (oneImageSelected && twoImageSelected){
-                                    if (FirebaseAuth.getInstance().getCurrentUser() != null){
-                                        addProduct(CategoryModel.categoryModels.get(selectedCategoryIndex).getId(),FirebaseAuth.getInstance().getCurrentUser().getUid(), UserModel.data.fullName,UserModel.data.getProfileImage(),UserModel.data.token,title,description,price);
-                                    }
-                                    else {
-                                        Services.logout(context);
-                                    }
-
+                                if (maxDayDelivery.isEmpty()) {
+                                    Services.showCenterToast(context,"Enter Delivery Days");
+                                    return;
                                 }
                                 else {
-                                    Services.showCenterToast(context,"Please Choose Product Image");
+
                                 }
                             }
-
                         }
+
+                    }
+
+
+                    if (isProductNewId == R.id.yes_new) {
+                        isProductNew = true;
+                    }
+                    if (!willYouDeliver) {
+                        maxDayDelivery = "0";
+                        deliveryFee = "0";
+                        
+                    }
+
+
+                    if (FirebaseAuth.getInstance().getCurrentUser() != null) {
+                        addProduct(CategoryModel.categoryModels.get(selectedCategoryIndex).getId(), subcategoryModels.get(selectedSubCategoryIndex).getId(),UserModel.data.uid,UserModel.data.getFullName(),UserModel.data.getProfileImage(),UserModel.data.getToken(),title,description,Integer.parseInt(price),Integer.parseInt(sQuantity),isProductNew,willYouDeliver,sameDay,Integer.parseInt(maxDayDelivery),Integer.parseInt(deliveryFee));
+                    } else {
+                        Services.logout(context);
                     }
                 }
 
             }
+
         });
 
 
@@ -213,13 +357,15 @@ public class PostFragment extends Fragment {
         return view;
     }
 
+
+
     private void uploadImageOnFirebase(String uid,String pid) {
         Map<String,String> sImages = new HashMap<>();
 
         for (String key: images.keySet()) {
 
             StorageReference storageReference = FirebaseStorage.getInstance().getReference().child("Products").child(uid).child(pid).child(key+ ".png");
-            UploadTask uploadTask = storageReference.putFile(images.get(key));
+            UploadTask uploadTask = storageReference.putFile(Objects.requireNonNull(images.get(key)));
             Task<Uri> uriTask = uploadTask.continueWithTask(new Continuation<UploadTask.TaskSnapshot, Task<Uri>>() {
                 @Override
                 public Task<Uri> then(@NonNull Task<UploadTask.TaskSnapshot> task) throws Exception {
@@ -261,19 +407,33 @@ public class PostFragment extends Fragment {
 
     }
 
-    public void addProduct(String cat_id, String uid, String sellerName,String sellerImage,String sellerToken,String title, String description, String price) {
+    public void addProduct(String cat_id, String sub_cat_id, String uid, String sellerName,String sellerImage,String sellerToken,String title, String description, int price, int quantity, boolean isProductNew, boolean deliverProduct, boolean sameDayDeliver,int deliveryDay, int deliveryFee) {
         String id = FirebaseFirestore.getInstance().collection("Products").document().getId();
         Map<String, Object> map = new HashMap<>();
+
         map.put("id",id);
         map.put("cat_id",cat_id);
         map.put("uid",uid);
         map.put("title",title);
         map.put("description",description);
         map.put("price",price);
+        map.put("quantity",quantity);
+        map.put("sub_cat_id",sub_cat_id);
+        map.put("isProductNew",isProductNew);
+        map.put("deliverProduct",deliverProduct);
+        map.put("sameDayDeliver",sameDayDeliver);
+        map.put("maxDeliverDay",deliveryDay);
+        map.put("deliveryCharge",deliveryFee);
         map.put("sellerName",sellerName);
         map.put("sellerImage",sellerImage);
         map.put("sellerToken", sellerToken);
         map.put("date", FieldValue.serverTimestamp());
+        map.put("storeAbout", UserModel.data.storeAbout);
+        map.put("storeImage",UserModel.data.storeImage);
+        map.put("storeCity",UserModel.data.storeCity);
+        map.put("storeAddress",UserModel.data.storeAddress);
+        map.put("storeName",UserModel.data.storeName);
+        map.put("phoneNumber",UserModel.data.phoneNumber);
 
         ProgressHud.show(context,"Product Adding...");
         FirebaseFirestore.getInstance().collection("Products").document(id).set(map).addOnCompleteListener(new OnCompleteListener<Void>() {
@@ -300,25 +460,35 @@ public class PostFragment extends Fragment {
                     p_title.setText("");
                     p_description.setText("");
                     p_price.setText("");
+                    p_quantity.setText("");
                     chooseCategory.setText("");
-
+                    chooseSubcategory.setText("");
+                    selectedCategoryIndex = -1;
+                    selectedSubCategoryIndex = -1;
                     clickedImageViewPosition = -1;
-
+                    productIsNewRadio.clearCheck();
+                    willYouDeliverRadio.clearCheck();
+                    canYouDeliverSameDayRadio.clearCheck();
+                    canYouDeliverSameDayLL.setVisibility(View.GONE);
+                    maxDeliveryDays.setText("");
+                    maxDeliveryDays.setVisibility(View.GONE);
+                    deliveryCharge.setText("");
+                    deliveryCharge.setVisibility(View.GONE);
 
                 }
                 else {
-                    Services.showDialog(context,"ERROR",task.getException().getLocalizedMessage());
+                    Services.showDialog(context,"ERROR", Objects.requireNonNull(task.getException()).getLocalizedMessage());
                 }
             }
         });
     }
+
 
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
 
         if (requestCode == 1 && data != null && data.getData() != null) {
-            Log.d("ERROR","OH4");
             Uri filepath = data.getData();
             CropImage.activity(filepath).setOutputCompressQuality(60).start((MainActivity)context);
         }
@@ -415,11 +585,74 @@ public class PostFragment extends Fragment {
         chooseCategory.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
+
                selectedCategoryIndex = i;
+               getSubcategory(CategoryModel.categoryModels.get(i).getId());
+
             }
         });
 
     }
+
+    public void getSubcategory(String cat_id){
+        ProgressHud.show(context,"");
+        String field = "title_pt";
+        if (MyLanguage.lang.equalsIgnoreCase("pt"))
+            field = "title_pt";
+        else
+            field = "title_en";
+
+        FirebaseFirestore.getInstance().collection("Categories").document(cat_id).collection("Subcategories").orderBy(field, Query.Direction.ASCENDING).addSnapshotListener(MetadataChanges.INCLUDE,new EventListener<QuerySnapshot>() {
+            @Override
+            public void onEvent(@Nullable QuerySnapshot value, @Nullable FirebaseFirestoreException error) {
+                ProgressHud.dialog.dismiss();
+                if (error == null) {
+                    subcategoryModels.clear();
+                    if (value != null && !value.isEmpty()) {
+                        for (DocumentSnapshot documentSnapshot : value.getDocuments()) {
+                            SubcategoryModel subcategoryModel = documentSnapshot.toObject(SubcategoryModel.class);
+                            subcategoryModels.add(subcategoryModel);
+                        }
+
+                    }
+
+                    notifySubcategoryAdapter();
+
+                }
+                else {
+                    Services.showDialog(context,"ERROR",error.getLocalizedMessage());
+                }
+            }
+        });
+
+    }
+
+    public void notifySubcategoryAdapter(){
+        ArrayList<String> subCategoryNames = new ArrayList<>();
+        for (SubcategoryModel subcategoryModel : subcategoryModels) {
+            if (MyLanguage.lang.equalsIgnoreCase("pt"))
+                subCategoryNames.add(subcategoryModel.getTitle_pt());
+            else
+                subCategoryNames.add(subcategoryModel.getTitle_en());
+
+        }
+
+        ArrayAdapter arrayAdapter = new ArrayAdapter(context,R.layout.option_item,subCategoryNames);
+        chooseSubcategory.setAdapter(arrayAdapter);
+
+
+        chooseSubcategory.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
+                selectedSubCategoryIndex = i;
+
+            }
+        });
+
+    }
+
+
+
 
     @Override
     public void onAttach(@NonNull Context context) {

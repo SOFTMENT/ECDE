@@ -21,7 +21,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:textSize="18sp"
-        android:text="Categories"
+        android:text="@string/categories"
         android:fontFamily="@font/sfprosemibold"
         android:textColor="#040404"
         />

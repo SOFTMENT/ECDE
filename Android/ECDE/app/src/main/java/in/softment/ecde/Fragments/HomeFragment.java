@@ -31,6 +31,7 @@ import in.softment.ecde.R;
 import in.softment.ecde.SeeAllCategoryActivity;
 
 
+
 public class HomeFragment extends Fragment {
     private ArrayList<ProductModel> productModels;
     private EditText searchET;
@@ -44,6 +45,9 @@ public class HomeFragment extends Fragment {
     }
 
 
+    public HomeFragment(){
+
+    }
 
 
     @Override
@@ -118,6 +122,9 @@ public class HomeFragment extends Fragment {
     @Override
     public void onAttach(@NonNull Context context) {
         super.onAttach(context);
+
         ((MainActivity)context).initializeHomeFragment(this);
+
+
     }
 }

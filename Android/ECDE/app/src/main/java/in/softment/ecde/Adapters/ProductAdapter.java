@@ -15,6 +15,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
+import androidx.cardview.widget.CardView;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.bumptech.glide.Glide;
@@ -39,6 +40,7 @@ import javax.xml.transform.Templates;
 
 import in.softment.ecde.Models.ProductModel;
 import in.softment.ecde.R;
+import in.softment.ecde.Utils.Services;
 import in.softment.ecde.ViewProductActivity;
 
 public class ProductAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
@@ -46,7 +48,6 @@ public class ProductAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder
     private final int ads_view = 2;
     private final int product_view = 1;
     private int count = 0;
-    private boolean shouldLoadAds = true;
 
     private ArrayList<ProductModel> productModels;
     public ProductAdapter(Context context, ArrayList<ProductModel> productModels){
@@ -71,21 +72,26 @@ public class ProductAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder
 
         if (holder.getItemViewType() == product_view) {
             ProductViewHolder productViewHolder = (ProductViewHolder) holder;
-            ProductModel productModel = productModels.get(position);
+            int newIndex = position - (position / 10);
+            ProductModel productModel = productModels.get(newIndex);
             if (productModel.images.size() > 0) {
                 Glide.with(context).load(productModel.getImages().get("0")).override(Target.SIZE_ORIGINAL, Target.SIZE_ORIGINAL).diskCacheStrategy(DiskCacheStrategy.DATA).placeholder(R.drawable.placeholder1).into(productViewHolder.roundedImageView);
             }
-            productViewHolder.productTitle.setText(productModel.getTitle());
+            productViewHolder.productTitle.setText(Services.toUpperCase(productModel.title));
             productViewHolder.productPrice.setText("R$"+productModel.price);
 
-            productViewHolder.view.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View view) {
-                    Intent intent = new Intent(context, ViewProductActivity.class);
-                    intent.putExtra("product",productModel);
-                    context.startActivity(intent);
-                }
+            productViewHolder.view.setOnClickListener(view -> {
+                Intent intent = new Intent(context, ViewProductActivity.class);
+                intent.putExtra("product",productModel);
+                context.startActivity(intent);
             });
+
+            if (Services.isPromoting(productModel.adLastDate)) {
+                productViewHolder.adsCard.setVisibility(View.VISIBLE);
+            }
+            else {
+                productViewHolder.adsCard.setVisibility(View.GONE);
+            }
 
         }
         else {
@@ -112,16 +118,10 @@ public class ProductAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder
 
     }
 
-
-
-
-
-
-
-
     @Override
     public int getItemViewType(int position) {
-        if (shouldLoadAds && position % 10 == 9)  {
+
+        if (position % 10 == 9)  {
             return ads_view;
         }
         else {
@@ -132,10 +132,8 @@ public class ProductAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder
     @Override
     public int getItemCount() {
         if (productModels.size() > 0) {
-            if (shouldLoadAds)
             return productModels.size() + (productModels.size() / 10);
-            else
-                return  productModels.size();
+
         }
         else {
             return 0;
@@ -147,12 +145,14 @@ public class ProductAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder
         private RoundedImageView roundedImageView;
         private TextView productTitle, productPrice;
         private View view;
+        private CardView adsCard;
         public ProductViewHolder(@NonNull View itemView) {
             super(itemView);
             view = itemView;
             roundedImageView = itemView.findViewById(R.id.product_image);
             productPrice = itemView.findViewById(R.id.product_price);
             productTitle = itemView.findViewById(R.id.product_title);
+            adsCard = itemView.findViewById(R.id.adsCard);
         }
     }
 
@@ -168,7 +168,7 @@ public class ProductAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder
         ArrayList<ProductModel> newproductModels = new ArrayList<>();
 
         for (ProductModel productModel : mainProductModels) {
-            if (productModel.title.toLowerCase().contains(text.toLowerCase())) {
+            if (productModel.title.toLowerCase().contains(text.toLowerCase()) || productModel.storeCity.toLowerCase().contains(text.toLowerCase()) ) {
                 newproductModels.add(productModel);
             }
         }

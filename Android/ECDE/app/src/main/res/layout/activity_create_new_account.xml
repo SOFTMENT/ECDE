@@ -73,7 +73,7 @@
             android:layout_width="64dp"
             android:layout_height="64dp"
             android:layout_marginTop="24dp"
-            android:src="@drawable/man"
+            android:src="@drawable/man1"
             app:civ_border_color="#000"
             app:civ_border_width="1px" />
 
@@ -128,12 +128,13 @@
 
             />
 
+
         <androidx.appcompat.widget.AppCompatButton
 
             android:id="@+id/createAccountBtn"
             android:layout_width="match_parent"
             android:layout_height="40dp"
-            android:layout_marginTop="40dp"
+            android:layout_marginTop="24dp"
             android:background="@drawable/transparent_back"
             android:backgroundTint="@color/marsala"
             android:text="@string/create_account"

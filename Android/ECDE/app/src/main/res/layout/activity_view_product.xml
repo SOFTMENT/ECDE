@@ -24,36 +24,47 @@
         />
 
     <androidx.core.widget.NestedScrollView
-
+        android:layout_above="@+id/contactSeller"
         android:id="@+id/nsv"
         android:layout_marginTop="16dp"
         android:layout_marginEnd="16dp"
+        android:layout_marginBottom="8dp"
         android:layout_marginStart="16dp"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_below="@+id/headerviewpager"
         >
-        <RelativeLayout
-
+        <LinearLayout
+            android:layout_marginBottom="8dp"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:orientation="vertical"
             >
 
             <TextView
                 android:layout_marginEnd="16dp"
-                android:layout_toStartOf="@+id/price"
                 android:id="@+id/title"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:text="Oppo Mobile 64 GB Good Condition"
                 android:fontFamily="@font/sfprosemibold"
-                android:textSize="13sp"
-                android:textColor="#414141"
+                android:textSize="14sp"
+                android:textColor="#141414"
                 android:maxLines="2"
                 />
-            <LinearLayout
+            <TextView
+
+                android:textColor="#141414"
+                android:id="@+id/price"
                 android:layout_marginTop="8dp"
-                android:layout_below="@+id/title"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="R$ 200"
+                android:fontFamily="@font/sfprobold2"
+                android:textSize="16sp"
+                />
+            <LinearLayout
+                android:layout_marginTop="12dp"
                 android:id="@+id/llcategory"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
@@ -75,41 +86,150 @@
                     android:layout_marginStart="6dp"
                     />
             </LinearLayout>
-
             <LinearLayout
-                android:layout_marginTop="8dp"
-                android:layout_below="@+id/llcategory"
-                android:id="@+id/lldate"
-                android:layout_width="wrap_content"
+
+                android:layout_marginTop="12dp"
+                android:id="@+id/deliveryLL"
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:orientation="horizontal"
+                android:gravity="center_vertical"
                 >
                 <ImageView
                     android:layout_width="16dp"
                     android:layout_height="16dp"
-                    android:src="@drawable/calendar"
+                    android:src="@drawable/truck"
                     />
                 <TextView
-                    android:id="@+id/date"
+
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="21-March-2021"
+                    android:text="@string/delivered_within"
                     android:fontFamily="@font/sfprosemibold2"
                     android:textSize="11sp"
                     android:layout_marginStart="6dp"
                     />
+                <TextView
+                    android:textColor="#3C3C3C"
+                    android:id="@+id/deliveryDays"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/day1"
+                    android:fontFamily="@font/sfprobold2"
+                    android:textSize="12sp"
+                    android:layout_marginStart="6dp"
+                    />
+                <TextView
+
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/charge"
+                    android:fontFamily="@font/sfprosemibold2"
+                    android:textSize="11sp"
+                    android:layout_marginStart="6dp"
+                    />
+                <TextView
+                    android:textColor="#3C3C3C"
+                    android:id="@+id/deliveryFee"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="R$10"
+                    android:fontFamily="@font/sfprobold2"
+                    android:textSize="12sp"
+                    android:layout_marginStart="6dp"
+                    />
             </LinearLayout>
-            <TextView
-                android:textColor="@color/currency_color"
-                android:id="@+id/price"
-                android:layout_alignParentEnd="true"
-                android:layout_alignBaseline="@+id/title"
-                android:layout_width="wrap_content"
+
+            <LinearLayout
+
+                android:layout_marginTop="12dp"
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="R$ 200"
-                android:fontFamily="@font/sfprosemibold2"
-                android:textSize="12sp"
-                />
+                android:orientation="horizontal"
+                android:gravity="center_vertical"
+                >
+                <ImageView
+                    android:layout_width="16dp"
+                    android:layout_height="16dp"
+                    android:src="@drawable/box"
+                    />
+                <TextView
+
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/condition"
+                    android:fontFamily="@font/sfprosemibold2"
+                    android:textSize="11sp"
+                    android:layout_marginStart="6dp"
+                    />
+                <TextView
+                    android:textColor="#3C3C3C"
+                    android:id="@+id/condition"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/new_word"
+                    android:fontFamily="@font/sfprobold2"
+                    android:textSize="12sp"
+                    android:layout_marginStart="6dp"
+                    />
+                <TextView
+
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/quantity"
+                    android:fontFamily="@font/sfprosemibold2"
+                    android:textSize="11sp"
+                    android:layout_marginStart="6dp"
+                    />
+                <TextView
+                    android:textColor="#3C3C3C"
+                    android:id="@+id/quantity"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="12"
+                    android:fontFamily="@font/sfprobold2"
+                    android:textSize="12sp"
+                    android:layout_marginStart="6dp"
+                    />
+            </LinearLayout>
+
+            <LinearLayout
+
+                android:layout_marginTop="12dp"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:gravity="center_vertical"
+                >
+                <ImageView
+                    android:layout_width="16dp"
+                    android:layout_height="16dp"
+                    android:src="@drawable/shop"
+                    />
+                <TextView
+
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/seller_name"
+                    android:fontFamily="@font/sfprosemibold2"
+                    android:textSize="11sp"
+                    android:layout_marginStart="6dp"
+                    />
+                <TextView
+                    android:textColor="#3C3C3C"
+                    android:id="@+id/sellerName"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Vijay Rathore"
+                    android:fontFamily="@font/sfprobold2"
+                    android:textSize="12sp"
+                    android:layout_marginStart="6dp"
+                    />
+
+            </LinearLayout>
+
+
+
             <TextView
                 android:id="@+id/descText"
                 android:layout_marginTop="20dp"
@@ -119,74 +239,32 @@
                 android:layout_height="wrap_content"
                 android:text="@string/description"
                 android:fontFamily="@font/sfprosemibold"
-                android:textSize="13sp"
-                android:textColor="#414141"
+                android:textSize="12sp"
+
                 android:maxLines="2"
                 />
             <TextView
 android:lineSpacingExtra="5dp"
-                android:layout_below="@+id/descText"
+
                 android:id="@+id/description"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="The euro is the official currency of 19 of the 27 member states of the European Union. This group of states is known as the eurozone or euro area and includes about 343 million citizens as of 2019.The euro is the official currency of 19 of the 27 member states of the European Union. This group of states is known as the eurozone or euro area and includes about 343 million citizens as of 2019.
-."
-
-                android:fontFamily="@font/sfprosemibold2"
-                android:textSize="11sp"
+                android:text="The euro is the official currency of 19 of the 27 member states of the European Union. This group of states is known as the eurozone or euro area and includes about 343 million citizens as of 2019.The euro is the official currency of 19 of the 27 member states of the European Union. This group of states is known as the eurozone or euro area and includes about 343 million citizens as of 2019. This group of states is known as the eurozone or euro area and includes about 343 million citizens as of 2019."
+                android:fontFamily="@font/sfprobold2"
+                android:textSize="12sp"
+                android:textColor="#3C3C3C"
                 android:layout_marginTop="6dp"
                 />
-            <TextView
-                android:id="@+id/sellerText"
-                android:layout_marginTop="20dp"
-                android:layout_below="@+id/description"
-                android:layout_marginEnd="10dp"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="@string/seller_name"
-                android:fontFamily="@font/sfprosemibold"
-                android:textSize="13sp"
-                android:textColor="#414141"
-                android:maxLines="2"
-                />
-            <TextView
-
-                android:layout_below="@+id/sellerText"
-                android:id="@+id/seller"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:text="Vijay Rathore"
-                android:fontFamily="@font/sfprosemibold2"
-                android:textSize="11sp"
-                android:layout_marginTop="6dp"
-
-                />
-
-            <androidx.cardview.widget.CardView
-                android:layout_below="@+id/seller"
-                android:layout_marginTop="24dp"
-                android:layout_marginBottom="16dp"
-                android:id="@+id/contactSeller"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                app:cardBackgroundColor="@color/marsala"
-                app:cardCornerRadius="6dp"
-                >
-                <TextView
-
-                    android:gravity="center"
-                    android:layout_gravity="center"
-                    android:layout_width="match_parent"
-                    android:layout_height="40dp"
-                    android:textColor="@color/white"
-                    android:text="CONTACT SELLER"
-                    android:textSize="11sp"
-                    android:fontFamily="@font/sfprosemibold2"
-                    />
-            </androidx.cardview.widget.CardView>
 
 
-        </RelativeLayout>
+
+
+
+
+
+
+
+        </LinearLayout>
 
     </androidx.core.widget.NestedScrollView>
 
@@ -211,5 +289,28 @@ android:lineSpacingExtra="5dp"
         />
 
 
+    <androidx.cardview.widget.CardView
+        android:layout_alignParentBottom="true"
+        android:layout_marginBottom="16dp"
+        android:layout_marginStart="16dp"
+        android:layout_marginEnd="16dp"
+        android:id="@+id/contactSeller"
+        android:layout_width="match_parent"
+        android:layout_height="40dp"
+        app:cardBackgroundColor="@color/marsala"
+        app:cardCornerRadius="6dp"
+        >
+        <TextView
+
+            android:gravity="center"
+            android:layout_gravity="center"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textColor="@color/white"
+            android:text="CONTACT SELLER"
+            android:textSize="11sp"
+            android:fontFamily="@font/sfprosemibold2"
+            />
+    </androidx.cardview.widget.CardView>
 
 </RelativeLayout>

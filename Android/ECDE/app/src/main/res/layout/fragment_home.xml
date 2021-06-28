@@ -18,7 +18,7 @@
         android:layout_width="match_parent"
         android:layout_height="40dp"
         android:background="@drawable/edittext_back"
-        android:hint="@string/search_for_items"
+        android:hint="@string/search_by_title_city_name"
         android:fontFamily="@font/sfpromedium"
         android:textSize="13sp"
        android:drawableStart="@drawable/ic_baseline_search_24"

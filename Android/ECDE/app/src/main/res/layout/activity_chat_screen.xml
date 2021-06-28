@@ -23,6 +23,7 @@
                 android:layout_marginStart="16dp"
                 />
 
+
           <de.hdodenhof.circleimageview.CircleImageView
               android:layout_centerVertical="true"
               android:layout_width="32dp"

@@ -1,3 +1,5 @@
 include ':app'
 rootProject.name = "Esquerda compra da esquerda"
 include ':nativetemplates'
+
+include ':MeowBottomNavigation'

@@ -28,7 +28,7 @@ import android.widget.Toast;
 
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.load.engine.DiskCacheStrategy;
-import com.firebase.ui.auth.data.model.User;
+
 import com.google.android.gms.tasks.Continuation;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
@@ -219,7 +219,7 @@ public class ChatScreenActivity extends AppCompatActivity {
             hashMap1.put("senderToken", UserModel.data.token);
             FirebaseFirestore.getInstance().collection("Chats").document(senderId).collection("LastMessage").document(uid).set(hashMap1);
 
-            Services.sentPushNotification(ChatScreenActivity.this,senderName,sMessage,senderToken);
+            Services.sentPushNotification(ChatScreenActivity.this,UserModel.data.getFullName(),sMessage,senderToken);
         });
     }
 

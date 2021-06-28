@@ -6,9 +6,10 @@
     <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
     <uses-permission android:name="android.permission.INTERNET" />
     <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
+    <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
 
     <application
-
+        android:name=".MyApplication"
         android:allowBackup="true"
         android:hardwareAccelerated="true"
         android:icon="@mipmap/ic_launcher"
@@ -18,37 +19,48 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.EsquerdaCompraDaEsquerda"
         android:usesCleartextTraffic="true">
-        <activity android:name=".EditCategoriesActivity"
-            android:screenOrientation="portrait"
-            />
-        <activity android:name=".ManageCategoryActivity"
-            android:screenOrientation="portrait"
-            />
-        <activity android:name=".TermsAndConditions"
-            android:screenOrientation="portrait"/>
-        <activity android:name=".PrivacyPolicyActivity"
-            android:screenOrientation="portrait"
-            />
-        <activity android:name=".SeeAllCategoryActivity"
-            android:screenOrientation="portrait"
-            />
-        <activity android:name=".SingleCategoryActivity"
-            android:screenOrientation="portrait"
-            />
-        <activity android:name=".ChatScreenActivity"
-            android:screenOrientation="portrait"
-            />
-        <activity android:name=".ViewProductActivity"
-            android:screenOrientation="portrait"
-            />
-        <activity android:name=".EditProductActivity"
-            android:screenOrientation="portrait"
-            />
-        <activity android:name=".AddCateogryScreen"
-            android:screenOrientation="portrait"
-            />
+        <activity android:name=".EditSubcategoryActivity"></activity>
+        <activity android:name=".StripeCheckoutActivity" />
+        <activity android:name=".SupportActivity" />
         <activity
+            android:name=".SeeAllSubcategoryActivity"
+            android:label="@string/title_activity_see_all_subcategory"
+            android:theme="@style/Theme.EsquerdaCompraDaEsquerda.NoActionBar" />
+        <activity android:name=".AddSubcategoryActivity" />
+        <activity android:name=".ManageSubcategoryActivity" />
 
+        <activity android:name=".SellerStoreInformationActivity" />
+        <activity
+            android:name=".EditCategoriesActivity"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name=".ManageCategoryActivity"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name=".TermsAndConditions"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name=".PrivacyPolicyActivity"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name=".SeeAllCategoryActivity"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name=".SingleCategoryActivity"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name=".ChatScreenActivity"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name=".ViewProductActivity"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name=".EditProductActivity"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name=".AddCateogryScreen"
+            android:screenOrientation="portrait" />
+        <activity
             android:name=".CreateNewAccount"
             android:screenOrientation="portrait"
             android:windowSoftInputMode="adjustPan" />
@@ -69,6 +81,8 @@
             android:screenOrientation="portrait"
             android:windowSoftInputMode="adjustPan|stateHidden" />
 
+
+
         <provider
             android:name="androidx.core.content.FileProvider"
             android:authorities="in.softment.ecde.android.fileprovider"
@@ -84,7 +98,7 @@
             android:value="false" />
 
         <activity
-            android:name="com.theartofdev.edmodo.cropper.CropImageActivity"
+            android:name="com.canhub.cropper.CropImageActivity"
             android:theme="@style/Base.Theme.AppCompat" />
 
         <meta-data
@@ -111,9 +125,7 @@
 
         <meta-data
             android:name="com.google.android.gms.ads.APPLICATION_ID"
-            android:value="ca-app-pub-4469098252692270~5160274171"/>
-
-
+            android:value="ca-app-pub-4469098252692270~5160274171" />
     </application>
 
 </manifest>

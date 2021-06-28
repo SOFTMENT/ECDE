@@ -1,5 +1,8 @@
 <resources xmlns:tools="http://schemas.android.com/tools">
     <!-- Base application theme. -->
+
+
+
     <style name="Theme.EsquerdaCompraDaEsquerda" parent="Theme.MaterialComponents.DayNight.NoActionBar">
         <!-- Primary brand color. -->
         <item name="colorPrimary">@color/purple_500</item>
@@ -25,8 +28,24 @@
         <item name="android:windowBackground">@android:color/transparent</item>
         <item name="android:windowNoTitle">true</item>
     </style>
+
     <style name="AlertDialogTheme" parent="Theme.MaterialComponents.Light.Dialog.Alert">
-        <item name="colorPrimary">@color/colorAccent</item>
+        <item name="colorPrimary">@color/salmon</item>
     </style>
 
+    <style name="Theme.EsquerdaCompraDaEsquerda.NoActionBar">
+        <item name="windowActionBar">false</item>
+        <item name="windowNoTitle">true</item>
+    </style>
+
+    <style name="Theme.EsquerdaCompraDaEsquerda.AppBarOverlay" parent="ThemeOverlay.AppCompat.Dark.ActionBar" />
+
+    <style name="Theme.EsquerdaCompraDaEsquerda.PopupOverlay" parent="ThemeOverlay.AppCompat.Light" />
+
+
+    <style name="Stripe.CardInputWidget.EditText" parent="Stripe.Base.CardInputWidget.EditText">
+        <item name="android:textSize">13sp</item>
+        <item name="android:textColor">@color/salmon</item>
+        <item name="android:textColorHint">#a1a1a1</item>
+    </style>
 </resources>

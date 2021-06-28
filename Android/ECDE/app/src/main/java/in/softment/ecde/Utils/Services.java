@@ -1,7 +1,11 @@
 package in.softment.ecde.Utils;
+import android.Manifest;
 import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
+import android.content.pm.PackageManager;
+import android.graphics.Shader;
 import android.util.Log;
 import android.view.Gravity;
 import android.view.View;
@@ -10,6 +14,8 @@ import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AlertDialog;
+import androidx.core.app.ActivityCompat;
+import androidx.core.content.ContextCompat;
 
 import com.android.volley.AuthFailureError;
 import com.android.volley.Response;
@@ -28,9 +34,16 @@ import com.google.firebase.firestore.FirebaseFirestore;
 
 import org.json.JSONException;
 import org.json.JSONObject;
+import org.jsoup.Jsoup;
+import org.jsoup.nodes.Document;
+import org.jsoup.select.Elements;
 
+import java.io.IOException;
+import java.io.InputStream;
+import java.net.URL;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
+import java.util.Calendar;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Locale;
@@ -42,17 +55,61 @@ import in.softment.ecde.MainActivity;
 import in.softment.ecde.Models.ProductModel;
 import in.softment.ecde.Models.UserModel;
 import in.softment.ecde.R;
+
 import in.softment.ecde.SignInActivity;
 import in.softment.ecde.ViewProductActivity;
 
+import static android.content.Context.MODE_PRIVATE;
+
 public class Services {
 
+    public static  String inputStreamToString(InputStream inputStream) {
+        try {
+            byte[] bytes = new byte[inputStream.available()];
+            inputStream.read(bytes, 0, bytes.length);
+            String json = new String(bytes);
+            return json;
+        } catch (IOException e) {
+            return null;
+        }
+    }
+    public static boolean isPromoting(Date date){
+        Date currentDate = new Date();
+        if (currentDate.compareTo(date) < 0) {
+            return true;
+        }
+        else {
+            return false;
+        }
+    }
 
+    public static  Date getServerDate() throws Exception {
+        String url = "https://time.is/Unix_time_now";
+        Document doc = Jsoup.parse(new URL(url).openStream(), "UTF-8", url);
+        String[] tags = new String[] {
+                "div[id=time_section]",
+                "div[id=clock0_bg]"
+        };
+        Elements elements= doc.select(tags[0]);
+        for (int i = 0; i <tags.length; i++) {
+            elements = elements.select(tags[i]);
+        }
+        return convertTimeToDate(Long.parseLong(elements.text()));
+    }
 
+    public static Date convertTimeToDate(long time) {
+        Calendar cal = Calendar.getInstance(Locale.ENGLISH);
+        cal.setTimeInMillis(time * 1000);
+        return cal.getTime();
+    }
 
-
-
-
+//    public static boolean isSellerMode(Context context){
+//        SharedPreferences sharedPreferences = context.getSharedPreferences("ecdeRoom",MODE_PRIVATE);
+//        return sharedPreferences.getBoolean("isSellerMode",false);
+//    }
+//    public static void setSellerMode(Context context,boolean isSeller) {
+//        context.getSharedPreferences("ecdeRoom",MODE_PRIVATE).edit().putBoolean("isSellerMode",isSeller).apply();
+//    }
 
     public static void sentPushNotification(Context context,String title, String message, String token) {
         final String FCM_API = "https://fcm.googleapis.com/fcm/send";
@@ -135,10 +192,13 @@ public class Services {
 
 
     public static String toUpperCase(String str) {
+        if (str.isEmpty()){
+            return "";
+        }
         String[] names = str.split(" ");
         str = "";
-        for (int i = 0; i< names.length ; i++){
-            str += names[i].substring(0,1).toUpperCase() + names[i].substring(1).toLowerCase() +" ";
+        for (String name : names) {
+            str += name.substring(0, 1).toUpperCase() + name.substring(1).toLowerCase() + " ";
         }
      return str;
     }
@@ -174,10 +234,12 @@ public class Services {
 
     public static void sentEmailVerificationLink(Context context){
         if (FirebaseAuth.getInstance().getCurrentUser() != null) {
+            ProgressHud.show(context,"");
             FirebaseAuth.getInstance().getCurrentUser().sendEmailVerification().addOnCompleteListener(new OnCompleteListener<Void>() {
                 @Override
                 public void onComplete(@NonNull Task<Void> task) {
                     ProgressHud.dialog.dismiss();
+
                     if (task.isSuccessful()) {
                         showDialog(context,context.getString(R.string.verify_your_email),context.getString(R.string.we_have_sent_verification_link));
                     }
@@ -210,7 +272,10 @@ public class Services {
                         documentSnapshot.toObject(UserModel.class);
 
                         if (UserModel.data != null) {
-                                Intent intent = new Intent(context, MainActivity.class);
+                                Intent intent = null;
+
+                                     intent = new Intent(context, MainActivity.class);
+
                                 intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
                                 context.startActivity(intent);
 

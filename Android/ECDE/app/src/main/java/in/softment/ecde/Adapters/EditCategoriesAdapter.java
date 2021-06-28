@@ -1,6 +1,7 @@
 package in.softment.ecde.Adapters;
 
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -9,16 +10,27 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
+import androidx.appcompat.app.AlertDialog;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.bumptech.glide.Glide;
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.Task;
+import com.google.firebase.firestore.DocumentSnapshot;
+import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.firestore.QuerySnapshot;
+
+import org.jetbrains.annotations.NotNull;
 
 import java.util.ArrayList;
 
 import in.softment.ecde.EditCategoriesActivity;
+import in.softment.ecde.ManageSubcategoryActivity;
 import in.softment.ecde.Models.CategoryModel;
 import in.softment.ecde.Models.MyLanguage;
 import in.softment.ecde.R;
+import in.softment.ecde.Utils.ProgressHud;
+import in.softment.ecde.Utils.Services;
 
 public class EditCategoriesAdapter extends RecyclerView.Adapter<EditCategoriesAdapter.ViewHolder> {
 
@@ -52,7 +64,76 @@ public class EditCategoriesAdapter extends RecyclerView.Adapter<EditCategoriesAd
                 context.startActivity(intent);
             }
         });
-        Glide.with(context).load(categoryModel.image).into(holder.cat_image);
+        Glide.with(context).load(categoryModel.image).placeholder(R.drawable.category_placeholder).into(holder.cat_image);
+
+        holder.view.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+              Intent intent = new Intent(context,ManageSubcategoryActivity.class);
+              intent.putExtra("cat_id",categoryModel.getId());
+              if (MyLanguage.lang.equalsIgnoreCase("pt"))
+                    intent.putExtra("cat_name",categoryModel.getTitle_pt());
+              else
+                    intent.putExtra("cat_name",categoryModel.getTitle_en());
+              context.startActivity(intent);
+
+            }
+        });
+
+        //DELETE
+        holder.cat_delete.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+
+                AlertDialog.Builder builder = new AlertDialog.Builder(context, R.style.AlertDialogTheme);
+                builder.setPositiveButton("Yes", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        ProgressHud.show(context,"Deleting...");
+                        FirebaseFirestore.getInstance().collection("Categories").document(categoryModel.id).collection("Subcategories").get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
+                            @Override
+                            public void onComplete(@NonNull @NotNull Task<QuerySnapshot> task) {
+                                ProgressHud.dialog.dismiss();
+                                Services.showCenterToast(context,"Deleted");
+                                    if (task.isSuccessful()) {
+                                        for (DocumentSnapshot documentSnapshot : task.getResult().getDocuments()) {
+                                            if (documentSnapshot.exists()) {
+                                                documentSnapshot.getReference().delete();
+                                            }
+                                        }
+                                    }
+
+                                FirebaseFirestore.getInstance().collection("Categories").document(categoryModel.id).delete().addOnCompleteListener(new OnCompleteListener<Void>() {
+                                    @Override
+                                    public void onComplete(@NonNull @NotNull Task<Void> task) {
+                                            if (task.isSuccessful()){
+                                                notifyDataSetChanged();
+                                            }
+                                    }
+                                });
+
+                            }
+                        });
+
+
+                        dialog.dismiss();
+                    }
+                });
+
+                builder.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        dialog.dismiss();
+                    }
+                });
+
+                builder.setTitle("DELETE");
+                builder.setMessage("Are you sure you want to delete subcategory?");
+                builder.show();
+
+
+            }
+        });
     }
 
     @Override
@@ -61,13 +142,16 @@ public class EditCategoriesAdapter extends RecyclerView.Adapter<EditCategoriesAd
     }
 
     static public class ViewHolder extends RecyclerView.ViewHolder {
-        private ImageView cat_image, cat_edit;
+        private ImageView cat_image, cat_edit, cat_delete;
         private TextView cat_title;
+        private View view;
         public ViewHolder(@NonNull View itemView) {
             super(itemView);
+            view = itemView;
             cat_edit = itemView.findViewById(R.id.cat_edit);
             cat_image = itemView.findViewById(R.id.cat_image);
             cat_title = itemView.findViewById(R.id.cat_title);
+            cat_delete = itemView.findViewById(R.id.delete);
         }
     }
 }

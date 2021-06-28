@@ -14,6 +14,14 @@
       },
       "oauth_client": [
         {
+          "client_id": "1011471451721-pjosg1hvtp31r0mea29lul53jauk5lr3.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "in.softment.ecde",
+            "certificate_hash": "c93c30f083a9b1a76f680ba8177ac35e0e4a3568"
+          }
+        },
+        {
           "client_id": "1011471451721-njh0hcvbdl17p59s3qo75srp8fu9gju9.apps.googleusercontent.com",
           "client_type": 3
         }

@@ -15,6 +15,7 @@ import androidx.appcompat.app.AlertDialog;
 import androidx.fragment.app.Fragment;
 
 import android.service.autofill.UserData;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -26,6 +27,8 @@ import android.widget.Toast;
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.load.engine.DiskCacheStrategy;
 
+import org.w3c.dom.Text;
+
 import java.util.Locale;
 
 import de.hdodenhof.circleimageview.CircleImageView;
@@ -35,6 +38,8 @@ import in.softment.ecde.ManageCategoryActivity;
 import in.softment.ecde.Models.UserModel;
 import in.softment.ecde.PrivacyPolicyActivity;
 import in.softment.ecde.R;
+import in.softment.ecde.SellerStoreInformationActivity;
+import in.softment.ecde.SupportActivity;
 import in.softment.ecde.TermsAndConditions;
 import in.softment.ecde.Utils.Services;
 import in.softment.ecde.WelcomeActivity;
@@ -43,13 +48,13 @@ import static android.content.Context.MODE_PRIVATE;
 
 public class AccountFragment extends Fragment {
 
-
     private Context context;
+    private TextView buyOrSellTextView;
+    private RelativeLayout addProductRR, myProductRR;
+
     public AccountFragment(Context context) {
         this.context = context;
     }
-
-
 
 
     @Override
@@ -58,9 +63,14 @@ public class AccountFragment extends Fragment {
 
         View view = inflater.inflate(R.layout.fragment_account, container, false);
 
+
+        addProductRR = view.findViewById(R.id.addProductRR);
+        myProductRR = view.findViewById(R.id.myProductRR);
+
+
         //ADMIN
         LinearLayout adminItemsView = view.findViewById(R.id.adminItemView);
-        if (UserModel.data.emailAddress.equalsIgnoreCase("ecde.app@gmail.com")) {
+        if (UserModel.data.emailAddress.equalsIgnoreCase("ecde.app@gmail.com") || UserModel.data.emailAddress.equalsIgnoreCase("vijay.ajay70111@gmail.com")) {
             adminItemsView.setVisibility(View.VISIBLE);
             RelativeLayout addCat = view.findViewById(R.id.addCat);
             addCat.setOnClickListener(new View.OnClickListener() {
@@ -92,6 +102,7 @@ public class AccountFragment extends Fragment {
         view.findViewById(R.id.logout).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+
                 Services.logout(context);
             }
         });
@@ -122,12 +133,30 @@ public class AccountFragment extends Fragment {
 
 
 
+
+
         //AddProduct
-        view.findViewById(R.id.addProduct).setOnClickListener(v -> ((MainActivity)context).changeBottomBarPossition(2));
+        view.findViewById(R.id.addProductRR).setOnClickListener(v -> {
+
+                ((MainActivity)context).changeBottomBarPossition(2);
+
+        });
+
 
         //MyProducts
-        view.findViewById(R.id.myProduct).setOnClickListener(v -> ((MainActivity)context).changeBottomBarPossition(3));
+        view.findViewById(R.id.myProductRR).setOnClickListener(v -> {
 
+                ((MainActivity)context).changeBottomBarPossition(3);
+
+        });
+
+        //support
+        view.findViewById(R.id.support).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                context.startActivity(new Intent(context, SupportActivity.class));
+            }
+        });
 
         //Language
         view.findViewById(R.id.language).setOnClickListener(v -> {
@@ -205,6 +234,8 @@ public class AccountFragment extends Fragment {
         return view;
     }
 
+
+
     private void restart() {
         Intent intent = new Intent(context, WelcomeActivity.class);
         intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_NEW_TASK);
@@ -227,7 +258,7 @@ public class AccountFragment extends Fragment {
     public String getLanguageName(){
         //SharedPref
         SharedPreferences sharedPreferences = context.getSharedPreferences("lang",MODE_PRIVATE);
-        String code = sharedPreferences.getString("mylang","en");
+        String code = sharedPreferences.getString("mylang","pt");
 
         if (code.equalsIgnoreCase("pt")) {
             return  "Portuguese";

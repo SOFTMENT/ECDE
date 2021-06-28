@@ -50,7 +50,7 @@
     <string name="no_message_available">No Message Available</string>
     <string name="my_products">My Products</string>
     <string name="share">Share</string>
-    <string name="no_product_available_for_sale">No Product Available For Sale.</string>
+    <string name="no_product_available_for_sale">No Product Available For Sale</string>
     <string name="categories">Categories</string>
     <string name="see_all">See All</string>
     <string name="to_start_selling_nall_you_need_is_a_title_description_images_and_price">To start selling,\nAll you need is a title, description, images and price.</string>
@@ -74,7 +74,7 @@
     <string name="cancel">Cancel</string>
 
     <string name="admob_banner_ads_unit">ca-app-pub-4469098252692270/8008076595</string>
-    <string name="admob_native_ads_unit" >ca-app-pub-4469098252692270/5291726998</string>
+    <string name="admob_native_ads_unit">ca-app-pub-4469098252692270/5291726998</string>
     <string name="admob_interstitial_ads_unit">ca-app-pub-4469098252692270/8560780362</string>
 
     <string name="verify_your_email">VERIFY YOUR EMAIL</string>
@@ -88,5 +88,77 @@
     <string name="select_picture">Select Picture</string>
     <string name="choose_profile_pic">Choose Profile Pic</string>
     <string name="loading">Loading…</string>
+
+    <string name="sell_on_ecde">Sell On ECDE</string>
+
+
+    <string name="next">Next</string>
+    <string name="previous">Previous</string>
+
+
+    <string name="choose_subcategory">Choose Subcategory</string>
+    <string name="manage_store">Manage Store</string>
+
+    <string name="no_product_available">No Product Available</string>
+    <string name="support">Support</string>
+    <string name="donate">Donate</string>
+
+    <string name="time_not_available">TIME NOT AVAILABLE</string>
+    <string name="promoting">Promoting</string>
+    <string name="promote">Promote</string>
+    <string name="all">All</string>
+    <string name="featured_Ad_for_30_days">Featured Ad for 30 Days</string>
+    <string name="pay_25_r">Pay 25 R$</string>
+    <string name="featured_ad_for_7_days">Featured Ad for 7 Days</string>
+    <string name="pay_10_r">Pay 10 R$</string>
+    <string name="new_word">New</string>
+    <string name="used">Used</string>
+    <string name="day1">1 Day</string>
+    <string name="days">Days</string>
+    <string name="add_subcategory">Add Subcategory</string>
+    <string name="edit_category">Edit Category</string>
+    <string name="edit_subcategory">Edit Subcategory</string>
+    <string name="subcategories">Subcategories</string>
+    <string name="title_activity_see_all_subcategory">SeeAllSubcategoryActivity</string>
+    <string name="search_by_title_city_name">Search by title, city name</string>
+    <string name="featured_ad">Featured Ad</string>
+    <string name="see_example">See Example</string>
+    <string name="get_noticed_with_featured_tag_in_a_top_position">Get noticed with \'FEATURED\' tag in a top position</string>
+    <string name="reach_up_to_10_times_more_buyers">Reach up to 10 times more buyers</string>
+    <string name="reach_up_to_4_times_more_buyers">Reach up to 4 times more buyers</string>
+    <string name="continue_to_pay">Continue to Pay</string>
+    <string name="help_us_improve">Help us improve.</string>
+    <string name="how_did_you_hear_about_ecde">How did you hear about ECDE?</string>
+    <string name="do_you_participate_in_any_activism_or_host_group">Do you participate in any activism or host group?</string>
+    <string name="submit">Submit</string>
+    <string name="how_can_we_improve_ecde_platform_feeback">How can we improve ECDE Platform? / Feeback</string>
+    <string name="delivered_within">Delivered within</string>
+    <string name="charge">| Charge</string>
+    <string name="condition">Condition</string>
+    <string name="quantity">| Quantity</string>
+    <string name="search_for_user">Search for user</string>
+    <string name="quant">Quantity</string>
+    <string name="product_price_r">Product Price (R$)</string>
+    <string name="product_is_new_or_used">Product is new or used?</string>
+    <string name="will_you_deliver_this_product">Will you deliver this product?</string>
+    <string name="no">No</string>
+    <string name="delivery_charge_r">Delivery Charge (R$)</string>
+    <string name="max_delivery_days">Max Delivery Days</string>
+    <string name="can_you_deliver_on_the_same_day">Can you deliver on the same day?</string>
+    <string name="setup_store_profile">Setup Store Profile</string>
+    <string name="for_selling_on_ecde_nyou_have_to_create_seller_profile">For selling on ECDE,\nYou have to create seller profile.</string>
+    <string name="store_name">Store Name</string>
+    <string name="store_address">Store Address</string>
+    <string name="add_store_image">Add Store Image</string>
+    <string name="phone_number">Phone Number</string>
+    <string name="phone_number_will_not_visible_on_your_profile">*Phone number will not visible on your profile.</string>
+    <string name="about_your_store">About your store</string>
+    <string name="create_seller_profile">Create Seller Profile</string>
+    <string name="city">City</string>
+    <string name="report">Report</string>
+    <string name="pay_5_r">Pay 5 R$</string>
+    <string name="donate_us_so_we_can_improve_our_ecde_platform">Donate us so we can improve our ECDE platform</string>
+    <string name="amount_r">Amount (R$)</string>
+
 
 </resources>

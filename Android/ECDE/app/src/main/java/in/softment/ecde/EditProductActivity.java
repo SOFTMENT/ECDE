@@ -14,10 +14,14 @@ import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.AutoCompleteTextView;
+import android.widget.EditText;
 import android.widget.LinearLayout;
+import android.widget.RadioGroup;
+import android.widget.Toast;
 
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.load.engine.DiskCacheStrategy;
+import com.canhub.cropper.CropImage;
 import com.google.android.gms.ads.interstitial.InterstitialAd;
 import com.google.android.gms.tasks.Continuation;
 import com.google.android.gms.tasks.OnCompleteListener;
@@ -30,7 +34,7 @@ import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
 import com.google.firebase.storage.UploadTask;
 import com.makeramen.roundedimageview.RoundedImageView;
-import com.theartofdev.edmodo.cropper.CropImage;
+
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -40,6 +44,7 @@ import java.util.Objects;
 
 import in.softment.ecde.Models.CategoryModel;
 import in.softment.ecde.Models.ProductModel;
+import in.softment.ecde.Models.UserModel;
 import in.softment.ecde.Utils.ProgressHud;
 import in.softment.ecde.Utils.Services;
 
@@ -51,8 +56,14 @@ public class EditProductActivity extends AppCompatActivity {
     private RoundedImageView oneImage, twoImage, threeImage, fourImage;
     private LinearLayout oneLL, twoLL, threeLL, fourLL;
     private boolean oneImageSelected,twoImageSelected;
-    private AutoCompleteTextView  p_title, p_description, p_price;
+    private EditText p_title, p_description, p_price,q_quantity;
+    private EditText maxDeliveryDays;
+    private EditText deliveryCharge;
     private ProductModel productModel;
+
+    private RadioGroup willYouDeliverRadio;
+    private RadioGroup canYouDeliverSameDayRadio;
+    private LinearLayout canYouDeliverSameDayLL;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -74,42 +85,86 @@ public class EditProductActivity extends AppCompatActivity {
         p_title = findViewById(R.id.p_title);
         p_description = findViewById(R.id.p_description);
         p_price = findViewById(R.id.p_price);
+        q_quantity = findViewById(R.id.p_quantity);
+        maxDeliveryDays = findViewById(R.id.delivery_day);
+        deliveryCharge =  findViewById(R.id.delivery_charge);
+        willYouDeliverRadio = findViewById(R.id.willYouDeliverRadioBtn);
+        canYouDeliverSameDayRadio = findViewById(R.id.canYouDeliverOnSameDayRadioBtn);
+        canYouDeliverSameDayLL = findViewById(R.id.sameDayLL);
         findViewById(R.id.addProduct).setOnClickListener(view -> {
             String title = p_title.getText().toString().trim();
             String description = p_description.getText().toString().trim();
             String price = p_price.getText().toString();
-
+            String sQuantity = q_quantity.getText().toString();
+            int willYouDeliverItem = willYouDeliverRadio.getCheckedRadioButtonId();
+            int sameDayId = canYouDeliverSameDayRadio.getCheckedRadioButtonId();
+            String maxDayDelivery = maxDeliveryDays.getText().toString();
+            String deliveryFee = deliveryCharge.getText().toString();
 
             if (title.isEmpty()) {
                 Services.showCenterToast(EditProductActivity.this,"Enter Product Title");
             }
-            else{
-                if (description.isEmpty()) {
+            else if (description.isEmpty()) {
                     Services.showCenterToast(EditProductActivity.this,"Enter Product Description");
-                }
-                else {
-                    if (price.isEmpty()) {
-                        Services.showCenterToast(EditProductActivity.this,"Enter Product Price");
+            }
+
+            else if (price.isEmpty()) {
+                Services.showCenterToast(EditProductActivity.this,"Enter Product Price");
+            }
+           else  if (!oneImageSelected || !twoImageSelected){
+                Services.showCenterToast(EditProductActivity.this,"Upload Atleast 2 Images");
+           }
+            else if (willYouDeliverItem == -1) {
+                Services.showCenterToast(EditProductActivity.this,"Choose Will You Deliver");
+            }
+            else {
+                boolean willYouDeliver = false;
+                boolean sameDay  = false;
+                boolean isProductNew = false;
+                if (willYouDeliverItem == R.id.yes_deliver) {
+                    willYouDeliver = true;
+
+                    if (sameDayId == -1) {
+                        Services.showCenterToast(EditProductActivity.this,"Choose Can You Deliver Same Day?");
+                        return;
+                    }
+                    if (deliveryFee.isEmpty()) {
+                        Services.showCenterToast(EditProductActivity.this,"Enter Delivery Charge");
+                        return;
                     }
                     else {
-
-                            if (oneImageSelected && twoImageSelected){
-                                if (FirebaseAuth.getInstance().getCurrentUser() != null){
-                                    updateProduct(productModel.cat_id,FirebaseAuth.getInstance().getCurrentUser().getUid(),title,description,price);
-                                }
-                                else {
-                                    Services.logout(EditProductActivity.this);
-                                }
-
-
-
-                        } else {
-                                Services.showCenterToast(EditProductActivity.this,"Please choose images");
+                        if (sameDayId == R.id.yes_same_day) {
+                            sameDay = true;
+                            maxDayDelivery = "0";
+                        }
+                        else {
+                            if (maxDayDelivery.isEmpty()) {
+                                Services.showCenterToast(EditProductActivity.this,"Enter Delivery Days");
+                                return;
                             }
+                            else {
 
+                            }
+                        }
                     }
+
+                }
+
+
+                if (!willYouDeliver) {
+                    maxDayDelivery = "0";
+                    deliveryFee = "0";
+
+                }
+
+                if (FirebaseAuth.getInstance().getCurrentUser() != null) {
+                    updateProduct(productModel.title,productModel.description,Integer.parseInt(price),Integer.parseInt(sQuantity),willYouDeliver,sameDay,Integer.parseInt(maxDayDelivery),Integer.parseInt(deliveryFee));
+
+                } else {
+                    Services.logout(EditProductActivity.this);
                 }
             }
+
 
         });
 
@@ -133,8 +188,78 @@ public class EditProductActivity extends AppCompatActivity {
         //INITIALIZE ITEMS
         p_title.setText(productModel.getTitle());
         p_description.setText(productModel.getDescription());
-        p_price.setText(productModel.getPrice());
+        p_price.setText(productModel.getPrice()+"");
+        q_quantity.setText(productModel.getQuantity()+"");
 
+
+        if (productModel.deliveryCharge > 0) {
+            deliveryCharge.setText(productModel.deliveryCharge+"");
+        }
+        else {
+            deliveryCharge.setText("");
+        }
+        if (productModel.maxDeliverDay > 0) {
+            maxDeliveryDays.setText(productModel.maxDeliverDay+"");
+        }
+        else {
+            maxDeliveryDays.setText("");
+        }
+
+
+        willYouDeliverRadio.setOnCheckedChangeListener(new RadioGroup.OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(RadioGroup group, int checkedId) {
+                if (checkedId == R.id.yes_deliver) {
+
+                    canYouDeliverSameDayLL.setVisibility(View.VISIBLE);
+                    deliveryCharge.setVisibility(View.VISIBLE);
+
+                }
+                else {
+                    canYouDeliverSameDayLL.setVisibility(View.GONE);
+                    deliveryCharge.setVisibility(View.GONE);
+                }
+            }
+        });
+        canYouDeliverSameDayRadio.setOnCheckedChangeListener(new RadioGroup.OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(RadioGroup group, int checkedId) {
+                if (checkedId == R.id.yes_same_day) {
+
+
+                    maxDeliveryDays.setVisibility(View.GONE);
+
+
+                }
+                else {
+
+                    maxDeliveryDays.setVisibility(View.VISIBLE);
+
+                }
+            }
+        });
+
+
+        if (productModel.isDeliverProduct()) {
+            willYouDeliverRadio.check(R.id.yes_deliver);
+            canYouDeliverSameDayLL.setVisibility(View.VISIBLE);
+
+            if (productModel.isSameDayDeliver()) {
+                canYouDeliverSameDayRadio.check(R.id.yes_same_day);
+                maxDeliveryDays.setVisibility(View.GONE);
+            }
+            else {
+                canYouDeliverSameDayRadio.check(R.id.not_same_day);
+                maxDeliveryDays.setVisibility(View.GONE);
+            }
+
+        }
+        else {
+
+            willYouDeliverRadio.check(R.id.no_deliver);
+            canYouDeliverSameDayLL.setVisibility(View.GONE);
+            deliveryCharge.setVisibility(View.GONE);
+        }
 
 
         if (productModel.getImages().containsKey("0")) {
@@ -247,25 +372,25 @@ public class EditProductActivity extends AppCompatActivity {
 
     }
 
-    public void updateProduct(String cat_id, String uid, String title, String description, String price) {
+    public void updateProduct(String title, String description, Integer price, Integer quantity, boolean willDeliver, boolean sameDay, Integer maxDeliveryDay, Integer deliveryFee) {
         Map<String, Object> map = new HashMap<>();
-        map.put("id",productModel.id);
-        map.put("cat_id",cat_id);
-        map.put("uid",uid);
+
+
         map.put("title",title);
         map.put("description",description);
         map.put("price",price);
-        map.put("images",productModel.getImages());
-        map.put("date", productModel.getDate());
-        map.put("sellerName",productModel.getSellerName());
-        map.put("sellerImage",productModel.getSellerImage());
-        map.put("sellerToken",productModel.getSellerToken());
+        map.put("quantity",quantity);
+        map.put("deliverProduct",willDeliver);
+        map.put("sameDayDeliver",sameDay);
+        map.put("maxDeliverDay",maxDeliveryDay);
+        map.put("deliveryCharge",deliveryFee);
+
         ProgressHud.show(EditProductActivity.this,"Product Updating...");
 
-        FirebaseFirestore.getInstance().collection("Products").document(productModel.id).update(map).addOnCompleteListener(task -> {
+        FirebaseFirestore.getInstance().collection("Products").document(productModel.id).set(map,SetOptions.merge()).addOnCompleteListener(task -> {
             ProgressHud.dialog.dismiss();
             if (task.isSuccessful()) {
-                uploadImageOnFirebase(uid,productModel.id);
+                uploadImageOnFirebase(UserModel.data.uid, productModel.id);
                 Services.showDialog(EditProductActivity.this,"UPDATED","Product Successfully Updated");
 
                 images.clear();
@@ -290,7 +415,7 @@ public class EditProductActivity extends AppCompatActivity {
             CropImage.ActivityResult result = CropImage.getActivityResult(data);
 
             if (resultCode == RESULT_OK) {
-                cropUri(result.getUri());
+                cropUri(result.getUriContent());
 
             }
         }

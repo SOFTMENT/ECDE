@@ -45,28 +45,24 @@
         />
 
 
-    <com.google.android.material.textfield.TextInputLayout
-        android:layout_width="match_parent"
-        android:layout_height="45dp"
-        app:boxStrokeColor="#aaa"
-        app:hintTextColor="#888"
-        android:hint="@string/product_title"
-        android:layout_marginTop="25dp"
-        style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox.Dense"
-        >
-        <AutoCompleteTextView
+
+        <EditText
+
+            android:background="@drawable/edittext_back"
+            android:layout_marginTop="25dp"
             android:maxLength="50"
             android:id="@+id/p_title"
             android:inputType="text"
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
+            android:layout_height="40dp"
             android:fontFamily="@font/sfprosemibold2"
             android:textSize="12sp"
             android:paddingStart="10dp"
             android:paddingEnd="10dp"
             android:textCursorDrawable="@null"
+            android:hint="@string/product_title"
             />
-    </com.google.android.material.textfield.TextInputLayout>
+
     <TextView
 
         android:lineSpacingExtra="1dp"
@@ -78,38 +74,31 @@
         android:paddingEnd="2dp"
         android:fontFamily="@font/sfpromedium2"
         android:textSize="10sp"
-        android:textColor="#03A9F4"
+        android:textColor="@color/note_color"
         />
-    <com.google.android.material.textfield.TextInputLayout
-        android:layout_width="match_parent"
-        android:layout_height="120dp"
-        app:boxStrokeColor="#aaa"
-        android:hint="@string/product_description"
-        android:layout_marginTop="25dp"
-        app:hintTextColor="#888"
-        style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox.Dense"
-        >
-        <AutoCompleteTextView
 
+        <EditText
+            android:background="@drawable/edittext_back"
+            android:layout_marginTop="25dp"
             android:maxLength="749"
             android:id="@+id/p_description"
             android:padding="10dp"
             android:layout_gravity="top|start"
             android:gravity="top|start"
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
+            android:layout_height="120dp"
             android:fontFamily="@font/sfprosemibold2"
             android:textSize="12sp"
             android:paddingStart="10dp"
             android:paddingEnd="10dp"
             android:textCursorDrawable="@null"
             android:inputType="textMultiLine"
-
             android:overScrollMode="always"
             android:scrollbarStyle="insideInset"
             android:scrollbars="vertical"
+            android:hint="@string/product_description"
             />
-    </com.google.android.material.textfield.TextInputLayout>
+
     <TextView
 
         android:lineSpacingExtra="1dp"
@@ -121,25 +110,17 @@
         android:paddingEnd="2dp"
         android:fontFamily="@font/sfpromedium2"
         android:textSize="10sp"
-        android:textColor="#03A9F4"
+        android:textColor="@color/note_color"
         />
-    <com.google.android.material.textfield.TextInputLayout
 
-        android:layout_width="match_parent"
-        android:layout_height="45dp"
-        app:hintTextColor="#888"
-        app:boxStrokeColor="#aaa"
-        android:hint="@string/product_price"
-
-        android:layout_marginTop="25dp"
-
-        style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox.Dense"
-        >
-        <AutoCompleteTextView
+        <EditText
+            android:background="@drawable/edittext_back"
+            android:hint="@string/product_price_r"
+            android:layout_marginTop="25dp"
             android:id="@+id/p_price"
             android:inputType="number"
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
+            android:layout_height="40dp"
             android:fontFamily="@font/sfprosemibold2"
             android:textSize="12sp"
             android:paddingStart="10dp"
@@ -147,28 +128,203 @@
             android:textCursorDrawable="@null"
            android:maxLength="5"
             />
-    </com.google.android.material.textfield.TextInputLayout>
-    <com.google.android.material.textfield.TextInputLayout
-        android:layout_width="match_parent"
-        android:layout_height="45dp"
-        app:hintTextColor="#888"
-        app:boxStrokeColor="#aaa"
-        android:background="@null"
-        app:endIconTint="#777"
-        android:hint="@string/choose_category"
-        android:layout_marginTop="25dp"
-        style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox.Dense.ExposedDropdownMenu"
-        >
-        <AutoCompleteTextView
-            android:id="@+id/chooseCategory"
+
+
+        <EditText
+            android:background="@drawable/edittext_back"
+            android:id="@+id/quantity"
+            android:inputType="number"
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
+            android:layout_height="40dp"
+            android:fontFamily="@font/sfprosemibold2"
+            android:textSize="12sp"
+            android:paddingStart="10dp"
+            android:paddingEnd="10dp"
+            android:textCursorDrawable="@null"
+            android:maxLength="5"
+            android:hint="@string/quant"
+            android:layout_marginTop="25dp"
+            />
+
+
+    <AutoCompleteTextView
+        android:background="@drawable/edittext_back"
+        android:focusable="false"
+        android:id="@+id/chooseCategory"
+        android:layout_width="match_parent"
+        android:layout_height="40dp"
+        android:layout_marginTop="25dp"
+        android:fontFamily="@font/sfprosemibold2"
+        android:hint="@string/choose_category"
+        android:inputType="none"
+        android:paddingStart="10dp"
+        android:paddingEnd="10dp"
+        android:textSize="12sp" />
+
+    <AutoCompleteTextView
+            android:background="@drawable/edittext_back"
+            android:focusable="false"
+            android:layout_marginTop="25dp"
+            android:hint="@string/choose_subcategory"
+            android:id="@+id/chooseSubcategory"
+            android:layout_width="match_parent"
+            android:layout_height="40dp"
             android:fontFamily="@font/sfprosemibold2"
             android:textSize="12sp"
             android:paddingStart="10dp"
             android:inputType="none"
             android:paddingEnd="10dp" />
-    </com.google.android.material.textfield.TextInputLayout>
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="25dp"
+        android:fontFamily="@font/sfprosemibold2"
+        android:text="@string/product_is_new_or_used"
+        android:textSize="12sp" />
+    <RadioGroup
+        android:layout_marginTop="10dp"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:id="@+id/isProductFreshRadioGroup"
+        android:orientation="horizontal"
+        >
+        <RadioButton
+            android:id="@+id/yes_new"
+            android:textSize="13sp"
+            android:textColor="@color/gnt_gray"
+            android:buttonTint="@color/salmon"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:fontFamily="@font/sfprosemibold2"
+            android:text="@string/new_word"
+            />
+        <RadioButton
+            android:id="@+id/no_used"
+            android:textSize="13sp"
+            android:textColor="@color/gnt_gray"
+            android:layout_marginStart="16dp"
+            android:buttonTint="@color/salmon"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:fontFamily="@font/sfprosemibold2"
+            android:text="@string/used"
+            />
+    </RadioGroup>
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="16dp"
+        android:fontFamily="@font/sfprosemibold2"
+        android:text="@string/will_you_deliver_this_product"
+        android:textSize="12sp" />
+
+    <RadioGroup
+        android:layout_marginTop="10dp"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:id="@+id/willYouDeliverRadioBtn"
+        android:orientation="horizontal"
+        >
+        <RadioButton
+            android:textSize="13sp"
+            android:id="@+id/yes_deliver"
+            android:textColor="@color/gnt_gray"
+            android:buttonTint="@color/salmon"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:fontFamily="@font/sfprosemibold2"
+            android:text="@string/yes"
+            />
+        <RadioButton
+            android:textSize="13sp"
+            android:id="@+id/no_deliver"
+            android:textColor="@color/gnt_gray"
+            android:layout_marginStart="16dp"
+            android:buttonTint="@color/salmon"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:fontFamily="@font/sfprosemibold2"
+            android:text="@string/no"
+            />
+    </RadioGroup>
+<LinearLayout
+    android:visibility="gone"
+    android:id="@+id/sameDayLL"
+    android:layout_marginTop="16dp"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="vertical"
+    >
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:fontFamily="@font/sfprosemibold2"
+        android:text="@string/can_you_deliver_on_the_same_day"
+        android:textSize="13sp" />
+
+    <RadioGroup
+        android:id="@+id/canYouDeliverOnSameDayRadioBtn"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="10dp"
+        android:orientation="horizontal">
+
+        <RadioButton
+            android:id="@+id/yes_same_day"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:buttonTint="@color/salmon"
+            android:fontFamily="@font/sfprosemibold2"
+            android:text="@string/yes"
+            android:textColor="@color/gnt_gray" />
+
+        <RadioButton
+            android:id="@+id/not_same_day"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="16dp"
+            android:buttonTint="@color/salmon"
+            android:fontFamily="@font/sfprosemibold2"
+            android:text="@string/no"
+            android:textColor="@color/gnt_gray" />
+    </RadioGroup>
+</LinearLayout>
+
+        <EditText
+            android:background="@drawable/edittext_back"
+            android:hint="@string/max_delivery_days"
+            android:layout_marginTop="25dp"
+            android:visibility="gone"
+            android:id="@+id/delivery_day"
+            android:inputType="number"
+            android:layout_width="match_parent"
+            android:layout_height="40dp"
+            android:fontFamily="@font/sfprosemibold2"
+            android:textSize="12sp"
+            android:paddingStart="10dp"
+            android:paddingEnd="10dp"
+            android:textCursorDrawable="@null"
+            android:maxLength="5"
+            />
+
+
+        <EditText
+            android:layout_marginTop="25dp"
+            android:background="@drawable/edittext_back"
+            android:visibility="gone"
+            android:hint="@string/delivery_charge_r"
+            android:id="@+id/delivery_charge"
+            android:inputType="number"
+            android:layout_width="match_parent"
+            android:layout_height="40dp"
+            android:fontFamily="@font/sfprosemibold2"
+            android:textSize="12sp"
+            android:paddingStart="10dp"
+            android:paddingEnd="10dp"
+            android:textCursorDrawable="@null"
+            android:maxLength="5"
+            />
 
     <LinearLayout
 

@@ -63,7 +63,7 @@ public class LiveChatAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
                 myHolderLeft.dateandtime.setText(Services.convertDateToTimeString(chatModels.get(position).getDate()));
             }
             else {
-                myHolderLeft.dateandtime.setText("TIME NOT AVAILABLE");
+                myHolderLeft.dateandtime.setText(R.string.time_not_available);
             }
 
 
@@ -77,7 +77,7 @@ public class LiveChatAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
                     myHolder.datenadtime.setText(Services.convertDateToTimeString(chatModels.get(position).getDate()));
             }
             else {
-                myHolder.datenadtime.setText("TIME NOT AVAILABLE");
+                myHolder.datenadtime.setText(R.string.time_not_available);
             }
 
                 myHolder.message.setVisibility(View.VISIBLE);

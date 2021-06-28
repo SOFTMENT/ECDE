@@ -60,7 +60,9 @@ public class WelcomeActivity extends AppCompatActivity {
         if (FirebaseAuth.getInstance().getCurrentUser() != null) {
             if (FirebaseAuth.getInstance().getCurrentUser().isEmailVerified()) {
                 //ProgressHud.show(this,"Loading...");
+
                 Services.getCurrentUserData(this, FirebaseAuth.getInstance().getCurrentUser().getUid());
+
             }
             else {
                 gotoSignInPage();

@@ -19,6 +19,7 @@ import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
 
 import com.bumptech.glide.Glide;
+import com.canhub.cropper.CropImage;
 import com.google.android.gms.tasks.Continuation;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
@@ -26,7 +27,7 @@ import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
 import com.google.firebase.storage.UploadTask;
-import com.theartofdev.edmodo.cropper.CropImage;
+
 
 import java.io.IOException;
 import java.util.HashMap;
@@ -49,7 +50,7 @@ public class EditCategoriesActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_add_cateogry_screen);
+        setContentView(R.layout.activity_edit_categories);
 
         requestStoragePermission();
 
@@ -147,13 +148,12 @@ public class EditCategoriesActivity extends AppCompatActivity {
 
     @Override
     public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
         if (requestCode == STORAGE_PERMISSION_CODE) {
             if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
 
 
-            }
-
-            else {
+            } else {
                 Toast.makeText(this, "Oops you just denied the permission", Toast.LENGTH_LONG).show();
             }
 
@@ -216,11 +216,9 @@ public class EditCategoriesActivity extends AppCompatActivity {
             public void onComplete(@NonNull Task<Void> task) {
                 ProgressHud.dialog.dismiss();
                 if (task.isSuccessful()) {
-                    Services.showCenterToast(EditCategoriesActivity.this,"Category Added");
-                    cat_image.setImageResource(R.drawable.placeholder);
+                    Services.showCenterToast(EditCategoriesActivity.this,"Category Updated");
                     isImageSelected = false;
-                    cat_title_pt.setText("");
-                    cat_title_en.setText("");
+
 
                 }
                 else {
@@ -250,7 +248,7 @@ public class EditCategoriesActivity extends AppCompatActivity {
         } else if (requestCode == CropImage.CROP_IMAGE_ACTIVITY_REQUEST_CODE) {
             CropImage.ActivityResult result = CropImage.getActivityResult(data);
             if (resultCode == RESULT_OK) {
-                resultUri = result.getUri();
+                resultUri = result.getUriContent();
 
                 isImageSelected = true;
                 Bitmap bitmap = null;

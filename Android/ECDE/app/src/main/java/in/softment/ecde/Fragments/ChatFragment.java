@@ -27,6 +27,7 @@ import in.softment.ecde.MainActivity;
 import in.softment.ecde.Models.LastMessageModel;
 import in.softment.ecde.R;
 
+
 public class ChatFragment extends Fragment {
 
 
@@ -71,7 +72,7 @@ public class ChatFragment extends Fragment {
                         message.setVisibility(View.GONE);
                         recyclerView.setVisibility(View.VISIBLE);
                     }
-                    readAndUnread.setText("All");
+                    readAndUnread.setText(R.string.all);
                 }
                 else {
                     lastMessageModels.addAll(LastMessageModel.lastMessageModels);
@@ -85,7 +86,7 @@ public class ChatFragment extends Fragment {
                         message.setVisibility(View.GONE);
                         recyclerView.setVisibility(View.VISIBLE);
                     }
-                    readAndUnread.setText("Unread");
+                    readAndUnread.setText(R.string.unread);
                 }
 
 
@@ -136,5 +137,6 @@ public class ChatFragment extends Fragment {
     public void onAttach(@NonNull @NotNull Context context) {
         super.onAttach(context);
         ((MainActivity)context).initializeChatFragment(this);
+
     }
 }

@@ -169,36 +169,34 @@
             />
     </RelativeLayout>
 
+        <RelativeLayout
+            android:id="@+id/addProductRR"
+            android:layout_below="@+id/settingsVIEW"
+            android:layout_width="match_parent"
+            android:layout_height="50dp">
+            <ImageView
+                android:id="@+id/addImg"
+                android:layout_width="24dp"
+                android:layout_height="24dp"
+                android:src="@drawable/ic_baseline_add_circle_outline_24"
+                app:tint="#A3A3A3"
+                android:layout_centerVertical="true"
+                android:layout_marginStart="16dp"
+                />
+            <TextView
+                android:layout_toEndOf="@+id/addImg"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textSize="13sp"
+                android:text="@string/add_new_product"
+                android:layout_centerVertical="true"
+                android:layout_marginStart="16dp"
+                android:fontFamily="@font/sfpromedium2"
+                />
+        </RelativeLayout>
     <RelativeLayout
-        android:layout_marginTop="4dp"
-        android:id="@+id/addProduct"
-        android:layout_below="@+id/settingsVIEW"
-        android:layout_width="match_parent"
-        android:layout_height="50dp">
-        <ImageView
-            android:id="@+id/addImg"
-            android:layout_width="24dp"
-            android:layout_height="24dp"
-            android:src="@drawable/ic_baseline_add_circle_outline_24"
-            app:tint="#A3A3A3"
-            android:layout_centerVertical="true"
-            android:layout_marginStart="16dp"
-            />
-        <TextView
-            android:layout_toEndOf="@+id/addImg"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:textSize="13sp"
-            android:text="@string/add_new_product"
-            android:layout_centerVertical="true"
-            android:layout_marginStart="16dp"
-            android:fontFamily="@font/sfpromedium2"
-            />
-    </RelativeLayout>
-
-    <RelativeLayout
-        android:id="@+id/myProduct"
-        android:layout_below="@+id/addProduct"
+        android:id="@+id/myProductRR"
+        android:layout_below="@+id/addProductRR"
         android:layout_width="match_parent"
         android:layout_height="50dp">
         <ImageView
@@ -215,7 +213,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:textSize="13sp"
-            android:text="@string/my_products"
+            android:text="@string/manage_store"
             android:layout_centerVertical="true"
             android:layout_marginStart="16dp"
             android:fontFamily="@font/sfpromedium2"
@@ -223,7 +221,7 @@
     </RelativeLayout>
     <RelativeLayout
         android:id="@+id/language"
-        android:layout_below="@+id/myProduct"
+        android:layout_below="@+id/myProductRR"
         android:layout_width="match_parent"
         android:layout_height="50dp">
         <ImageView
@@ -437,15 +435,41 @@
                 />
         </RelativeLayout>
         <RelativeLayout
-            android:id="@+id/contactUs"
+            android:layout_marginTop="4dp"
+            android:id="@+id/support"
             android:layout_below="@+id/rateUs"
+            android:layout_width="match_parent"
+            android:layout_height="50dp">
+            <ImageView
+                android:id="@+id/supportImg"
+                android:layout_width="24dp"
+                android:layout_height="24dp"
+                android:src="@drawable/ic_outline_support_24"
+                app:tint="#A3A3A3"
+                android:layout_centerVertical="true"
+                android:layout_marginStart="16dp"
+                />
+            <TextView
+                android:layout_toEndOf="@+id/supportImg"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textSize="13sp"
+                android:text="@string/support"
+                android:layout_centerVertical="true"
+                android:layout_marginStart="16dp"
+                android:fontFamily="@font/sfpromedium2"
+                />
+        </RelativeLayout>
+        <RelativeLayout
+            android:id="@+id/contactUs"
+            android:layout_below="@+id/support"
             android:layout_width="match_parent"
             android:layout_height="50dp">
             <ImageView
                 android:id="@+id/contactImg"
                 android:layout_width="24dp"
                 android:layout_height="24dp"
-                android:src="@drawable/ic_outline_contact_support_24"
+                android:src="@drawable/ic_outline_contact_mail_24"
                 app:tint="#A3A3A3"
                 android:layout_centerVertical="true"
                 android:layout_marginStart="16dp"
@@ -492,14 +516,9 @@
             android:layout_marginTop="16dp"
         >
         <TextView
-
-
-
-
-
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:textSize="13sp"
+            android:textSize="12sp"
             android:text="@string/version"
             android:layout_centerVertical="true"
             android:layout_marginStart="16dp"
@@ -509,7 +528,7 @@
                 android:id="@+id/versionName"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:textSize="13sp"
+                android:textSize="12sp"
                 android:text="1.0"
                 android:fontFamily="@font/sfpromedium2"
                 />

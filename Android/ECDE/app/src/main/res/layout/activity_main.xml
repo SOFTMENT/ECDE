@@ -10,7 +10,7 @@
         android:id="@+id/viewpager"
         />
 
-    <com.etebarian.meowbottomnavigation.MeowBottomNavigation
+    <meow.bottomnavigation.MeowBottomNavigation
         android:id="@+id/bottomnavigation1"
         android:layout_alignParentBottom="true"
         android:layout_width="match_parent"
@@ -23,7 +23,6 @@
         app:mbn_rippleColor="@android:color/transparent"
         app:mbn_selectedIconColor="@color/marsala"
         app:mbn_shadowColor="#1f212121"
-
         />
 
 </RelativeLayout>

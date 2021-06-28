@@ -37,6 +37,7 @@ import com.google.firebase.firestore.FirebaseFirestore;
 import com.makeramen.roundedimageview.RoundedImageView;
 
 import org.jetbrains.annotations.NotNull;
+import org.w3c.dom.Text;
 
 import java.util.ArrayList;
 
@@ -74,6 +75,8 @@ public class ViewProductActivity extends AppCompatActivity {
 
         }
 
+
+
         more.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -98,13 +101,18 @@ public class ViewProductActivity extends AppCompatActivity {
 
         TextView title = findViewById(R.id.title);
         TextView category = findViewById(R.id.category);
-        TextView date = findViewById(R.id.date);
+
         TextView price = findViewById(R.id.price);
         TextView description = findViewById(R.id.description);
-        TextView seller = findViewById(R.id.seller);
-        title.setText(productModel.title);
+        TextView seller = findViewById(R.id.sellerName);
+        LinearLayout deliveryLL = findViewById(R.id.deliveryLL);
+        TextView deliveryFee = findViewById(R.id.deliveryFee);
+        TextView deliveryDay = findViewById(R.id.deliveryDays);
+        TextView condition = findViewById(R.id.condition);
+        TextView quantity = findViewById(R.id.quantity);
+
+        title.setText(Services.toUpperCase(productModel.title));
         category.setText(CategoryModel.getCategoryNameById(productModel.getCat_id()));
-        date.setText(Services.convertDateToString(productModel.date));
         description.setText(productModel.description);
         price.setText("R$ "+productModel.getPrice());
         seller.setText(Services.toUpperCase(productModel.sellerName));
@@ -114,6 +122,32 @@ public class ViewProductActivity extends AppCompatActivity {
                 finish();
             }
         });
+
+        if (productModel.isProductNew){
+            condition.setText(R.string.new_word);
+        }
+        else{
+            condition.setText(R.string.used);
+        }
+
+        quantity.setText(String.valueOf(productModel.quantity));
+
+
+        if (productModel.isDeliverProduct()) {
+            deliveryLL.setVisibility(View.VISIBLE);
+            deliveryFee.setText("R$ "+productModel.deliveryCharge);
+            int days = productModel.maxDeliverDay;
+            if (productModel.isSameDayDeliver()) {
+                deliveryDay.setText(getString(R.string.day1));
+            }
+            else {
+                deliveryDay.setText(days+" "+getString(R.string.days));
+            }
+
+        }
+        else {
+            deliveryLL.setVisibility(View.GONE);
+        }
 
 
         CardView contactSellerBtn = findViewById(R.id.contactSeller);
@@ -284,7 +318,6 @@ public class ViewProductActivity extends AppCompatActivity {
             @Override
             public void onAdFailedToLoad(@NonNull LoadAdError loadAdError) {
                 // Handle the error
-                Log.i("MYADS", loadAdError.getMessage());
                 mInterstitialAd = null;
             }
         });

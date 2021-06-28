@@ -14,7 +14,7 @@
 
     <de.hdodenhof.circleimageview.CircleImageView
         android:id="@+id/cat_image"
-        android:src="@drawable/placeholder_icon"
+        android:src="@drawable/category_placeholder"
         android:layout_width="64dp"
         android:layout_height="64dp"
         android:layout_centerInParent="true"

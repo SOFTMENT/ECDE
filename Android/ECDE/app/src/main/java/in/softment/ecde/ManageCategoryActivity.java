@@ -39,6 +39,9 @@ public class ManageCategoryActivity extends AppCompatActivity {
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
         EditCategoriesAdapter editCategoriesAdapter = new EditCategoriesAdapter(this, CategoryModel.categoryModels);
         recyclerView.setAdapter(editCategoriesAdapter);
-
     }
+
+
+
+
 }

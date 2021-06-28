@@ -20,6 +20,7 @@ import in.softment.ecde.EditProductActivity;
 import in.softment.ecde.Models.CategoryModel;
 import in.softment.ecde.Models.ProductModel;
 import in.softment.ecde.R;
+import in.softment.ecde.StripeCheckoutActivity;
 import in.softment.ecde.Utils.Services;
 
 public class MyProductAdapter extends RecyclerView.Adapter<MyProductAdapter.ViewHolder> {
@@ -50,13 +51,26 @@ public class MyProductAdapter extends RecyclerView.Adapter<MyProductAdapter.View
         holder.date.setText(Services.convertDateToString(productModel.date));
         holder.price.setText("R$"+productModel.price);
 
-        holder.view.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                Intent intent = new Intent(context, EditProductActivity.class);
-                intent.putExtra("index", position);
-                context.startActivity(intent);
-            }
+        if(Services.isPromoting(productModel.adLastDate)) {
+            holder.promote.setEnabled(false);
+            holder.promote.setText(R.string.promoting);
+        }
+        else{
+            holder.promote.setEnabled(true);
+            holder.promote.setText(R.string.promote);
+        }
+
+        holder.promote.setOnClickListener(v -> {
+            Intent intent = new Intent(context, StripeCheckoutActivity.class);
+            intent.putExtra("productId",productModel.getId());
+            context.startActivity(intent);
+
+
+        });
+        holder.view.setOnClickListener(view -> {
+            Intent intent = new Intent(context, EditProductActivity.class);
+            intent.putExtra("index", position);
+            context.startActivity(intent);
         });
 
 
@@ -68,9 +82,9 @@ public class MyProductAdapter extends RecyclerView.Adapter<MyProductAdapter.View
         return productModels.size();
     }
 
-    static public class ViewHolder extends RecyclerView.ViewHolder {
+     public static class ViewHolder extends RecyclerView.ViewHolder {
         private RoundedImageView imageView;
-        private TextView title, category, date, price;
+        private TextView title, category, date, price, promote;
         private View view;
         public ViewHolder(@NonNull View itemView) {
             super(itemView);
@@ -80,6 +94,7 @@ public class MyProductAdapter extends RecyclerView.Adapter<MyProductAdapter.View
             category = view.findViewById(R.id.category);
             date = view.findViewById(R.id.date);
             price = view.findViewById(R.id.price);
+            promote = view.findViewById(R.id.promote);
         }
     }
 }

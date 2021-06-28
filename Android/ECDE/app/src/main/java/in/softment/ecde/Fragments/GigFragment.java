@@ -1,6 +1,7 @@
 package in.softment.ecde.Fragments;
 
 import android.content.Context;
+import android.content.Intent;
 import android.os.Bundle;
 
 import androidx.annotation.NonNull;
@@ -15,6 +16,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import in.softment.ecde.Adapters.MyProductAdapter;
+import in.softment.ecde.BuildConfig;
 import in.softment.ecde.MainActivity;
 import in.softment.ecde.Models.ProductModel;
 import in.softment.ecde.R;
@@ -30,6 +32,9 @@ public class GigFragment extends Fragment {
         this.context = context;
     }
 
+    public GigFragment(){
+
+    }
 
 
 
@@ -38,6 +43,23 @@ public class GigFragment extends Fragment {
                              Bundle savedInstanceState) {
 
         View view =  inflater.inflate(R.layout.fragment_gig, container, false);
+        view.findViewById(R.id.shareApp).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                try {
+                    Intent shareIntent = new Intent(Intent.ACTION_SEND);
+                    shareIntent.setType("text/plain");
+                    shareIntent.putExtra(Intent.EXTRA_SUBJECT, "Esquerda Compra Da Esquerda");
+                    String shareMessage= "\nLet me recommend you this application\n\n";
+                    shareMessage = shareMessage + "https://play.google.com/store/apps/details?id=" + BuildConfig.APPLICATION_ID +"\n\n";
+                    shareIntent.putExtra(Intent.EXTRA_TEXT, shareMessage);
+                    startActivity(Intent.createChooser(shareIntent, "choose one"));
+                } catch(Exception e) {
+                    //e.toString();
+                }
+            }
+        });
+
         message = view.findViewById(R.id.message);
         recyclerView = view.findViewById(R.id.recyclerview);
 

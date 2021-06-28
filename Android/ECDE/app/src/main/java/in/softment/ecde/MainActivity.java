@@ -8,7 +8,9 @@ import androidx.core.content.ContextCompat;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentPagerAdapter;
+import androidx.fragment.app.FragmentStatePagerAdapter;
 import androidx.viewpager.widget.ViewPager;
+import androidx.viewpager2.adapter.FragmentStateAdapter;
 
 import android.Manifest;
 import android.content.DialogInterface;
@@ -26,12 +28,14 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.Toast;
 
-import com.etebarian.meowbottomnavigation.MeowBottomNavigation;
+
+import com.canhub.cropper.CropImage;
 import com.google.android.gms.ads.MobileAds;
 import com.google.android.gms.ads.RequestConfiguration;
 import com.google.android.gms.ads.initialization.InitializationStatus;
 import com.google.android.gms.ads.initialization.OnInitializationCompleteListener;
 import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.crashlytics.FirebaseCrashlytics;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.EventListener;
 import com.google.firebase.firestore.FirebaseFirestore;
@@ -41,7 +45,7 @@ import com.google.firebase.firestore.Query;
 import com.google.firebase.firestore.QuerySnapshot;
 import com.google.firebase.firestore.SetOptions;
 import com.makeramen.roundedimageview.RoundedImageView;
-import com.theartofdev.edmodo.cropper.CropImage;
+
 
 import org.jetbrains.annotations.NotNull;
 
@@ -52,6 +56,7 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Random;
 import java.util.function.Function;
 
 import in.softment.ecde.Fragments.AccountFragment;
@@ -59,6 +64,7 @@ import in.softment.ecde.Fragments.ChatFragment;
 import in.softment.ecde.Fragments.GigFragment;
 import in.softment.ecde.Fragments.HomeFragment;
 import in.softment.ecde.Fragments.PostFragment;
+import in.softment.ecde.Fragments.SellerStoreInformation;
 import in.softment.ecde.Models.CategoryModel;
 import in.softment.ecde.Models.LastMessageModel;
 import in.softment.ecde.Models.MyLanguage;
@@ -71,21 +77,17 @@ import in.softment.ecde.Utils.ProgressHud;
 import in.softment.ecde.Utils.Services;
 import kotlin.Unit;
 import kotlin.jvm.functions.Function1;
-
-
+import meow.bottomnavigation.*;
 public class MainActivity extends AppCompatActivity implements Function1<MeowBottomNavigation.Model, Unit> {
 
-
-
-
-
-   private MeowBottomNavigation meowBottomNavigation;
-   private HomeFragment homeFragment;
-   private PostFragment postFragment;
-   private GigFragment gigFragment;
-   private ChatFragment chatFragment;
-
-   private NonSwipeAbleViewPager viewPager;
+    private MeowBottomNavigation meowBottomNavigation;
+    public HomeFragment homeFragment;
+    public ChatFragment chatFragment;
+    private NonSwipeAbleViewPager viewPager;
+    public PostFragment postFragment;
+    public GigFragment gigFragment;
+    public SellerStoreInformation sellerStoreInformation;
+    private ViewPagerAdapter viewPagerAdapter;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -104,8 +106,6 @@ public class MainActivity extends AppCompatActivity implements Function1<MeowBot
             }
         });
 
-
-
         //UpdateToken
         updateToken();
 
@@ -115,16 +115,25 @@ public class MainActivity extends AppCompatActivity implements Function1<MeowBot
         viewPager.setOffscreenPageLimit(5);
 
         meowBottomNavigation = findViewById(R.id.bottomnavigation1);
-        meowBottomNavigation.add(new MeowBottomNavigation.Model(0, R.drawable.ic_outline_home_24));
+        meowBottomNavigation.add(new MeowBottomNavigation.Model(0, R.drawable.ic_outline_shopping_bag_24));
         meowBottomNavigation.add(new MeowBottomNavigation.Model(1, R.drawable.ic_outline_message_24));
+
         meowBottomNavigation.add(new MeowBottomNavigation.Model(2, R.drawable.ic_baseline_add_circle_outline_24));
+
         meowBottomNavigation.add(new MeowBottomNavigation.Model(3, R.drawable.ic_baseline_storefront_24));
         meowBottomNavigation.add(new MeowBottomNavigation.Model(4, R.drawable.ic_baseline_person_outline_24));
+
+
         meowBottomNavigation.show(0,true);
         meowBottomNavigation.setOnShowListener(this);
         viewPager.setCurrentItem(0);
 
-        ProgressHud.show(this,"Loading...");
+
+        //GET_CATEGORY
+
+        ProgressHud.show(this,"");
+
+
     }
 
     public void updateToken(){
@@ -136,33 +145,10 @@ public class MainActivity extends AppCompatActivity implements Function1<MeowBot
 
     }
 
-    public void getMyProduct() {
-        FirebaseFirestore.getInstance().collection("Products").orderBy("date").whereEqualTo("uid", FirebaseAuth.getInstance().getCurrentUser().getUid()).addSnapshotListener(MetadataChanges.INCLUDE, (value, error) -> {
-
-            if (error == null) {
-
-                ProductModel.myproductsModels.clear();
-                if (value != null && !value.isEmpty()) {
-                    for (DocumentSnapshot documentSnapshot : value.getDocuments()) {
-                        ProductModel productModel = documentSnapshot.toObject(ProductModel.class);
-                        ProductModel.myproductsModels.add(productModel);
-                    }
-                    Collections.reverse(ProductModel.myproductsModels);
-                }
-
-                gigFragment.notifyAdapter();
-
-            }
-            else {
-                Services.showDialog(MainActivity.this,"ERROR",error.getLocalizedMessage());
-            }
-
-        });
-    }
 
 
     public void getLatestProduct() {
-        FirebaseFirestore.getInstance().collection("Products").orderBy("date").limitToLast(100).addSnapshotListener(MetadataChanges.INCLUDE,new EventListener<QuerySnapshot>() {
+        FirebaseFirestore.getInstance().collection("Products").orderBy("date", Query.Direction.DESCENDING).limitToLast(999).addSnapshotListener(MetadataChanges.INCLUDE,new EventListener<QuerySnapshot>() {
             @Override
             public void onEvent(@Nullable QuerySnapshot value, @Nullable FirebaseFirestoreException error) {
                 ProgressHud.dialog.dismiss();
@@ -173,11 +159,33 @@ public class MainActivity extends AppCompatActivity implements Function1<MeowBot
                             ProductModel productModel = documentSnapshot.toObject(ProductModel.class);
                             ProductModel.latestproductModels.add(productModel);
                         }
-                        Collections.reverse(ProductModel.latestproductModels);
+
                     }
 
+                    ArrayList<ProductModel> featuredModels = new ArrayList<>();
 
-                   homeFragment.notifyProductAdapter();
+                    int y = 0;
+
+
+                    for(y = 0 ; y < ProductModel.latestproductModels.size() ; y++) {
+                        if (Services.isPromoting(ProductModel.latestproductModels.get(y).adLastDate)) {
+                            featuredModels.add(ProductModel.latestproductModels.get(y));
+                            ProductModel.latestproductModels.remove(y);
+
+                        }
+                    }
+
+                    Collections.shuffle(featuredModels);
+                    int x = 0;
+                    for (ProductModel featuredModel : featuredModels) {
+                        if (x >= 2) {
+                            break;
+                        }
+                        ProductModel.latestproductModels.add(x,featuredModel);
+                        x = x +1;
+
+                    }
+                    homeFragment.notifyProductAdapter();
                 }
                 else {
                     Services.showDialog(MainActivity.this,"ERROR",error.getLocalizedMessage());
@@ -208,7 +216,9 @@ public class MainActivity extends AppCompatActivity implements Function1<MeowBot
                     }
 
                     homeFragment.notifyAdapter();
-                    postFragment.notifyAdapter();
+                    if (postFragment != null)
+                          postFragment.notifyAdapter();
+
                 }
                 else {
                     Services.showDialog(MainActivity.this,"ERROR",error.getLocalizedMessage());
@@ -243,16 +253,62 @@ public class MainActivity extends AppCompatActivity implements Function1<MeowBot
         });
     }
 
-    private void setupViewPager(ViewPager viewPager) {
-        ViewPagerAdapter adapter = new ViewPagerAdapter(getSupportFragmentManager());
-        adapter.addFrag(new HomeFragment(this));
-        adapter.addFrag(new ChatFragment(this));
-        adapter.addFrag(new PostFragment(this));
-        adapter.addFrag(new GigFragment(this));
-        adapter.addFrag(new AccountFragment(this));
-        viewPager.setAdapter(adapter);
+    public void getMyProduct() {
+        FirebaseFirestore.getInstance().collection("Products").orderBy("date").whereEqualTo("uid", FirebaseAuth.getInstance().getCurrentUser().getUid()).addSnapshotListener(MetadataChanges.INCLUDE, (value, error) -> {
+
+            if (error == null) {
+
+                ProductModel.myproductsModels.clear();
+                if (value != null && !value.isEmpty()) {
+                    for (DocumentSnapshot documentSnapshot : value.getDocuments()) {
+                        ProductModel productModel = documentSnapshot.toObject(ProductModel.class);
+                        ProductModel.myproductsModels.add(productModel);
+                    }
+                    Collections.reverse(ProductModel.myproductsModels);
+                }
+
+                gigFragment.notifyAdapter();
+
+            }
+            else {
+                Services.showDialog(MainActivity.this,"ERROR",error.getLocalizedMessage());
+            }
+
+        });
     }
 
+
+
+    private void setupViewPager(ViewPager viewPager) {
+
+        viewPagerAdapter = new ViewPagerAdapter(getSupportFragmentManager());
+        viewPagerAdapter.addFrag(new HomeFragment(this));
+        viewPagerAdapter.addFrag(new ChatFragment(this));
+        if (UserModel.data.isSeller()){
+
+            viewPagerAdapter.addFrag(new PostFragment(this));
+        }
+
+        else {
+
+            viewPagerAdapter.addFrag(new SellerStoreInformation(this));
+
+        }
+
+        viewPagerAdapter.addFrag(new GigFragment(this));
+        viewPagerAdapter.addFrag(new AccountFragment(this));
+
+        viewPager.setAdapter(viewPagerAdapter);
+
+    }
+
+
+
+
+    public void notifyPagerAdapter() {
+        viewPagerAdapter.notifyDataSetChanged();
+        viewPager.setCurrentItem(2);
+    }
 
 
     @Override
@@ -260,7 +316,7 @@ public class MainActivity extends AppCompatActivity implements Function1<MeowBot
         viewPager.setCurrentItem(model.getId());
         return null;
     }
-    static class ViewPagerAdapter extends FragmentPagerAdapter {
+   class ViewPagerAdapter extends FragmentStatePagerAdapter {
         private final List<Fragment> mFragmentList = new ArrayList<>();
 
         public ViewPagerAdapter(FragmentManager manager) {
@@ -269,11 +325,24 @@ public class MainActivity extends AppCompatActivity implements Function1<MeowBot
 
         @Override
         public Fragment getItem(int position) {
+            if (position == 2) {
+                if (UserModel.data.isSeller())  {
+                    return new PostFragment(MainActivity.this);
+                }
+                else {
+                    return new SellerStoreInformation(MainActivity.this);
+                }
+            }
 
             return mFragmentList.get(position);
         }
 
-        @Override
+       @Override
+       public int getItemPosition(@NonNull @NotNull Object object) {
+            return POSITION_NONE;
+       }
+
+       @Override
         public int getCount() {
 
             return mFragmentList.size();
@@ -288,8 +357,29 @@ public class MainActivity extends AppCompatActivity implements Function1<MeowBot
     }
 
 
+    public void initializeHomeFragment(HomeFragment homeFragment){
+        this.homeFragment = homeFragment;
+        //getLatestProductData
+        getLatestProduct();
+        getCategotyData();
+    }
 
 
+
+    public void initializeChatFragment(ChatFragment chatFragment){
+        this.chatFragment = chatFragment;
+        getLastMessageData();
+    }
+
+    public void initializePostFragment(PostFragment postFragment){
+        this.postFragment = postFragment;
+        //getCategoryData
+        getCategotyData();
+    }
+
+    public void initializeSellerFragment(SellerStoreInformation sellerStoreInformation) {
+        this.sellerStoreInformation = sellerStoreInformation;
+    }
 
     public void initializeGigFragment(GigFragment gigFragment) {
         this.gigFragment = gigFragment;
@@ -297,29 +387,16 @@ public class MainActivity extends AppCompatActivity implements Function1<MeowBot
         //myProductData
         getMyProduct();
 
-        //getCategoryData
-        getCategotyData();
+
 
     }
 
 
-    public void initializeHomeFragment(HomeFragment homeFragment){
-        this.homeFragment = homeFragment;
-        //getLatestProductData
-        getLatestProduct();
+
+    public void changeBottomBarPossition(int id) {
+        viewPager.setCurrentItem(id);
+        meowBottomNavigation.show(id,true);
     }
-
-    public void initializePostFragment(PostFragment postFragment){
-        this.postFragment = postFragment;
-    }
-
-    public void initializeChatFragment(ChatFragment chatFragment){
-        this.chatFragment = chatFragment;
-        getLastMessageData();
-    }
-
-
-
 
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
@@ -329,18 +406,18 @@ public class MainActivity extends AppCompatActivity implements Function1<MeowBot
             CropImage.ActivityResult result = CropImage.getActivityResult(data);
 
             if (resultCode == RESULT_OK) {
-                postFragment.cropUri(result.getUri());
-
+                if (UserModel.data.isSeller())
+                   postFragment.cropUri(result.getUriContent());
+                else
+                    sellerStoreInformation.cropUrl(result.getUriContent());
             }
         }
 
 
     }
 
-    public void changeBottomBarPossition(int id) {
-        viewPager.setCurrentItem(id);
-        meowBottomNavigation.show(id,true);
-    }
+
+
 
 }
 

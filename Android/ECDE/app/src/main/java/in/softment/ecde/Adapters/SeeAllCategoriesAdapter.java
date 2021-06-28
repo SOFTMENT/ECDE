@@ -21,6 +21,7 @@ import java.util.ArrayList;
 import in.softment.ecde.Models.CategoryModel;
 import in.softment.ecde.Models.MyLanguage;
 import in.softment.ecde.R;
+import in.softment.ecde.SeeAllSubcategoryActivity;
 import in.softment.ecde.SingleCategoryActivity;
 
 public class SeeAllCategoriesAdapter extends RecyclerView.Adapter<SeeAllCategoriesAdapter.ViewHolder> {
@@ -53,7 +54,7 @@ public class SeeAllCategoriesAdapter extends RecyclerView.Adapter<SeeAllCategori
         holder.view.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent intent = new Intent(context, SingleCategoryActivity.class);
+                Intent intent = new Intent(context, SeeAllSubcategoryActivity.class);
                 intent.putExtra("cat_id",categoryModel.id);
 
                 if (MyLanguage.lang.equalsIgnoreCase("pt"))

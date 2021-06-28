@@ -21,6 +21,7 @@ import java.util.ArrayList;
 import in.softment.ecde.Models.CategoryModel;
 import in.softment.ecde.Models.MyLanguage;
 import in.softment.ecde.R;
+import in.softment.ecde.SeeAllSubcategoryActivity;
 import in.softment.ecde.SingleCategoryActivity;
 
 public class CategoriesAdaper  extends RecyclerView.Adapter<CategoriesAdaper.ViewHolder> {
@@ -44,7 +45,7 @@ public class CategoriesAdaper  extends RecyclerView.Adapter<CategoriesAdaper.Vie
 
         CategoryModel categoryModel = categoryModels.get(position);
         //holder.cat_image_rr.setBackground(categories_back_view.get(position % categories_back_view.size()));
-        Glide.with(context).load(categoryModel.image).diskCacheStrategy(DiskCacheStrategy.DATA).placeholder(R.drawable.placeholder_icon).into(holder.cat_image);
+        Glide.with(context).load(categoryModel.image).diskCacheStrategy(DiskCacheStrategy.DATA).placeholder(R.drawable.category_placeholder).into(holder.cat_image);
         if (MyLanguage.lang.equalsIgnoreCase("pt"))
            holder.cat_title.setText(categoryModel.getTitle_pt());
         else
@@ -53,13 +54,13 @@ public class CategoriesAdaper  extends RecyclerView.Adapter<CategoriesAdaper.Vie
         holder.view.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent intent = new Intent(context, SingleCategoryActivity.class);
+                Intent intent = new Intent(context, SeeAllSubcategoryActivity.class);
                 intent.putExtra("cat_id",categoryModel.id);
+
                 if (MyLanguage.lang.equalsIgnoreCase("pt"))
                     intent.putExtra("cat_name",categoryModel.getTitle_pt());
                 else
                     intent.putExtra("cat_name",categoryModel.getTitle_en());
-
                 context.startActivity(intent);
             }
         });

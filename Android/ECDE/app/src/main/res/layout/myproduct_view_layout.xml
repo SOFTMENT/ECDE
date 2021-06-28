@@ -1,14 +1,15 @@
 <?xml version="1.0" encoding="utf-8"?>
 <androidx.cardview.widget.CardView android:layout_width="match_parent"
-    android:layout_height="84dp"
+    android:layout_height="120dp"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     app:cardCornerRadius="6dp"
     android:layout_margin="4dp"
     xmlns:android="http://schemas.android.com/apk/res/android">
+
 <RelativeLayout
     android:background="@drawable/transparent_back"
     android:layout_width="match_parent"
-    android:layout_height="84dp">
+    android:layout_height="120dp">
 <com.makeramen.roundedimageview.RoundedImageView
     android:padding="4dp"
     android:background="@drawable/transparent_back"
@@ -22,28 +23,36 @@
     android:id="@+id/image"
     />
 
-    <TextView
-        android:id="@+id/title"
-        android:layout_marginEnd="16dp"
+    <LinearLayout
+        android:weightSum="4"
+        android:orientation="vertical"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_toEndOf="@+id/image"
+        android:layout_marginEnd="16dp"
         android:layout_marginStart="16dp"
+        android:layout_toEndOf="@+id/image"
         android:layout_alignTop="@id/image"
-        android:text="Oppo Mobile 64 GB Good Condition"
+        android:layout_alignBottom="@+id/image"
+        >
+
+    <TextView
+        android:layout_weight="1"
+        android:id="@+id/title"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+       android:text="Oppo Mobile 64 GB Good Condition"
         android:fontFamily="@font/sfprosemibold"
         android:textSize="12sp"
         android:textColor="#414141"
         android:lines="1"
         />
+
+
     <LinearLayout
+        android:layout_weight="1"
         android:id="@+id/llcategory"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-       android:layout_centerVertical="true"
-        android:layout_toEndOf="@+id/image"
-        android:layout_marginStart="16dp"
-        android:layout_marginEnd="16dp"
         android:orientation="horizontal"
         android:gravity="center_vertical"
         >
@@ -63,13 +72,11 @@
             />
     </LinearLayout>
     <LinearLayout
-       android:layout_alignBottom="@+id/image"
+         android:layout_weight="1"
         android:id="@+id/lldate"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_toEndOf="@+id/image"
-        android:layout_marginStart="16dp"
-        android:layout_marginEnd="16dp"
+
         android:orientation="horizontal"
         android:gravity="center_vertical"
         >
@@ -88,6 +95,40 @@
             android:layout_marginStart="6dp"
             />
     </LinearLayout>
+        <LinearLayout
+            android:layout_weight="1"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+
+            android:orientation="horizontal"
+            android:gravity="center_vertical"
+            >
+            <ImageView
+                android:layout_width="16dp"
+                android:layout_height="16dp"
+                android:src="@drawable/statistics"
+                />
+            <TextView
+                android:id="@+id/promote"
+                android:layout_marginTop="2dp"
+                android:paddingTop="2dp"
+                android:paddingBottom="2dp"
+                android:textColor="@color/white"
+                android:paddingStart="6dp"
+                android:paddingEnd="6dp"
+                android:background="@drawable/promote_btn_bg"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/promote"
+                android:fontFamily="@font/sfprosemibold2"
+                android:textSize="11sp"
+                android:layout_marginStart="6dp"
+                />
+        </LinearLayout>
+    </LinearLayout>
+
+
+
     <TextView
         android:textColor="@color/currency_color"
         android:id="@+id/price"
