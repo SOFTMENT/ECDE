@@ -126,11 +126,14 @@
                 />
         </LinearLayout>
 
+
+
+
         <androidx.appcompat.widget.AppCompatButton
             android:id="@+id/login"
             android:layout_width="match_parent"
             android:layout_height="40dp"
-            android:layout_marginTop="40dp"
+            android:layout_marginTop="24dp"
             android:background="@drawable/transparent_back"
             android:backgroundTint="@color/marsala"
             android:fontFamily="@font/sfpromedium2"
@@ -138,6 +141,43 @@
             android:textColor="#fff"
             android:textSize="12sp" />
 
+
+        <TextView
+          android:layout_margin="16dp"
+
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="OR"
+            android:fontFamily="@font/sfpromedium2"
+            android:textSize="13sp"
+
+            />
+
+        <androidx.cardview.widget.CardView
+            app:cardCornerRadius="4dp"
+            android:layout_margin="2dp"
+            android:layout_width="match_parent"
+            android:layout_height="40dp"
+            android:id="@+id/google_sign_in"
+            app:cardElevation="2dp"
+            >
+            <ImageView
+                android:layout_width="22dp"
+                android:layout_height="22dp"
+                android:layout_gravity="center_vertical"
+                android:layout_marginStart="16dp"
+                android:src="@drawable/search"
+                />
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:fontFamily="@font/sfpromedium2"
+            android:text="@string/login_with_google"
+            android:layout_gravity="center"
+            android:textSize="12sp"
+
+            />
+        </androidx.cardview.widget.CardView>
         <TextView
             android:lineSpacingExtra="1dp"
             android:textAlignment="center"

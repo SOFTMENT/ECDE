@@ -63,7 +63,7 @@ public class UserModel {
         this.storeAbout = storeAbout;
     }
 
-    public static UserModel data;
+    public static UserModel data  = new UserModel();
 
 
     public boolean isSeller() {

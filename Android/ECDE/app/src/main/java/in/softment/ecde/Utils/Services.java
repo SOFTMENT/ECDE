@@ -5,6 +5,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
+import android.content.res.Configuration;
 import android.graphics.Shader;
 import android.util.Log;
 import android.view.Gravity;
@@ -52,6 +53,7 @@ import java.util.Map;
 import in.softment.ecde.ChatScreenActivity;
 import in.softment.ecde.CreateNewAccount;
 import in.softment.ecde.MainActivity;
+import in.softment.ecde.Models.MyLanguage;
 import in.softment.ecde.Models.ProductModel;
 import in.softment.ecde.Models.UserModel;
 import in.softment.ecde.R;
@@ -62,6 +64,93 @@ import in.softment.ecde.ViewProductActivity;
 import static android.content.Context.MODE_PRIVATE;
 
 public class Services {
+
+    public static void handleFirebaseERROR(Context context, String errorCode){
+        switch (errorCode) {
+
+            case "ERROR_INVALID_CUSTOM_TOKEN":
+                Services.showDialog(context,context.getString(R.string.error),context.getString(R.string.token_format_incorrect));
+                break;
+
+       
+            case "ERROR_INVALID_CREDENTIAL":
+                Services.showDialog(context,context.getString(R.string.error),context.getString(R.string.supploed_auth_credntial_malformed));
+
+                break;
+
+            case "ERROR_INVALID_EMAIL":
+                Services.showDialog(context,context.getString(R.string.error),context.getString(R.string.email_address_is_badly));
+                break;
+
+            case "ERROR_WRONG_PASSWORD":
+                Services.showDialog(context,context.getString(R.string.error),context.getString(R.string.password_is_invalid));
+
+                break;
+
+            case "ERROR_USER_MISMATCH":
+                Services.showDialog(context,context.getString(R.string.error),context.getString(R.string.previously_singed_in_user));
+
+                break;
+
+            case "ERROR_REQUIRES_RECENT_LOGIN":
+                Services.showDialog(context,context.getString(R.string.error),context.getString(R.string.login_again_before_retrying));
+                break;
+
+            case "ERROR_ACCOUNT_EXISTS_WITH_DIFFERENT_CREDENTIAL":
+                Services.showDialog(context,context.getString(R.string.error),context.getString(R.string.account_already_exist));
+                break;
+
+            case "ERROR_EMAIL_ALREADY_IN_USE":
+                Services.showDialog(context,context.getString(R.string.error),context.getString(R.string.email_already_in_use_another_account));
+                break;
+
+            case "ERROR_CREDENTIAL_ALREADY_IN_USE":
+                Services.showDialog(context,context.getString(R.string.error),context.getString(R.string.credential_already_associated));
+
+                break;
+
+            case "ERROR_USER_DISABLED":
+                Services.showDialog(context,context.getString(R.string.error),context.getString(R.string.account_has_been_disabled));
+
+                break;
+
+            case "ERROR_USER_TOKEN_EXPIRED":
+                Services.showDialog(context,context.getString(R.string.error),context.getString(R.string.credential_is_no_longer_valid));
+                break;
+
+            case "ERROR_USER_NOT_FOUND":
+                Services.showDialog(context,context.getString(R.string.error),context.getString(R.string.no_record_corresponding));
+                break;
+
+            case "ERROR_INVALID_USER_TOKEN":
+                Services.showDialog(context,context.getString(R.string.error),context.getString(R.string.credential_is_no_longer_valid));
+
+                break;
+
+           
+            case "ERROR_WEAK_PASSWORD":
+                Services.showDialog(context,context.getString(R.string.error),context.getString(R.string.given_passoword_invalid));
+                break;
+
+        }
+
+    }
+
+    public static void loadLocale(Context context){
+        SharedPreferences sharedPreferences = context.getSharedPreferences("lang",MODE_PRIVATE);
+        String code = sharedPreferences.getString("mylang","pt");
+        MyLanguage.lang = code;
+        setLocale(context,code);
+    }
+
+    private static  void setLocale(Context context,String code){
+        Locale locale = new Locale(code);
+        Locale.setDefault(locale);
+        Configuration configuration = new Configuration();
+        configuration.locale = locale;
+        context.getResources().updateConfiguration(configuration,context.getResources().getDisplayMetrics());
+
+    }
 
     public static  String inputStreamToString(InputStream inputStream) {
         try {
@@ -195,10 +284,15 @@ public class Services {
         if (str.isEmpty()){
             return "";
         }
-        String[] names = str.split(" ");
+        String[] names = str.trim().split(" ");
         str = "";
         for (String name : names) {
-            str += name.substring(0, 1).toUpperCase() + name.substring(1).toLowerCase() + " ";
+            try {
+                str += name.substring(0, 1).toUpperCase() + name.substring(1).toLowerCase() + " ";
+            }
+            catch (Exception e){
+
+            }
         }
      return str;
     }
@@ -256,9 +350,11 @@ public class Services {
 
     public static void getCurrentUserData(Context context,String uid) {
 
+        ProgressHud.show(context,"");
         FirebaseFirestore.getInstance().collection("User").document(uid).get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
             @Override
             public void onComplete(@NonNull Task<DocumentSnapshot> task) {
+
                 try {
                     ProgressHud.dialog.dismiss();
                 }
@@ -266,6 +362,7 @@ public class Services {
 
                 }
 
+                ProgressHud.dialog.dismiss();
                 if (task.isSuccessful()) {
                     DocumentSnapshot documentSnapshot = task.getResult();
                     if (documentSnapshot != null && documentSnapshot.exists()) {

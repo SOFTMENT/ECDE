@@ -41,6 +41,7 @@ import org.w3c.dom.Text;
 
 import java.util.ArrayList;
 
+import de.hdodenhof.circleimageview.CircleImageView;
 import in.softment.ecde.Adapters.MyHeaderPagerAdapter;
 import in.softment.ecde.Models.CategoryModel;
 import in.softment.ecde.Models.ProductModel;
@@ -70,6 +71,7 @@ public class ViewProductActivity extends AppCompatActivity {
 
         //MOREACTION
         more = findViewById(R.id.more);
+
         if (!UserModel.data.emailAddress.equalsIgnoreCase("ecde.app@gmail.com")){
             more.setVisibility(View.VISIBLE);
 
@@ -110,6 +112,11 @@ public class ViewProductActivity extends AppCompatActivity {
         TextView deliveryDay = findViewById(R.id.deliveryDays);
         TextView condition = findViewById(R.id.condition);
         TextView quantity = findViewById(R.id.quantity);
+        CircleImageView storeImage = findViewById(R.id.storeImage);
+        if (productModel.getStoreImage() != null && !productModel.getStoreImage().isEmpty()) {
+            Glide.with(this).load(productModel.getStoreImage()).placeholder(R.drawable.placeholder).into(storeImage);
+        }
+
 
         title.setText(Services.toUpperCase(productModel.title));
         category.setText(CategoryModel.getCategoryNameById(productModel.getCat_id()));
@@ -276,7 +283,7 @@ public class ViewProductActivity extends AppCompatActivity {
     public void gotoChatScreen(){
         Intent intent = new Intent(ViewProductActivity.this, ChatScreenActivity.class);
         intent.putExtra("sellerId",productModel.getUid());
-        intent.putExtra("sellerImage",productModel.getSellerImage());
+        intent.putExtra("sellerImage",productModel.getStoreImage());
         intent.putExtra("sellerName",productModel.getSellerName());
         intent.putExtra("sellerToken",productModel.getSellerToken());
         startActivity(intent);

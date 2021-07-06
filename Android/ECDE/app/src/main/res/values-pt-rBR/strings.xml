@@ -1,9 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources xmlns:tools="http://schemas.android.com/tools">
     <string name="app_name">ECDE</string>
-
     <string name="create_account">Criar Conta</string>
-    <string name="already_have_an_account">Já tem uma conta /&#160; </string>
+    <string name="already_have_an_account">Já possui uma conta /&#160; </string>
     <string name="sign_in">Entrar</string>
     <string name="tap_to_change">Toque para mudar</string>
     <string name="full_name">Nome completo</string>
@@ -13,17 +12,17 @@
     <string name="edit_product">Editar Produto</string>
     <string name="product_description">Descrição do produto</string>
     <string name="give_your_product_a_short_and_clear_title">Dê ao seu produto um título curto e claro.</string>
-    <string name="give_your_product_a_short_and_clear_description">Dê ao seu produto uma descrição curta e clara.</string>
-    <string name="product_price">Preço do produto</string>
-    <string name="choose_product_image">Escolha a imagem do produto</string>
+    <string name="give_your_product_a_short_and_clear_description">Dê ao seu produto uma descrição curta e clara. </string>
+    <string name="product_price">Preço do produto (R$)</string>
+    <string name="choose_product_image">Escolha a imagem do produto </string>
     <string name="update_product">ATUALIZAR PRODUTO</string>
     <string name="all_categories">todas as categorias</string>
     <string name="welcome_to_ecde">Bem-vindo ao ECDE</string>
     <string name="sell_within_the_app_make_offers_and_nbuy_from_people_you_trust">Venda dentro do aplicativo, faça ofertas e\ncompre de pessoas em quem você confia</string>
-    <string name="if_you_are_new">Se você é novo /&#160; </string>
-    <string name="create_new">Crie um novo</string>
+    <string name="if_you_are_new">Novo usuário /&#160; </string>
+    <string name="create_new">Crie um Perfil</string>
     <string name="forgot_password">Esqueceu a senha /&#160; </string>
-    <string name="reset">Redefinir</string>
+    <string name="reset">Redefinir a senha</string>
     <string name="login">CONECTE-SE</string>
     <string name="by_clicking_on_login_you_are_accepting_our_nterms_amp_conditions"><![CDATA[Ao clicar em login, você está aceitando nosso\ntermos e Condições]]></string>
     <string name="search_for_items">Pesquise por itens</string>
@@ -45,7 +44,7 @@
     <string name="others">Outras</string>
     <string name="contact_us">Contate-Nos</string>
     <string name="rate_us">Nos avalie</string>
-    <string name="english">English</string>
+    <string name="english">inglês </string>
     <string name="inbox">Caixa de entrada</string>
     <string name="unread">Não lida</string>
     <string name="read">Leitura</string>
@@ -59,7 +58,7 @@
     <string name="product_title">Título do Produto</string>
     <string name="choose_category">Escolher categoria</string>
     <string name="add_product">ADICIONE PRODUTO</string>
-    <string name="waiting">Espera…</string>
+    <string name="waiting">Aguardando…</string>
     <string name="report_user">Reportar usuário</string>
     <string name="enter_reason">Insira o motivo</string>
     <string name="reported">DENUNCIADA</string>
@@ -80,17 +79,17 @@
     <string name="admob_interstitial_ads_unit">ca-app-pub-4469098252692270/8560780362</string>
     <string name="title_activity_see_all_subcategory">SeeAllSubcategoryActivity</string>
 
-    <string name="verify_your_email">VERIFY YOUR EMAIL</string>
-    <string name="updated">UPDATED</string>
-    <string name="we_have_sent_verification_link">We have sent verification link on your mail address.</string>
-    <string name="your_record_deleted">You record has been deleted.</string>
-    <string name="creating_account">Creating Account…</string>
-    <string name="enter_password">Enter Password</string>
-    <string name="enter_email_address">Enter Email Address</string>
-    <string name="enter_full_name">Enter Full Name</string>
-    <string name="select_picture">Select Picture</string>
-    <string name="choose_profile_pic">Choose Profile Pic</string>
-    <string name="loading">Loading…</string>
+    <string name="verify_your_email">VERIFIQUE SEU E-MAIL </string>
+    <string name="updated">ATUALIZADA</string>
+    <string name="we_have_sent_verification_link">Enviamos um link de verificação em seu endereço de e-mail.</string>
+    <string name="your_record_deleted">Seu registro foi excluído.</string>
+    <string name="creating_account">Criando conta…</string>
+    <string name="enter_password">Digite a senha</string>
+    <string name="enter_email_address">Insira o endereço de e-mail</string>
+    <string name="enter_full_name">Digite o nome completo</string>
+    <string name="select_picture">Selecione a foto</string>
+    <string name="choose_profile_pic">Escolha a foto do perfil</string>
+    <string name="loading">Carregando…</string>
 
 
 
@@ -98,8 +97,8 @@
 
     <!-- Strings used for fragments for navigation -->
 
-    <string name="next">Próxima</string>
-    <string name="previous">Previous</string>
+    <string name="next">Próximo</string>
+    <string name="previous">Anterior</string>
 
 
     <string name="choose_subcategory">Escolha a subcategoria</string>
@@ -113,16 +112,16 @@
     <string name="promote">Promover</string>
     <string name="all">Tudo</string>
     <string name="featured_Ad_for_30_days">Anúncio em destaque por 30 dias</string>
-    <string name="pay_25_r">Pague R $ 25</string>
+    <string name="pay_25_r">Pague R$ 25</string>
     <string name="featured_ad_for_7_days">Anúncio em destaque por 7 dias</string>
-    <string name="pay_10_r">Pague 10 R $</string>
+    <string name="pay_10_r">Pague 10 R$</string>
     <string name="new_word">Nova</string>
     <string name="used">Usava</string>
     <string name="day1">1 dia</string>
     <string name="days">Dias</string>
     <string name="add_subcategory">Adicionar Subcategoria</string>
-    <string name="edit_category">Edit Category</string>
-    <string name="edit_subcategory">Editar Categoria</string>
+    <string name="edit_category">Editar Categoria</string>
+    <string name="edit_subcategory">Editar Subcategoria</string>
     <string name="subcategories">Subcategorias</string>
     <string name="search_by_title_city_name">Pesquise por título, nome da cidade</string>
     <string name="featured_ad">Anúncio em Destaque</string>
@@ -138,15 +137,15 @@
     <string name="how_can_we_improve_ecde_platform_feeback">Como podemos melhorar a plataforma ECDE? / Feeback</string>
     <string name="delivered_within">Entregue em</string>
     <string name="charge">| Cobrar</string>
-    <string name="condition">Doença</string>
+    <string name="condition">Produto</string>
     <string name="quantity">| Quantidade</string>
     <string name="search_for_user">Pesquisar por usuário</string>
     <string name="quant">Quantidade</string>
     <string name="product_price_r">Preço do produto (R$)</string>
     <string name="product_is_new_or_used">O produto é novo ou usado?</string>
-    <string name="will_you_deliver_this_product">Você vai entregar este produto?</string>
+    <string name="will_you_deliver_this_product">Você entrega este produto?</string>
     <string name="no">Não</string>
-    <string name="delivery_charge_r">Taxa de entrega (R $)</string>
+    <string name="delivery_charge_r">Taxa de entrega (R$)</string>
     <string name="max_delivery_days">Máximo de dias de entrega</string>
     <string name="can_you_deliver_on_the_same_day">Você pode entregar no mesmo dia?</string>
     <string name="setup_store_profile">Configurar Perfil da Loja</string>
@@ -161,4 +160,22 @@
     <string name="city">Cidade</string>
     <string name="report">Relatório</string>
     <string name="pay_5_r">Pague 5 R$</string>
+    <string name="donate_us_so_we_can_improve_our_ecde_platform">Doe-nos para que possamos melhorar nossa plataforma ECDE</string>
+    <string name="amount_r">Resultar (R$)</string>
+    <string name="contact_seller">Contato</string>
+    <string name="login_with_google">Faça login com o Google</string>
+
+    <string name="token_format_incorrect">The custom token format is incorrect. Please check the documentation.</string>
+    <string name="supploed_auth_credntial_malformed">The supplied auth credential is malformed or has expired.</string>
+    <string name="email_address_is_badly">The email address is badly formatted.</string>
+    <string name="password_is_invalid">The password is invalid or the user does not have a password.</string>
+    <string name="previously_singed_in_user">The supplied credentials do not correspond to the previously signed in user.</string>
+    <string name="login_again_before_retrying">This operation is sensitive and requires recent authentication. Log in again before retrying this request.</string>
+    <string name="account_already_exist">An account already exists with the same email address but different sign-in credentials. Sign in using a provider associated with this email address.</string>
+    <string name="email_already_in_use_another_account">The email address is already in use by another account.</string>
+    <string name="credential_already_associated">This credential is already associated with a different user account.</string>
+    <string name="account_has_been_disabled">The user account has been disabled by an administrator.</string>
+    <string name="credential_is_no_longer_valid">The user\\\'s credential is no longer valid. The user must sign in again.</string>
+    <string name="no_record_corresponding">There is no user record corresponding to this identifier. The user may have been deleted.</string>
+    <string name="given_passoword_invalid">The given password is invalid.</string>
 </resources>

@@ -81,6 +81,7 @@ public class ProductAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder
             productViewHolder.productPrice.setText("R$"+productModel.price);
 
             productViewHolder.view.setOnClickListener(view -> {
+
                 Intent intent = new Intent(context, ViewProductActivity.class);
                 intent.putExtra("product",productModel);
                 context.startActivity(intent);

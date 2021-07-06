@@ -12,9 +12,10 @@
 <ImageView
     android:id="@+id/img_head"
     android:layout_width="match_parent"
-    android:layout_height="220dp"
-    android:src="@drawable/onlineshop"
-    />
+    android:layout_height="240dp"
+    android:src="@drawable/ecommercedev"
+   />
+
 
     <TextView
         android:layout_marginStart="16dp"

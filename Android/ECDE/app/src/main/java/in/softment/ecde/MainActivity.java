@@ -15,6 +15,8 @@ import androidx.viewpager2.adapter.FragmentStateAdapter;
 import android.Manifest;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.IntentSender;
+import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
 import android.graphics.drawable.Drawable;
@@ -26,6 +28,7 @@ import android.view.View;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
+import android.widget.RelativeLayout;
 import android.widget.Toast;
 
 
@@ -34,6 +37,14 @@ import com.google.android.gms.ads.MobileAds;
 import com.google.android.gms.ads.RequestConfiguration;
 import com.google.android.gms.ads.initialization.InitializationStatus;
 import com.google.android.gms.ads.initialization.OnInitializationCompleteListener;
+import com.google.android.material.snackbar.Snackbar;
+import com.google.android.play.core.appupdate.AppUpdateManager;
+import com.google.android.play.core.appupdate.AppUpdateManagerFactory;
+import com.google.android.play.core.install.InstallState;
+import com.google.android.play.core.install.InstallStateUpdatedListener;
+import com.google.android.play.core.install.model.AppUpdateType;
+import com.google.android.play.core.install.model.InstallStatus;
+import com.google.android.play.core.install.model.UpdateAvailability;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.crashlytics.FirebaseCrashlytics;
 import com.google.firebase.firestore.DocumentSnapshot;
@@ -56,6 +67,7 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 import java.util.Random;
 import java.util.function.Function;
 
@@ -69,6 +81,7 @@ import in.softment.ecde.Models.CategoryModel;
 import in.softment.ecde.Models.LastMessageModel;
 import in.softment.ecde.Models.MyLanguage;
 import in.softment.ecde.Models.ProductModel;
+import in.softment.ecde.Models.UpdateType;
 import in.softment.ecde.Models.UserModel;
 import in.softment.ecde.Utils.MyFirebaseMessagingService;
 import in.softment.ecde.Utils.NewCode;
@@ -89,10 +102,15 @@ public class MainActivity extends AppCompatActivity implements Function1<MeowBot
     public SellerStoreInformation sellerStoreInformation;
     private ViewPagerAdapter viewPagerAdapter;
 
+    private AppUpdateManager mAppUpdateManager;
+    private static final int RC_APP_UPDATE = 11;
+    int updateCode = AppUpdateType.FLEXIBLE;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+
 
 
 
@@ -105,6 +123,13 @@ public class MainActivity extends AppCompatActivity implements Function1<MeowBot
                 MobileAds.setRequestConfiguration(configuration);
             }
         });
+
+
+
+
+        mAppUpdateManager = AppUpdateManagerFactory.create(this);
+        mAppUpdateManager.registerListener(installStateUpdatedListener);
+        checkForUpdate();
 
         //UpdateToken
         updateToken();
@@ -135,6 +160,66 @@ public class MainActivity extends AppCompatActivity implements Function1<MeowBot
 
 
     }
+
+
+
+    public void checkForUpdate(){
+        FirebaseFirestore.getInstance().collection("UpdateType").document("status").addSnapshotListener(new EventListener<DocumentSnapshot>() {
+            @Override
+            public void onEvent(@Nullable @org.jetbrains.annotations.Nullable DocumentSnapshot value, @Nullable @org.jetbrains.annotations.Nullable FirebaseFirestoreException error) {
+
+                    if (error == null){
+                        if (value != null && value.exists()){
+                            UpdateType updateType = value.toObject(UpdateType.class);
+                            Log.d("VIJAYCODE", Objects.requireNonNull(updateType).updateCode+" WAAH VIJAY");
+                            updateCode = updateType.updateCode;
+                        }
+                    }
+
+                mAppUpdateManager.getAppUpdateInfo().addOnSuccessListener(appUpdateInfo -> {
+
+                    if (appUpdateInfo.updateAvailability() == UpdateAvailability.UPDATE_AVAILABLE
+                            && appUpdateInfo.isUpdateTypeAllowed(updateCode)){
+
+                        try {
+                            mAppUpdateManager.startUpdateFlowForResult(
+                                    appUpdateInfo, updateCode , MainActivity.this, RC_APP_UPDATE);
+
+                        } catch (IntentSender.SendIntentException e) {
+                            e.printStackTrace();
+                        }
+
+                    } else if (appUpdateInfo.installStatus() == InstallStatus.DOWNLOADED){
+                        //CHECK THIS if AppUpdateType.FLEXIBLE, otherwise you can skip
+
+                        popupSnackbarForCompleteUpdate();
+                    } else {
+                        Log.e("ECDE", "checkForAppUpdateAvailability: something else");
+                    }
+                });
+            }
+        });
+
+
+    }
+
+    InstallStateUpdatedListener installStateUpdatedListener = new
+            InstallStateUpdatedListener() {
+                @Override
+                public void onStateUpdate(InstallState state) {
+                    if (state.installStatus() == InstallStatus.DOWNLOADED){
+                        //CHECK THIS if AppUpdateType.FLEXIBLE, otherwise you can skip
+                        popupSnackbarForCompleteUpdate();
+                    } else if (state.installStatus() == InstallStatus.INSTALLED){
+                        if (mAppUpdateManager != null){
+                            mAppUpdateManager.unregisterListener(installStateUpdatedListener);
+                        }
+
+                    } else {
+                        Log.i("ECDE", "InstallStateUpdatedListener: state: " + state.installStatus());
+                    }
+                }
+            };
 
     public void updateToken(){
 
@@ -412,13 +497,57 @@ public class MainActivity extends AppCompatActivity implements Function1<MeowBot
                     sellerStoreInformation.cropUrl(result.getUriContent());
             }
         }
+        else if (requestCode == RC_APP_UPDATE) {
+            if (resultCode != RESULT_OK) {
+                Log.e("ECDE", "onActivityResult: app download failed");
+            }
+        }
 
 
     }
 
+    private void popupSnackbarForCompleteUpdate() {
 
+        Snackbar snackbar =
+                Snackbar.make(
+                        findViewById(R.id.relative_layout),
+                        "New app is ready!",
+                        Snackbar.LENGTH_INDEFINITE);
 
+        snackbar.setAction("Install", view -> {
+            if (mAppUpdateManager != null){
+                mAppUpdateManager.completeUpdate();
+            }
+        });
 
+        snackbar.setActionTextColor(getResources().getColor(R.color.salmon));
+        snackbar.show();
+    }
+
+    @Override
+    protected void onStop() {
+        super.onStop();
+        if (mAppUpdateManager != null) {
+            mAppUpdateManager.unregisterListener(installStateUpdatedListener);
+        }
+    }
+
+    @Override
+    protected void onStart() {
+        super.onStart();
+        Services.loadLocale(this);
+    }
+
+    @Override
+    public void onBackPressed() {
+        if (viewPager.getCurrentItem() == 0) {
+            super.onBackPressed();
+        }
+        else {
+            viewPager.setCurrentItem(0);
+            meowBottomNavigation.show(0,true);
+        }
+    }
 }
 
 

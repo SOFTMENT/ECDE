@@ -60,7 +60,7 @@ public class ChatFragment extends Fragment {
             @Override
             public void onClick(View v) {
                 lastMessageModels.clear();
-                if (readAndUnread.getText().toString().equalsIgnoreCase("Unread")) {
+                if (readAndUnread.getText().toString().equalsIgnoreCase(getString(R.string.unread))) {
                     lastMessageModels.addAll(LastMessageModel.getUnreadMessages());
                     chatHomeAdapter.notifyDataSetChanged();
                     if (lastMessageModels.size() < 1) {

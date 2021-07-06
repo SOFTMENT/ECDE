@@ -9,22 +9,38 @@ import android.Manifest;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.widget.EditText;
 import android.widget.Toast;
 
+import com.google.android.gms.auth.api.signin.GoogleSignIn;
+import com.google.android.gms.auth.api.signin.GoogleSignInAccount;
+import com.google.android.gms.auth.api.signin.GoogleSignInClient;
+import com.google.android.gms.auth.api.signin.GoogleSignInOptions;
+import com.google.android.gms.common.api.ApiException;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
+import com.google.firebase.auth.AuthCredential;
 import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.GoogleAuthProvider;
+import com.google.firebase.firestore.FieldValue;
+import com.google.firebase.firestore.FirebaseFirestore;
 
+
+import java.util.HashMap;
+import java.util.Map;
+import java.util.Objects;
 
 import in.softment.ecde.Utils.ProgressHud;
 import in.softment.ecde.Utils.Services;
 
 public class SignInActivity extends AppCompatActivity {
     EditText emailAddress,password;
+    private FirebaseAuth mAuth;
     private static final int STORAGE_PERMISSION_CODE = 4655;
+    private GoogleSignInClient mGoogleSignInClient;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -32,6 +48,24 @@ public class SignInActivity extends AppCompatActivity {
 
         //REQUEST_PERMISSION
         requestStoragePermission();;
+
+
+        mAuth = FirebaseAuth.getInstance();
+        GoogleSignInOptions gso = new GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
+                .requestIdToken(getString(R.string.default_web_client_id))
+                .requestEmail()
+                .build();
+
+        mGoogleSignInClient = GoogleSignIn.getClient(this, gso);
+        findViewById(R.id.google_sign_in).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+
+                Intent signInIntent = mGoogleSignInClient.getSignInIntent();
+                startActivityForResult(signInIntent, 909);
+
+            }
+        });
 
 
         emailAddress = findViewById(R.id.emailAddress);
@@ -116,6 +150,44 @@ public class SignInActivity extends AppCompatActivity {
         });
     }
 
+    private void firebaseAuthWithGoogle(String idToken) {
+        AuthCredential credential = GoogleAuthProvider.getCredential(idToken, null);
+        mAuth.signInWithCredential(credential)
+                .addOnCompleteListener(this, new OnCompleteListener<AuthResult>() {
+                    @Override
+                    public void onComplete(@NonNull Task<AuthResult> task) {
+                        if (task.isSuccessful()) {
+                            // Sign in success, update UI with the signed-in user's information
+                            if (mAuth.getCurrentUser() != null){
+                                ProgressHud.show(SignInActivity.this,"");
+                                addUserDataOnServer(mAuth.getUid(),mAuth.getCurrentUser().getDisplayName(), mAuth.getCurrentUser().getEmail(),mAuth.getCurrentUser().getPhotoUrl().toString());
+                            }
+
+
+                        } else {
+                            // If sign in fails, display a message to the user.
+                           Services.showDialog(SignInActivity.this,"ERROR", Objects.requireNonNull(task.getException()).getLocalizedMessage());
+                        }
+                    }
+                });
+    }
+    @Override
+    public void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+
+        // Result returned from launching the Intent from GoogleSignInApi.getSignInIntent(...);
+        if (requestCode == 909) {
+            Task<GoogleSignInAccount> task = GoogleSignIn.getSignedInAccountFromIntent(data);
+            try {
+                // Google Sign In was successful, authenticate with Firebase
+                GoogleSignInAccount account = task.getResult(ApiException.class);
+                firebaseAuthWithGoogle(account.getIdToken());
+            } catch (ApiException e) {
+                // Google Sign In failed, update UI appropriately
+              Services.showDialog(SignInActivity.this,"ERROR",e.getLocalizedMessage());
+            }
+        }
+    }
 
 
     public void requestStoragePermission() {
@@ -142,6 +214,26 @@ public class SignInActivity extends AppCompatActivity {
 
         }
 
+    }
+
+    public void addUserDataOnServer(String uid,String fullName, String emailAddress, String imageUrl){
+        Map<String,Object> user = new HashMap<>();
+        user.put("uid",uid);
+        user.put("fullName",fullName);
+        user.put("emailAddress",emailAddress);
+        user.put("profileImage",imageUrl);
+        user.put("registrationDate", FieldValue.serverTimestamp());
+
+
+        FirebaseFirestore.getInstance().collection("User").document(uid).set(user).addOnCompleteListener(new OnCompleteListener<Void>() {
+            @Override
+            public void onComplete(@NonNull Task<Void> task) {
+                ProgressHud.dialog.dismiss();
+                if (task.isSuccessful()) {
+                   Services.getCurrentUserData(SignInActivity.this,FirebaseAuth.getInstance().getCurrentUser().getUid());
+                }
+            }
+        });
     }
 
 }
