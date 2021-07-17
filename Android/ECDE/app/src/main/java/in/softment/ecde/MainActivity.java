@@ -3,32 +3,16 @@ package in.softment.ecde;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.core.app.ActivityCompat;
-import androidx.core.content.ContextCompat;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
-import androidx.fragment.app.FragmentPagerAdapter;
 import androidx.fragment.app.FragmentStatePagerAdapter;
 import androidx.viewpager.widget.ViewPager;
-import androidx.viewpager2.adapter.FragmentStateAdapter;
 
-import android.Manifest;
-import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.IntentSender;
 import android.content.SharedPreferences;
-import android.content.pm.PackageManager;
-import android.graphics.Bitmap;
-import android.graphics.drawable.Drawable;
-import android.net.Uri;
 import android.os.Bundle;
-import android.provider.MediaStore;
 import android.util.Log;
-import android.view.View;
-import android.widget.EditText;
-import android.widget.ImageView;
-import android.widget.LinearLayout;
-import android.widget.RelativeLayout;
 import android.widget.Toast;
 
 
@@ -46,7 +30,6 @@ import com.google.android.play.core.install.model.AppUpdateType;
 import com.google.android.play.core.install.model.InstallStatus;
 import com.google.android.play.core.install.model.UpdateAvailability;
 import com.google.firebase.auth.FirebaseAuth;
-import com.google.firebase.crashlytics.FirebaseCrashlytics;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.EventListener;
 import com.google.firebase.firestore.FirebaseFirestore;
@@ -55,21 +38,16 @@ import com.google.firebase.firestore.MetadataChanges;
 import com.google.firebase.firestore.Query;
 import com.google.firebase.firestore.QuerySnapshot;
 import com.google.firebase.firestore.SetOptions;
-import com.makeramen.roundedimageview.RoundedImageView;
 
 
 import org.jetbrains.annotations.NotNull;
 
-import java.io.IOException;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
-import java.util.Random;
-import java.util.function.Function;
 
 import in.softment.ecde.Fragments.AccountFragment;
 import in.softment.ecde.Fragments.ChatFragment;
@@ -79,12 +57,11 @@ import in.softment.ecde.Fragments.PostFragment;
 import in.softment.ecde.Fragments.SellerStoreInformation;
 import in.softment.ecde.Models.CategoryModel;
 import in.softment.ecde.Models.LastMessageModel;
-import in.softment.ecde.Models.MyLanguage;
 import in.softment.ecde.Models.ProductModel;
 import in.softment.ecde.Models.UpdateType;
 import in.softment.ecde.Models.UserModel;
+import in.softment.ecde.Utils.Const;
 import in.softment.ecde.Utils.MyFirebaseMessagingService;
-import in.softment.ecde.Utils.NewCode;
 import in.softment.ecde.Utils.NonSwipeAbleViewPager;
 import in.softment.ecde.Utils.ProgressHud;
 import in.softment.ecde.Utils.Services;
@@ -110,9 +87,6 @@ public class MainActivity extends AppCompatActivity implements Function1<MeowBot
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-
-
-
 
         MobileAds.initialize(this, new OnInitializationCompleteListener() {
             @Override
@@ -280,8 +254,12 @@ public class MainActivity extends AppCompatActivity implements Function1<MeowBot
     }
 
     public void getCategotyData() {
+
+        SharedPreferences sharedPreferences = getSharedPreferences("lang",MODE_PRIVATE);
+        String code = sharedPreferences.getString("mylang","pt");
+
         String field = "title_pt";
-        if (MyLanguage.lang.equalsIgnoreCase("pt"))
+        if (code.equalsIgnoreCase("pt"))
            field = "title_pt";
         else
             field = "title_en";
@@ -477,7 +455,6 @@ public class MainActivity extends AppCompatActivity implements Function1<MeowBot
     }
 
 
-
     public void changeBottomBarPossition(int id) {
         viewPager.setCurrentItem(id);
         meowBottomNavigation.show(id,true);
@@ -490,9 +467,12 @@ public class MainActivity extends AppCompatActivity implements Function1<MeowBot
         if (requestCode == CropImage.CROP_IMAGE_ACTIVITY_REQUEST_CODE) {
             CropImage.ActivityResult result = CropImage.getActivityResult(data);
 
+
             if (resultCode == RESULT_OK) {
-                if (UserModel.data.isSeller())
+                if (Const.changeImageActivity.equalsIgnoreCase("post"))
                    postFragment.cropUri(result.getUriContent());
+                else if (Const.changeImageActivity.equalsIgnoreCase("gig"))
+                    gigFragment.cropURI(result.getUriContent());
                 else
                     sellerStoreInformation.cropUrl(result.getUriContent());
             }

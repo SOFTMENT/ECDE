@@ -26,6 +26,7 @@ import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseAuthException;
 import com.google.firebase.firestore.FieldValue;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.util.FileUtil;
@@ -135,7 +136,7 @@ public class CreateNewAccount extends AppCompatActivity {
                     uploadImageOnFirebase(Objects.requireNonNull(FirebaseAuth.getInstance().getCurrentUser()).getUid(),Services.toUpperCase(sFullName),sEmail);
                 } else {
                     ProgressHud.dialog.dismiss();
-                    Services.showDialog(CreateNewAccount.this, getString(R.string.error), task.getException().getLocalizedMessage());
+                    Services.handleFirebaseERROR(CreateNewAccount.this, ((FirebaseAuthException) Objects.requireNonNull(task.getException())).getErrorCode());
                 }
             }
         });

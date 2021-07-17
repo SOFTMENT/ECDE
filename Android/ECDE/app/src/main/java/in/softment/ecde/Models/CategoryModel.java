@@ -1,7 +1,11 @@
 package in.softment.ecde.Models;
 
+import android.content.Context;
+
 import java.io.Serializable;
 import java.util.ArrayList;
+
+import in.softment.ecde.Utils.Services;
 
 public class CategoryModel implements Serializable {
 
@@ -44,10 +48,10 @@ public class CategoryModel implements Serializable {
         this.image = image;
     }
 
-    public static String getCategoryNameById(String id) {
+    public static String getCategoryNameById(Context context,String id) {
         for (CategoryModel categoryModel : categoryModels) {
             if (categoryModel.id.contains(id)) {
-                if (MyLanguage.lang.equalsIgnoreCase("pt")) {
+                if (Services.getLocateCode(context).equalsIgnoreCase("pt")) {
                     return categoryModel.getTitle_pt();
                 }
                else {

@@ -58,7 +58,7 @@ public class EditProductActivity extends AppCompatActivity {
     private boolean oneImageSelected,twoImageSelected;
     private EditText p_title, p_description, p_price,q_quantity;
     private EditText maxDeliveryDays;
-    private EditText deliveryCharge;
+//    private EditText deliveryCharge;
     private ProductModel productModel;
 
     private RadioGroup willYouDeliverRadio;
@@ -87,7 +87,7 @@ public class EditProductActivity extends AppCompatActivity {
         p_price = findViewById(R.id.p_price);
         q_quantity = findViewById(R.id.p_quantity);
         maxDeliveryDays = findViewById(R.id.delivery_day);
-        deliveryCharge =  findViewById(R.id.delivery_charge);
+       // deliveryCharge =  findViewById(R.id.delivery_charge);
         willYouDeliverRadio = findViewById(R.id.willYouDeliverRadioBtn);
         canYouDeliverSameDayRadio = findViewById(R.id.canYouDeliverOnSameDayRadioBtn);
         canYouDeliverSameDayLL = findViewById(R.id.sameDayLL);
@@ -99,23 +99,21 @@ public class EditProductActivity extends AppCompatActivity {
             int willYouDeliverItem = willYouDeliverRadio.getCheckedRadioButtonId();
             int sameDayId = canYouDeliverSameDayRadio.getCheckedRadioButtonId();
             String maxDayDelivery = maxDeliveryDays.getText().toString();
-            String deliveryFee = deliveryCharge.getText().toString();
+          //  String deliveryFee = deliveryCharge.getText().toString();
 
             if (title.isEmpty()) {
-                Services.showCenterToast(EditProductActivity.this,"Enter Product Title");
+                Services.showCenterToast(EditProductActivity.this,getString(R.string.enter_product_title));
             }
             else if (description.isEmpty()) {
-                    Services.showCenterToast(EditProductActivity.this,"Enter Product Description");
+                    Services.showCenterToast(EditProductActivity.this,getString(R.string.enter_product_description));
             }
 
-            else if (price.isEmpty()) {
-                Services.showCenterToast(EditProductActivity.this,"Enter Product Price");
-            }
+
            else  if (!oneImageSelected || !twoImageSelected){
-                Services.showCenterToast(EditProductActivity.this,"Upload Atleast 2 Images");
+                Services.showCenterToast(EditProductActivity.this,getString(R.string.upload_atleast_2_images));
            }
             else if (willYouDeliverItem == -1) {
-                Services.showCenterToast(EditProductActivity.this,"Choose Will You Deliver");
+                Services.showCenterToast(EditProductActivity.this,getString(R.string.choose_will_you_deliver));
             }
             else {
                 boolean willYouDeliver = false;
@@ -128,10 +126,7 @@ public class EditProductActivity extends AppCompatActivity {
                         Services.showCenterToast(EditProductActivity.this,"Choose Can You Deliver Same Day?");
                         return;
                     }
-                    if (deliveryFee.isEmpty()) {
-                        Services.showCenterToast(EditProductActivity.this,"Enter Delivery Charge");
-                        return;
-                    }
+
                     else {
                         if (sameDayId == R.id.yes_same_day) {
                             sameDay = true;
@@ -139,7 +134,7 @@ public class EditProductActivity extends AppCompatActivity {
                         }
                         else {
                             if (maxDayDelivery.isEmpty()) {
-                                Services.showCenterToast(EditProductActivity.this,"Enter Delivery Days");
+                                Services.showCenterToast(EditProductActivity.this,getString(R.string.enter_delivery_days));
                                 return;
                             }
                             else {
@@ -153,12 +148,15 @@ public class EditProductActivity extends AppCompatActivity {
 
                 if (!willYouDeliver) {
                     maxDayDelivery = "0";
-                    deliveryFee = "0";
+                    //deliveryFee = "0";
 
                 }
 
                 if (FirebaseAuth.getInstance().getCurrentUser() != null) {
-                    updateProduct(productModel.title,productModel.description,Integer.parseInt(price),Integer.parseInt(sQuantity),willYouDeliver,sameDay,Integer.parseInt(maxDayDelivery),Integer.parseInt(deliveryFee));
+                    if (price.isEmpty()) {
+                        price = "0";
+                    }
+                    updateProduct(title,description,Integer.parseInt(price),Integer.parseInt(sQuantity),willYouDeliver,sameDay,Integer.parseInt(maxDayDelivery));
 
                 } else {
                     Services.logout(EditProductActivity.this);
@@ -191,13 +189,6 @@ public class EditProductActivity extends AppCompatActivity {
         p_price.setText(productModel.getPrice()+"");
         q_quantity.setText(productModel.getQuantity()+"");
 
-
-        if (productModel.deliveryCharge > 0) {
-            deliveryCharge.setText(productModel.deliveryCharge+"");
-        }
-        else {
-            deliveryCharge.setText("");
-        }
         if (productModel.maxDeliverDay > 0) {
             maxDeliveryDays.setText(productModel.maxDeliverDay+"");
         }
@@ -212,12 +203,12 @@ public class EditProductActivity extends AppCompatActivity {
                 if (checkedId == R.id.yes_deliver) {
 
                     canYouDeliverSameDayLL.setVisibility(View.VISIBLE);
-                    deliveryCharge.setVisibility(View.VISIBLE);
+                    //deliveryCharge.setVisibility(View.VISIBLE);
 
                 }
                 else {
                     canYouDeliverSameDayLL.setVisibility(View.GONE);
-                    deliveryCharge.setVisibility(View.GONE);
+                   // deliveryCharge.setVisibility(View.GONE);
                 }
             }
         });
@@ -258,7 +249,7 @@ public class EditProductActivity extends AppCompatActivity {
 
             willYouDeliverRadio.check(R.id.no_deliver);
             canYouDeliverSameDayLL.setVisibility(View.GONE);
-            deliveryCharge.setVisibility(View.GONE);
+          //  deliveryCharge.setVisibility(View.GONE);
         }
 
 
@@ -372,7 +363,7 @@ public class EditProductActivity extends AppCompatActivity {
 
     }
 
-    public void updateProduct(String title, String description, Integer price, Integer quantity, boolean willDeliver, boolean sameDay, Integer maxDeliveryDay, Integer deliveryFee) {
+    public void updateProduct(String title, String description, Integer price, Integer quantity, boolean willDeliver, boolean sameDay, Integer maxDeliveryDay) {
         Map<String, Object> map = new HashMap<>();
 
 
@@ -383,21 +374,21 @@ public class EditProductActivity extends AppCompatActivity {
         map.put("deliverProduct",willDeliver);
         map.put("sameDayDeliver",sameDay);
         map.put("maxDeliverDay",maxDeliveryDay);
-        map.put("deliveryCharge",deliveryFee);
+        //map.put("deliveryCharge",deliveryFee);
 
-        ProgressHud.show(EditProductActivity.this,"Product Updating...");
+        ProgressHud.show(EditProductActivity.this,"");
 
         FirebaseFirestore.getInstance().collection("Products").document(productModel.id).set(map,SetOptions.merge()).addOnCompleteListener(task -> {
             ProgressHud.dialog.dismiss();
             if (task.isSuccessful()) {
                 uploadImageOnFirebase(UserModel.data.uid, productModel.id);
-                Services.showDialog(EditProductActivity.this,"UPDATED","Product Successfully Updated");
+                Services.showDialog(EditProductActivity.this,getString(R.string.updated),getString(R.string.product_sucssfully_updated));
 
                 images.clear();
 
             }
             else {
-                Services.showDialog(EditProductActivity.this,"ERROR",task.getException().getLocalizedMessage());
+                Services.showDialog(EditProductActivity.this,getString(R.string.error),task.getException().getLocalizedMessage());
             }
         });
     }
@@ -407,7 +398,7 @@ public class EditProductActivity extends AppCompatActivity {
         super.onActivityResult(requestCode, resultCode, data);
 
         if (requestCode == 1 && data != null && data.getData() != null) {
-            Log.d("ERROR","OH4");
+
             Uri filepath = data.getData();
             CropImage.activity(filepath).setOutputCompressQuality(60).start(EditProductActivity.this);
         }
@@ -427,7 +418,7 @@ public class EditProductActivity extends AppCompatActivity {
             Intent intent = new Intent();
             intent.setType("image/*");
             intent.setAction(Intent.ACTION_GET_CONTENT);
-            startActivityForResult(Intent.createChooser(intent, "Select Picture"), 1);
+            startActivityForResult(Intent.createChooser(intent, getString(R.string.select_picture)), 1);
         }
         catch (Exception ignored) {
 
@@ -449,7 +440,7 @@ public class EditProductActivity extends AppCompatActivity {
                 oneLL.setVisibility(View.GONE);
                 images.put("0",resultUri);
             } catch (IOException e) {
-                Log.d("ERROR",e.getLocalizedMessage());
+
             }
         }else if (clickedImageViewPosition == 2) {
 

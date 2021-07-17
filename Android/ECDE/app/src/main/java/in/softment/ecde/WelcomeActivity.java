@@ -1,5 +1,7 @@
 package in.softment.ecde;
 
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.app.AppCompatDelegate;
 
@@ -7,18 +9,25 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.res.Configuration;
+import android.net.Uri;
 import android.os.Bundle;
-import android.os.Handler;
-import android.util.Log;
+import android.widget.Toast;
 
-import com.google.android.gms.ads.MobileAds;
-import com.google.firebase.FirebaseApp;
+import com.google.android.gms.tasks.OnFailureListener;
+import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.auth.UserInfo;
+import com.google.firebase.dynamiclinks.FirebaseDynamicLinks;
+import com.google.firebase.dynamiclinks.PendingDynamicLinkData;
+import com.google.firebase.firestore.DocumentSnapshot;
+import com.google.firebase.firestore.EventListener;
+import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.firestore.FirebaseFirestoreException;
 
 import java.util.Locale;
 
-import in.softment.ecde.Models.MyLanguage;
-import in.softment.ecde.Utils.ProgressHud;
+import in.softment.ecde.Models.ProductModel;
 import in.softment.ecde.Utils.Services;
 
 public class WelcomeActivity extends AppCompatActivity {
@@ -37,7 +46,6 @@ public class WelcomeActivity extends AppCompatActivity {
     public void loadLocale(){
         SharedPreferences sharedPreferences = getSharedPreferences("lang",MODE_PRIVATE);
         String code = sharedPreferences.getString("mylang","pt");
-        MyLanguage.lang = code;
         setLocale(code);
     }
 
@@ -48,22 +56,32 @@ public class WelcomeActivity extends AppCompatActivity {
         configuration.locale = locale;
         getResources().updateConfiguration(configuration,getResources().getDisplayMetrics());
 
-        //SharedPref
-        SharedPreferences.Editor sharedPreferences = getSharedPreferences("lang", Context.MODE_PRIVATE).edit();
-        sharedPreferences.putString("mylang",code);
-        sharedPreferences.apply();
+
     }
 
     @Override
     protected void onStart() {
         super.onStart();
-        if (FirebaseAuth.getInstance().getCurrentUser() != null) {
-            if (FirebaseAuth.getInstance().getCurrentUser().isEmailVerified()) {
-                //ProgressHud.show(this,"Loading...");
+        FirebaseUser firebaseUser = FirebaseAuth.getInstance().getCurrentUser();
 
-                Services.getCurrentUserData(this, FirebaseAuth.getInstance().getCurrentUser().getUid());
+
+
+        if ( firebaseUser != null) {
+            for (UserInfo user: FirebaseAuth.getInstance().getCurrentUser().getProviderData()) {
+                if (user.getProviderId().equals("facebook.com") || user.getProviderId().equals("google.com")) {
+                    handleDeepLink();
+                    return;
+                }
 
             }
+
+            if (FirebaseAuth.getInstance().getCurrentUser().isEmailVerified()) {
+
+             handleDeepLink();
+
+            }
+
+
             else {
                 gotoSignInPage();
             }
@@ -79,5 +97,68 @@ public class WelcomeActivity extends AppCompatActivity {
         intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK| Intent.FLAG_ACTIVITY_NEW_TASK);
         startActivity(intent);
         finish();
+    }
+
+    public void handleDeepLink(){
+        FirebaseDynamicLinks.getInstance()
+                .getDynamicLink(getIntent())
+                .addOnSuccessListener(this, new OnSuccessListener<PendingDynamicLinkData>() {
+                    @Override
+                    public void onSuccess(PendingDynamicLinkData pendingDynamicLinkData) {
+                        // Get deep link from result (may be null if no link is found)
+                        Uri deepLink = null;
+                        if (pendingDynamicLinkData != null) {
+                            deepLink = pendingDynamicLinkData.getLink();
+                           if (deepLink != null) {
+                               String productId = deepLink.getQueryParameter("productId");
+                               getProductById(productId);
+                           }
+                           else {
+                               FirebaseUser firebaseUser = FirebaseAuth.getInstance().getCurrentUser();
+                               Services.getCurrentUserData(WelcomeActivity.this, firebaseUser.getUid());
+                           }
+
+                        }
+                        else {
+                            FirebaseUser firebaseUser = FirebaseAuth.getInstance().getCurrentUser();
+                            Services.getCurrentUserData(WelcomeActivity.this, firebaseUser.getUid());
+                        }
+
+                    }
+                })
+                .addOnFailureListener(this, new OnFailureListener() {
+                    @Override
+                    public void onFailure(@NonNull Exception e) {
+                        FirebaseUser firebaseUser = FirebaseAuth.getInstance().getCurrentUser();
+                        Services.getCurrentUserData(WelcomeActivity.this, firebaseUser.getUid());
+                    }
+                });
+    }
+
+    public void getProductById(String pId){
+        FirebaseFirestore.getInstance().collection("Products").document(pId).addSnapshotListener(new EventListener<DocumentSnapshot>() {
+            @Override
+            public void onEvent(@Nullable @org.jetbrains.annotations.Nullable DocumentSnapshot value, @Nullable @org.jetbrains.annotations.Nullable FirebaseFirestoreException error) {
+                if (error == null){
+                    if (value != null && value.exists()) {
+                        ProductModel productModel = value.toObject(ProductModel.class);
+                        Intent intent = new Intent(WelcomeActivity.this, ViewProductActivity.class);
+                        intent.putExtra("product",productModel);
+                        intent.putExtra("fromDeepLink",true);
+                        intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_NEW_TASK);
+                        startActivity(intent);
+                        finish();
+                    }
+                    else {
+                        FirebaseUser firebaseUser = FirebaseAuth.getInstance().getCurrentUser();
+                        Services.getCurrentUserData(WelcomeActivity.this, firebaseUser.getUid());
+                    }
+                }
+                else {
+                    FirebaseUser firebaseUser = FirebaseAuth.getInstance().getCurrentUser();
+                    Services.getCurrentUserData(WelcomeActivity.this, firebaseUser.getUid());
+                }
+            }
+        });
     }
 }

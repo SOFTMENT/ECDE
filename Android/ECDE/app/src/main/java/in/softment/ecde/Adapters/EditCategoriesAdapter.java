@@ -27,7 +27,6 @@ import java.util.ArrayList;
 import in.softment.ecde.EditCategoriesActivity;
 import in.softment.ecde.ManageSubcategoryActivity;
 import in.softment.ecde.Models.CategoryModel;
-import in.softment.ecde.Models.MyLanguage;
 import in.softment.ecde.R;
 import in.softment.ecde.Utils.ProgressHud;
 import in.softment.ecde.Utils.Services;
@@ -51,7 +50,7 @@ public class EditCategoriesAdapter extends RecyclerView.Adapter<EditCategoriesAd
     public void onBindViewHolder(@NonNull ViewHolder holder, int position) {
 
         CategoryModel categoryModel = categoryModels.get(position);
-        if (MyLanguage.lang.equalsIgnoreCase("pt"))
+        if (Services.getLocateCode(context).equalsIgnoreCase("pt"))
             holder.cat_title.setText(categoryModel.getTitle_pt());
         else
             holder.cat_title.setText(categoryModel.getTitle_en());
@@ -71,7 +70,7 @@ public class EditCategoriesAdapter extends RecyclerView.Adapter<EditCategoriesAd
             public void onClick(View v) {
               Intent intent = new Intent(context,ManageSubcategoryActivity.class);
               intent.putExtra("cat_id",categoryModel.getId());
-              if (MyLanguage.lang.equalsIgnoreCase("pt"))
+              if (Services.getLocateCode(context).equalsIgnoreCase("pt"))
                     intent.putExtra("cat_name",categoryModel.getTitle_pt());
               else
                     intent.putExtra("cat_name",categoryModel.getTitle_en());

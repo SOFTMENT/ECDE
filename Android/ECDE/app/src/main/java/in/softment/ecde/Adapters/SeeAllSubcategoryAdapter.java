@@ -1,7 +1,6 @@
 package in.softment.ecde.Adapters;
 
 import android.content.Context;
-import android.content.Intent;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -10,11 +9,11 @@ import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 import org.jetbrains.annotations.NotNull;
 import java.util.ArrayList;
-import in.softment.ecde.Models.CategoryModel;
-import in.softment.ecde.Models.MyLanguage;
+
 import in.softment.ecde.Models.SubcategoryModel;
 import in.softment.ecde.R;
 import in.softment.ecde.SeeAllSubcategoryActivity;
+import in.softment.ecde.Utils.Services;
 
 
 public class SeeAllSubcategoryAdapter extends RecyclerView.Adapter<SeeAllSubcategoryAdapter.ViewHolder> {
@@ -39,7 +38,7 @@ public class SeeAllSubcategoryAdapter extends RecyclerView.Adapter<SeeAllSubcate
         holder.setIsRecyclable(false);
         SubcategoryModel subcategoryModel = subcategoryModels.get(position);
 
-        if (MyLanguage.lang.equalsIgnoreCase("pt"))
+        if (Services.getLocateCode(context).equalsIgnoreCase("pt"))
             holder.cat_name.setText(subcategoryModel.getTitle_pt());
         else
             holder.cat_name.setText(subcategoryModel.getTitle_en());

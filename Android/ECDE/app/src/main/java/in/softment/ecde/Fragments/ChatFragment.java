@@ -31,7 +31,7 @@ import in.softment.ecde.R;
 public class ChatFragment extends Fragment {
 
 
-    private final Context context;
+    private Context context;
     private ChatHomeAdapter chatHomeAdapter;
     private TextView message;
     private ArrayList<LastMessageModel> lastMessageModels;
@@ -41,6 +41,9 @@ public class ChatFragment extends Fragment {
     }
 
 
+    public ChatFragment(){
+
+    }
 
 
     @Override

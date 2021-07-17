@@ -1,6 +1,5 @@
 <resources xmlns:tools="http://schemas.android.com/tools">
     <string name="app_name">ECDE</string>
-
     <string name="create_account">Create Account</string>
     <string name="already_have_an_account">Already have an account /&#160;</string>
     <string name="sign_in">Sign In</string>
@@ -175,6 +174,32 @@
     <string name="credential_is_no_longer_valid">The user\\\'s credential is no longer valid. The user must sign in again.</string>
     <string name="no_record_corresponding">There is no user record corresponding to this identifier. The user may have been deleted.</string>
     <string name="given_passoword_invalid">The given password is invalid.</string>
+
+    <string name="edit_profile">Edit Profile</string>
+    <string name="change_store_image">Change Store Image</string>
+    <string name="seller_profile">Seller Profile</string>
+
+    <string name="login_with_facebook">Login With Facebook</string>
+    <string name="facebook_app_id" translatable="false">2924064337857162</string>
+    <string name="fb_login_protocol_scheme" translatable="false">fb2924064337857162</string>
+
+    <string name="product_sucssfully_updated">Product Successfully Updated</string>
+    <string name="product_succssfully_added">Product Successfully Added</string>
+    <string name="enter_delivery_days">Enter Delivery Days</string>
+    <string name="choose_can_you_deliver_same_day">Choose Can You Deliver Same Day?</string>
+    <string name="choose_will_you_deliver">Choose Will You Deliver</string>
+    <string name="choose_product_is_new_or_used">Choose Product is New Or Used</string>
+    <string name="choose_product_subcategory">Choose Product Subcategory</string>
+    <string name="choose_product_category">Choose Product Category</string>
+    <string name="enter_product_quantity">Enter Product Quantity</string>
+    <string name="enter_product_description">Enter Product Description</string>
+    <string name="enter_product_title">Enter Product Title</string>
+    <string name="upload_atleast_2_images">Upload Atleast 2 Images</string>
+    <string name="product_price_is_optional">Product price is optional.</string>
+    <string name="you_can_not_contact">You can not contact yourself.</string>
+    <string name="select_category_image">Select Category Image</string>
+    <string name="enter_title">Enter Title</string>
+    <string name="enter_english_title">Enter English Title</string>
 
 
 </resources>

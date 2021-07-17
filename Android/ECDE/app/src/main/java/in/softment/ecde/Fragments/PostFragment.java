@@ -1,23 +1,17 @@
 package in.softment.ecde.Fragments;
 
-import android.Manifest;
-import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
-import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
 import android.net.Uri;
 import android.os.Bundle;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
-import androidx.core.app.ActivityCompat;
-import androidx.core.content.ContextCompat;
 import androidx.fragment.app.Fragment;
 
 import android.provider.MediaStore;
 import android.util.Log;
-import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -27,15 +21,11 @@ import android.widget.AutoCompleteTextView;
 import android.widget.EditText;
 import android.widget.LinearLayout;
 import android.widget.RadioGroup;
-import android.widget.Toast;
 
 import com.canhub.cropper.CropImage;
 import com.google.android.gms.tasks.Continuation;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
-import com.google.android.material.textfield.TextInputEditText;
-import com.google.android.material.textfield.TextInputLayout;
-import com.google.common.util.concurrent.Service;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.EventListener;
@@ -54,23 +44,19 @@ import com.makeramen.roundedimageview.RoundedImageView;
 
 import java.io.IOException;
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Objects;
 
 
 import in.softment.ecde.MainActivity;
-import in.softment.ecde.ManageSubcategoryActivity;
 import in.softment.ecde.Models.CategoryModel;
-import in.softment.ecde.Models.MyLanguage;
 import in.softment.ecde.Models.SubcategoryModel;
 import in.softment.ecde.Models.UserModel;
 import in.softment.ecde.R;
+import in.softment.ecde.Utils.Const;
 import in.softment.ecde.Utils.ProgressHud;
 import in.softment.ecde.Utils.Services;
-
-import static android.app.Activity.RESULT_OK;
 
 public class PostFragment extends Fragment {
 
@@ -83,7 +69,7 @@ public class PostFragment extends Fragment {
     private EditText p_title, p_description, p_price;
     private EditText p_quantity;
     private EditText maxDeliveryDays;
-    private EditText deliveryCharge;
+//    private EditText deliveryCharge;
     private RadioGroup willYouDeliverRadio;
     private RadioGroup productIsNewRadio;
     private RadioGroup canYouDeliverSameDayRadio;
@@ -116,7 +102,7 @@ public class PostFragment extends Fragment {
         p_price = view.findViewById(R.id.p_price);
         p_quantity = view.findViewById(R.id.quantity);
         maxDeliveryDays = view.findViewById(R.id.delivery_day);
-        deliveryCharge = view.findViewById(R.id.delivery_charge);
+      //  deliveryCharge = view.findViewById(R.id.delivery_charge);
         chooseSubcategory = view.findViewById(R.id.chooseSubcategory);
         willYouDeliverRadio = view.findViewById(R.id.willYouDeliverRadioBtn);
         productIsNewRadio = view.findViewById(R.id.isProductFreshRadioGroup);
@@ -129,12 +115,12 @@ public class PostFragment extends Fragment {
                 if (checkedId == R.id.yes_deliver) {
 
                     canYouDeliverSameDayLL.setVisibility(View.VISIBLE);
-                    deliveryCharge.setVisibility(View.VISIBLE);
+                   // deliveryCharge.setVisibility(View.VISIBLE);
 
                 }
                 else {
                     canYouDeliverSameDayLL.setVisibility(View.GONE);
-                    deliveryCharge.setVisibility(View.GONE);
+                   // deliveryCharge.setVisibility(View.GONE);
                 }
             }
         });
@@ -181,43 +167,40 @@ public class PostFragment extends Fragment {
                 int willYouDeliverItem = willYouDeliverRadio.getCheckedRadioButtonId();
                 int sameDayId = canYouDeliverSameDayRadio.getCheckedRadioButtonId();
                 String maxDayDelivery = maxDeliveryDays.getText().toString();
-                String deliveryFee = deliveryCharge.getText().toString();
+              //  String deliveryFee = deliveryCharge.getText().toString();
 
                 if (title.isEmpty()) {
-                    Services.showCenterToast(context,"Enter Product Title");
+                    Services.showCenterToast(context,getString(R.string.enter_product_title));
                     return;
                 }
                 else if (description.isEmpty()) {
-                    Services.showCenterToast(context,"Enter Product Description");
+                    Services.showCenterToast(context,getString(R.string.enter_product_description));
                     return;
                 }
-                else if (price.isEmpty()) {
-                    Services.showCenterToast(context,"Enter Product Price");
-                    return;
-                }
+
                 else if (sQuantity.isEmpty()) {
-                    Services.showCenterToast(context,"Enter Product Quanity");
+                    Services.showCenterToast(context,getString(R.string.enter_product_quantity));
                     return;
                 }
                 else if (category.isEmpty()) {
-                    Services.showCenterToast(context,"Choose Product Category");
+                    Services.showCenterToast(context,getString(R.string.choose_product_category));
                     return;
                 }
                 else if (sSubCategory.isEmpty()) {
-                    Services.showCenterToast(context,"Choose Product Subcategory");
+                    Services.showCenterToast(context,getString(R.string.choose_product_subcategory));
                     return;
                 }
 
                 else if (isProductNewId == -1){
-                    Services.showCenterToast(context,"Choose Product is New Or Used");
+                    Services.showCenterToast(context,getString(R.string.choose_product_is_new_or_used));
                     return;
                 }
                 else if (!oneImageSelected || !twoImageSelected){
-                    Services.showCenterToast(context,"Please Choose Product Image");
+                    Services.showCenterToast(context,getString(R.string.upload_atleast_2_images));
                     return;
                 }
                 if (willYouDeliverItem == -1) {
-                    Services.showCenterToast(context,"Choose Will You Deliver");
+                    Services.showCenterToast(context,getString(R.string.choose_will_you_deliver));
                 }
                 else {
                     boolean willYouDeliver = false;
@@ -227,13 +210,13 @@ public class PostFragment extends Fragment {
                         willYouDeliver = true;
 
                         if (sameDayId == -1) {
-                            Services.showCenterToast(context,"Choose Can You Deliver Same Day?");
+                            Services.showCenterToast(context,getString(R.string.choose_can_you_deliver_same_day));
                             return;
                         }
-                        if (deliveryFee.isEmpty()) {
-                            Services.showCenterToast(context,"Enter Delivery Charge");
-                            return;
-                        }
+//                        if (deliveryFee.isEmpty()) {
+//                            Services.showCenterToast(context,"Enter Delivery Charge");
+//                            return;
+//                        }
                         else {
                             if (sameDayId == R.id.yes_same_day) {
                                 sameDay = true;
@@ -241,7 +224,7 @@ public class PostFragment extends Fragment {
                             }
                             else {
                                 if (maxDayDelivery.isEmpty()) {
-                                    Services.showCenterToast(context,"Enter Delivery Days");
+                                    Services.showCenterToast(context,getString(R.string.enter_delivery_days));
                                     return;
                                 }
                                 else {
@@ -258,13 +241,16 @@ public class PostFragment extends Fragment {
                     }
                     if (!willYouDeliver) {
                         maxDayDelivery = "0";
-                        deliveryFee = "0";
+                       // deliveryFee = "0";
                         
                     }
 
 
                     if (FirebaseAuth.getInstance().getCurrentUser() != null) {
-                        addProduct(CategoryModel.categoryModels.get(selectedCategoryIndex).getId(), subcategoryModels.get(selectedSubCategoryIndex).getId(),UserModel.data.uid,UserModel.data.getFullName(),UserModel.data.getProfileImage(),UserModel.data.getToken(),title,description,Integer.parseInt(price),Integer.parseInt(sQuantity),isProductNew,willYouDeliver,sameDay,Integer.parseInt(maxDayDelivery),Integer.parseInt(deliveryFee));
+                        if (price.isEmpty()) {
+                            price = "0";
+                        }
+                        addProduct(CategoryModel.categoryModels.get(selectedCategoryIndex).getId(), subcategoryModels.get(selectedSubCategoryIndex).getId(),UserModel.data.uid,UserModel.data.getFullName(),UserModel.data.getProfileImage(),UserModel.data.getToken(),title,description,Integer.parseInt(price),Integer.parseInt(sQuantity),isProductNew,willYouDeliver,sameDay,Integer.parseInt(maxDayDelivery));
                     } else {
                         Services.logout(context);
                     }
@@ -382,7 +368,6 @@ public class PostFragment extends Fragment {
 
                     if (task.isSuccessful()) {
                         String downloadUri = String.valueOf(task.getResult());
-                        Log.d("VIJAY",key+"");
                         sImages.put(key,downloadUri);
                         Map<String, Object> map = new HashMap<>();
                         map.put("images",sImages);
@@ -390,10 +375,10 @@ public class PostFragment extends Fragment {
                             @Override
                             public void onComplete(@NonNull Task<Void> task) {
                                     if (task.isSuccessful()) {
-                                        Log.d("imagesUplaoded","YES");
+
                                     }
                                     else {
-                                        Log.d("imagesUploaded",task.getException().getLocalizedMessage());
+
                                     }
                             }
                         });
@@ -407,7 +392,7 @@ public class PostFragment extends Fragment {
 
     }
 
-    public void addProduct(String cat_id, String sub_cat_id, String uid, String sellerName,String sellerImage,String sellerToken,String title, String description, int price, int quantity, boolean isProductNew, boolean deliverProduct, boolean sameDayDeliver,int deliveryDay, int deliveryFee) {
+    public void addProduct(String cat_id, String sub_cat_id, String uid, String sellerName,String sellerImage,String sellerToken,String title, String description, int price, int quantity, boolean isProductNew, boolean deliverProduct, boolean sameDayDeliver,int deliveryDay) {
         String id = FirebaseFirestore.getInstance().collection("Products").document().getId();
         Map<String, Object> map = new HashMap<>();
 
@@ -423,7 +408,7 @@ public class PostFragment extends Fragment {
         map.put("deliverProduct",deliverProduct);
         map.put("sameDayDeliver",sameDayDeliver);
         map.put("maxDeliverDay",deliveryDay);
-        map.put("deliveryCharge",deliveryFee);
+       // map.put("deliveryCharge",deliveryFee);
         map.put("sellerName",sellerName);
         map.put("sellerImage",sellerImage);
         map.put("sellerToken", sellerToken);
@@ -435,13 +420,13 @@ public class PostFragment extends Fragment {
         map.put("storeName",UserModel.data.storeName);
         map.put("phoneNumber",UserModel.data.phoneNumber);
 
-        ProgressHud.show(context,"Product Adding...");
+        ProgressHud.show(context,"");
         FirebaseFirestore.getInstance().collection("Products").document(id).set(map).addOnCompleteListener(new OnCompleteListener<Void>() {
             @Override
             public void onComplete(@NonNull Task<Void> task) {
                 ProgressHud.dialog.dismiss();
                 if (task.isSuccessful()) {
-                    Services.showCenterToast(context,"Product Successfully Added");
+                    Services.showCenterToast(context,getString(R.string.product_succssfully_added));
                     uploadImageOnFirebase(uid,id);
                     images.clear();
                     oneImageSelected = false;
@@ -472,12 +457,12 @@ public class PostFragment extends Fragment {
                     canYouDeliverSameDayLL.setVisibility(View.GONE);
                     maxDeliveryDays.setText("");
                     maxDeliveryDays.setVisibility(View.GONE);
-                    deliveryCharge.setText("");
-                    deliveryCharge.setVisibility(View.GONE);
+//                    deliveryCharge.setText("");
+//                    deliveryCharge.setVisibility(View.GONE);
 
                 }
                 else {
-                    Services.showDialog(context,"ERROR", Objects.requireNonNull(task.getException()).getLocalizedMessage());
+                    Services.showDialog(context,getString(R.string.error), Objects.requireNonNull(task.getException()).getLocalizedMessage());
                 }
             }
         });
@@ -490,6 +475,7 @@ public class PostFragment extends Fragment {
 
         if (requestCode == 1 && data != null && data.getData() != null) {
             Uri filepath = data.getData();
+            Const.changeImageActivity = "post";
             CropImage.activity(filepath).setOutputCompressQuality(60).start((MainActivity)context);
         }
 
@@ -500,7 +486,7 @@ public class PostFragment extends Fragment {
             Intent intent = new Intent();
             intent.setType("image/*");
             intent.setAction(Intent.ACTION_GET_CONTENT);
-            startActivityForResult(Intent.createChooser(intent, "Select Picture"), 1);
+            startActivityForResult(Intent.createChooser(intent, getString(R.string.select_picture)), 1);
         }
         catch (Exception e) {
 
@@ -571,7 +557,7 @@ public class PostFragment extends Fragment {
     public void notifyAdapter(){
         ArrayList<String> categoryNames = new ArrayList<>();
         for (CategoryModel cat : CategoryModel.categoryModels) {
-            if (MyLanguage.lang.equalsIgnoreCase("pt"))
+            if (Services.getLocateCode(context).equalsIgnoreCase("pt"))
                 categoryNames.add(cat.getTitle_pt());
             else
                 categoryNames.add(cat.getTitle_en());
@@ -597,7 +583,7 @@ public class PostFragment extends Fragment {
     public void getSubcategory(String cat_id){
         ProgressHud.show(context,"");
         String field = "title_pt";
-        if (MyLanguage.lang.equalsIgnoreCase("pt"))
+        if (Services.getLocateCode(context).equalsIgnoreCase("pt"))
             field = "title_pt";
         else
             field = "title_en";
@@ -620,7 +606,7 @@ public class PostFragment extends Fragment {
 
                 }
                 else {
-                    Services.showDialog(context,"ERROR",error.getLocalizedMessage());
+                    Services.showDialog(context,getString(R.string.error),error.getLocalizedMessage());
                 }
             }
         });
@@ -630,7 +616,7 @@ public class PostFragment extends Fragment {
     public void notifySubcategoryAdapter(){
         ArrayList<String> subCategoryNames = new ArrayList<>();
         for (SubcategoryModel subcategoryModel : subcategoryModels) {
-            if (MyLanguage.lang.equalsIgnoreCase("pt"))
+            if (Services.getLocateCode(context).equalsIgnoreCase("pt"))
                 subCategoryNames.add(subcategoryModel.getTitle_pt());
             else
                 subCategoryNames.add(subcategoryModel.getTitle_en());

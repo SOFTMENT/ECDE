@@ -15,6 +15,13 @@ public class UserModel {
     public String storeName = "";
     public String phoneNumber = "";
 
+    public static UserModel data  = new UserModel();
+
+    public UserModel() {
+        data = this;
+    }
+
+
     public String getStoreName() {
         return storeName;
     }
@@ -63,10 +70,7 @@ public class UserModel {
         this.storeAbout = storeAbout;
     }
 
-    public static UserModel data  = new UserModel();
-
-
-    public boolean isSeller() {
+   public boolean isSeller() {
         return isSeller;
     }
 
@@ -91,9 +95,7 @@ public class UserModel {
     }
 
 
-    public UserModel() {
-        data = this;
-    }
+
 
     public String getUid() {
         return uid;

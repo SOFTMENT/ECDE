@@ -115,8 +115,8 @@
     <string name="pay_25_r">Pague R$ 25</string>
     <string name="featured_ad_for_7_days">Anúncio em destaque por 7 dias</string>
     <string name="pay_10_r">Pague 10 R$</string>
-    <string name="new_word">Nova</string>
-    <string name="used">Usava</string>
+    <string name="new_word">Novo</string>
+    <string name="used">Usado</string>
     <string name="day1">1 dia</string>
     <string name="days">Dias</string>
     <string name="add_subcategory">Adicionar Subcategoria</string>
@@ -178,4 +178,25 @@
     <string name="credential_is_no_longer_valid">The user\\\'s credential is no longer valid. The user must sign in again.</string>
     <string name="no_record_corresponding">There is no user record corresponding to this identifier. The user may have been deleted.</string>
     <string name="given_passoword_invalid">The given password is invalid.</string>
+    <string name="login_with_facebook">Entrar com o Facebook</string>
+    <string name="edit_profile">Editar Perfil</string>
+    <string name="change_store_image">Alterar imagem da loja</string>
+    <string name="seller_profile">Perfil de vendedor</string>
+
+
+    <string name="product_sucssfully_updated">Produto atualizado com sucesso</string>
+    <string name="product_succssfully_added">Produto adicionado com sucesso</string>
+    <string name="enter_delivery_days">Digite os dias de entrega</string>
+    <string name="choose_can_you_deliver_same_day">Escolha Você pode entregar no mesmo dia?</string>
+    <string name="choose_will_you_deliver">Escolha você vai entregar</string>
+    <string name="choose_product_is_new_or_used">Escolha o produto é novo ou usado</string>
+    <string name="choose_product_subcategory">Escolha a subcategoria do produto</string>
+    <string name="choose_product_category">Escolha a categoria do produto</string>
+    <string name="enter_product_quantity">Insira a quantidade do produto</string>
+    <string name="enter_product_description">Insira a descrição do produto</string>
+    <string name="enter_product_title">Insira o título do produto</string>
+    <string name="upload_atleast_2_images">Carregar pelo menos 2 imagens</string>
+    <string name="product_price_is_optional">O preço do produto é opcional.</string>
+
+    <string name="you_can_not_contact">Você não pode entrar em contato consigo mesmo.</string>
 </resources>

@@ -25,14 +25,12 @@ public class ProductModel implements Serializable {
     public boolean deliverProduct = false;
     public boolean sameDayDeliver = false;
     public Integer maxDeliverDay = 0;
-    public Integer deliveryCharge = 0;
     public Map<String,String> images = new HashMap<>();
     public Date date = new Date();
     public String sellerName = "";
     public String sellerImage = "";
     public String sellerToken = "";
     public Date adLastDate = new Date();
-
     public String storeAbout = "";
     public double latitude = 0.0;
     public double longitude = 0.0;
@@ -47,13 +45,6 @@ public class ProductModel implements Serializable {
     public static ArrayList<ProductModel> myproductsModels = new ArrayList<>();
     public static ArrayList<ProductModel> singleCatProductModels = new ArrayList<>();
 
-    public Integer getDeliveryCharge() {
-        return deliveryCharge;
-    }
-
-    public void setDeliveryCharge(Integer deliveryCharge) {
-        this.deliveryCharge = deliveryCharge;
-    }
 
     public String getStoreAbout() {
         return storeAbout;
@@ -184,13 +175,7 @@ public class ProductModel implements Serializable {
         this.maxDeliverDay = maxDeliverDay;
     }
 
-    public Integer getDeliverCharge() {
-        return deliveryCharge;
-    }
 
-    public void setDeliverCharge(Integer deliverCharge) {
-        this.deliveryCharge = deliverCharge;
-    }
 
     public String getSellerToken() {
         return sellerToken;

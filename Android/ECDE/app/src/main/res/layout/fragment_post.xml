@@ -128,7 +128,19 @@
             android:textCursorDrawable="@null"
            android:maxLength="5"
             />
+    <TextView
 
+        android:lineSpacingExtra="1dp"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="@string/product_price_is_optional"
+        android:layout_marginTop="4dp"
+        android:paddingStart="2dp"
+        android:paddingEnd="2dp"
+        android:fontFamily="@font/sfpromedium2"
+        android:textSize="10sp"
+        android:textColor="@color/note_color"
+        />
 
         <EditText
             android:background="@drawable/edittext_back"
@@ -309,22 +321,22 @@
             />
 
 
-        <EditText
-            android:layout_marginTop="25dp"
-            android:background="@drawable/edittext_back"
-            android:visibility="gone"
-            android:hint="@string/delivery_charge_r"
-            android:id="@+id/delivery_charge"
-            android:inputType="number"
-            android:layout_width="match_parent"
-            android:layout_height="40dp"
-            android:fontFamily="@font/sfprosemibold2"
-            android:textSize="12sp"
-            android:paddingStart="10dp"
-            android:paddingEnd="10dp"
-            android:textCursorDrawable="@null"
-            android:maxLength="5"
-            />
+<!--        <EditText-->
+<!--            android:layout_marginTop="25dp"-->
+<!--            android:background="@drawable/edittext_back"-->
+<!--            android:visibility="gone"-->
+<!--            android:hint="@string/delivery_charge_r"-->
+<!--            android:id="@+id/delivery_charge"-->
+<!--            android:inputType="number"-->
+<!--            android:layout_width="match_parent"-->
+<!--            android:layout_height="40dp"-->
+<!--            android:fontFamily="@font/sfprosemibold2"-->
+<!--            android:textSize="12sp"-->
+<!--            android:paddingStart="10dp"-->
+<!--            android:paddingEnd="10dp"-->
+<!--            android:textCursorDrawable="@null"-->
+<!--            android:maxLength="5"-->
+<!--            />-->
 
     <LinearLayout
 

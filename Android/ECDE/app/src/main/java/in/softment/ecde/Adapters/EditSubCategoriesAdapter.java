@@ -14,7 +14,6 @@ import androidx.annotation.NonNull;
 import androidx.appcompat.app.AlertDialog;
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.bumptech.glide.Glide;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.firestore.FirebaseFirestore;
@@ -23,10 +22,7 @@ import org.jetbrains.annotations.NotNull;
 
 import java.util.ArrayList;
 
-import in.softment.ecde.EditCategoriesActivity;
 import in.softment.ecde.EditSubcategoryActivity;
-import in.softment.ecde.Models.CategoryModel;
-import in.softment.ecde.Models.MyLanguage;
 import in.softment.ecde.Models.SubcategoryModel;
 import in.softment.ecde.R;
 import in.softment.ecde.Utils.ProgressHud;
@@ -53,7 +49,7 @@ public class EditSubCategoriesAdapter extends RecyclerView.Adapter<EditSubCatego
     public void onBindViewHolder(@NonNull ViewHolder holder, int position) {
 
         SubcategoryModel subcategoryModel = subcategoryModels.get(position);
-        if (MyLanguage.lang.equalsIgnoreCase("pt"))
+        if (Services.getLocateCode(context).equalsIgnoreCase("pt"))
             holder.cat_title.setText(subcategoryModel.getTitle_pt());
         else
             holder.cat_title.setText(subcategoryModel.getTitle_en());

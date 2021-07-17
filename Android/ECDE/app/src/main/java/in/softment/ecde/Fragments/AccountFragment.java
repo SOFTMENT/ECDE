@@ -86,8 +86,16 @@ public class AccountFragment extends Fragment {
         }
 
 
+        String code = Services.getLocateCode(context);
+
+
         TextView langName = view.findViewById(R.id.languageName);
-        langName.setText(getLanguageName());
+        if (code.equalsIgnoreCase("pt")) {
+            langName.setText("Portuguese");
+        }
+        else {
+            langName.setText("English");
+        }
 
         TextView versionName = view.findViewById(R.id.versionName);
         try {
@@ -157,6 +165,11 @@ public class AccountFragment extends Fragment {
                 context.startActivity(new Intent(context, SupportActivity.class));
             }
         });
+
+
+
+
+
 
         //Language
         view.findViewById(R.id.language).setOnClickListener(v -> {
@@ -255,17 +268,6 @@ public class AccountFragment extends Fragment {
     }
 
 
-    public String getLanguageName(){
-        //SharedPref
-        SharedPreferences sharedPreferences = context.getSharedPreferences("lang",MODE_PRIVATE);
-        String code = sharedPreferences.getString("mylang","pt");
 
-        if (code.equalsIgnoreCase("pt")) {
-            return  "Portuguese";
-        }
-        else {
-            return "English";
-        }
-    }
 
 }

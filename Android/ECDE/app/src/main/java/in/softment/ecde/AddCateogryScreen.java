@@ -76,19 +76,19 @@ public class AddCateogryScreen extends AppCompatActivity {
                 String title_pt = cat_title_pt.getText().toString().trim();
                 String title_en = cat_title_en.getText().toString().trim();
                 if (!isImageSelected) {
-                    Services.showCenterToast(AddCateogryScreen.this,"Select Category Image");
+                    Services.showCenterToast(AddCateogryScreen.this,getString(R.string.select_category_image));
                 }
                 else {
                     if (title_pt.isEmpty()) {
-                       Services.showCenterToast(AddCateogryScreen.this,"Enter Title");
+                       Services.showCenterToast(AddCateogryScreen.this,getString(R.string.enter_title));
                     }
                     else {
                         if (title_en.isEmpty()) {
-                            Services.showCenterToast(AddCateogryScreen.this,"Enter English Title");
+                            Services.showCenterToast(AddCateogryScreen.this,getString(R.string.enter_english_title));
                         }
                         else {
                             addCategory.setEnabled(false);
-                            ProgressHud.show(AddCateogryScreen.this,"Adding...");
+                            ProgressHud.show(AddCateogryScreen.this,"");
                             String cat_id =  FirebaseFirestore.getInstance().collection("Categories").document().getId();
                             uploadImageOnFirebase(cat_id,title_pt,title_en);
                         }

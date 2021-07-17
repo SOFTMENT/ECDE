@@ -20,10 +20,7 @@ import com.google.firebase.firestore.QuerySnapshot;
 
 import java.util.ArrayList;
 
-import in.softment.ecde.Adapters.SeeAllCategoriesAdapter;
 import in.softment.ecde.Adapters.SeeAllSubcategoryAdapter;
-import in.softment.ecde.Models.CategoryModel;
-import in.softment.ecde.Models.MyLanguage;
 import in.softment.ecde.Models.SubcategoryModel;
 import in.softment.ecde.Utils.ProgressHud;
 import in.softment.ecde.Utils.Services;
@@ -64,7 +61,8 @@ public class SeeAllSubcategoryActivity extends AppCompatActivity {
     public void getSubCategotyData() {
         ProgressHud.show(this,"");
         String field = "title_pt";
-        if (MyLanguage.lang.equalsIgnoreCase("pt"))
+
+        if (Services.getLocateCode(this).equalsIgnoreCase("pt"))
             field = "title_pt";
         else
             field = "title_en";

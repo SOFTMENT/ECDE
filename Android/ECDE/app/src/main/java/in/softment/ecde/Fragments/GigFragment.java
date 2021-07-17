@@ -1,7 +1,10 @@
 package in.softment.ecde.Fragments;
 
+import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
+import android.graphics.Bitmap;
+import android.net.Uri;
 import android.os.Bundle;
 
 import androidx.annotation.NonNull;
@@ -9,17 +12,45 @@ import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import android.provider.MediaStore;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.bumptech.glide.Glide;
+import com.canhub.cropper.CropImage;
+import com.canhub.cropper.CropImageView;
+import com.google.android.gms.tasks.Continuation;
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.Task;
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.firestore.SetOptions;
+import com.google.firebase.storage.FirebaseStorage;
+import com.google.firebase.storage.StorageReference;
+import com.google.firebase.storage.UploadTask;
+
+import org.jetbrains.annotations.NotNull;
+
+import java.io.IOException;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.Objects;
+
+import de.hdodenhof.circleimageview.CircleImageView;
 import in.softment.ecde.Adapters.MyProductAdapter;
 import in.softment.ecde.BuildConfig;
 import in.softment.ecde.MainActivity;
 import in.softment.ecde.Models.ProductModel;
+import in.softment.ecde.Models.UserModel;
 import in.softment.ecde.R;
+import in.softment.ecde.Utils.Const;
+import in.softment.ecde.Utils.ProgressHud;
+import in.softment.ecde.Utils.Services;
 
 public class GigFragment extends Fragment {
 
@@ -28,6 +59,9 @@ public class GigFragment extends Fragment {
     private TextView message;
     private RecyclerView recyclerView;
     private MyProductAdapter myProductAdapter;
+    private CircleImageView profile_image;
+    private TextView name,mobileNumber;
+    private RelativeLayout topRR;
     public GigFragment(Context context) {
         this.context = context;
     }
@@ -57,6 +91,33 @@ public class GigFragment extends Fragment {
                 } catch(Exception e) {
                     //e.toString();
                 }
+            }
+        });
+
+        profile_image = view.findViewById(R.id.profile_image);
+        name = view.findViewById(R.id.name);
+        mobileNumber = view.findViewById(R.id.mobileNumber);
+        topRR = view.findViewById(R.id.topRR);
+
+        if (UserModel.data.isSeller()) {
+            Glide.with(this).load(UserModel.data.storeImage).placeholder(R.drawable.placeholder).into(profile_image);
+            name.setText(UserModel.data.storeName);
+            mobileNumber.setText(UserModel.data.phoneNumber);
+            topRR.setVisibility(View.VISIBLE); //CHNAGE PLEASE
+        }
+        else {
+            topRR.setVisibility(View.GONE);
+        }
+
+
+        view.findViewById(R.id.changeStoreImage).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Const.changeImageActivity = "gig";
+                CropImage.activity()
+                        .setGuidelines(CropImageView.Guidelines.ON)
+                        .setAspectRatio(1,1)
+                        .start((Activity) context);
             }
         });
 
@@ -90,4 +151,72 @@ public class GigFragment extends Fragment {
         super.onAttach(context);
         ((MainActivity)context).initializeGigFragment(this);
     }
+
+    public void cropURI(Uri resultUri) {
+        Bitmap bitmap = null;
+        try {
+
+            bitmap = MediaStore.Images.Media.getBitmap(context.getContentResolver(), resultUri);
+            profile_image.setImageBitmap(bitmap);
+            uploadImageOnFirebase(resultUri);
+
+        } catch (IOException e) {
+            Log.d("ERROR",e.getLocalizedMessage());
+        }
+    }
+
+    private void uploadImageOnFirebase(Uri resultUri) {
+        ProgressHud.show(context,"");
+        StorageReference storageReference = FirebaseStorage.getInstance().getReference().child("StoreProfile").child(FirebaseAuth.getInstance().getCurrentUser().getUid()+ ".png");
+        UploadTask uploadTask = storageReference.putFile(resultUri);
+        Task<Uri> uriTask = uploadTask.continueWithTask(new Continuation<UploadTask.TaskSnapshot, Task<Uri>>() {
+            @Override
+            public Task<Uri> then(@NonNull Task<UploadTask.TaskSnapshot> task) throws Exception {
+                if (!task.isSuccessful()) {
+                    ProgressHud.dialog.dismiss();
+                    throw Objects.requireNonNull(task.getException());
+                }
+                return storageReference.getDownloadUrl();
+            }
+        }).addOnCompleteListener(new OnCompleteListener<Uri>() {
+            @Override
+            public void onComplete(@NonNull Task<Uri> task) {
+
+                if (task.isSuccessful()) {
+                    String downloadUri = String.valueOf(task.getResult());
+                    UserModel.data.storeImage = downloadUri;
+                    updateStoreInformationOnServer(downloadUri);
+
+
+                }
+                else{
+                    UserModel.data.storeImage = "https://firebasestorage.googleapis.com/v0/b/ecde-24c9c.appspot.com/o/ProfilePicture%2Fuser.png?alt=media&token=e95347b6-c527-4f3e-bc3c-169ea498dd93";
+                    updateStoreInformationOnServer("https://firebasestorage.googleapis.com/v0/b/ecde-24c9c.appspot.com/o/ProfilePicture%2Fuser.png?alt=media&token=e95347b6-c527-4f3e-bc3c-169ea498dd93");
+                }
+
+
+
+            }
+        });
+    }
+
+    private void updateStoreInformationOnServer(String downloadUri) {
+
+        Map<String,String> map = new HashMap();
+        map.put("storeImage",downloadUri);
+        FirebaseFirestore.getInstance().collection("User").document(UserModel.data.uid).set(map, SetOptions.merge()).addOnCompleteListener(new OnCompleteListener<Void>() {
+            @Override
+            public void onComplete(@NonNull @NotNull Task<Void> task) {
+                   ProgressHud.dialog.dismiss();
+
+                    if (task.isSuccessful()) {
+                        Services.showCenterToast(context,"Updated...");
+                    }
+                    else {
+                        Services.showDialog(context,"ERROR",task.getException().getLocalizedMessage());
+                    }
+            }
+        });
+    }
+
 }

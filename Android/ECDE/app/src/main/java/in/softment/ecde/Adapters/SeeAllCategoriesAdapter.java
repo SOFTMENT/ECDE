@@ -19,10 +19,9 @@ import org.jetbrains.annotations.NotNull;
 import java.util.ArrayList;
 
 import in.softment.ecde.Models.CategoryModel;
-import in.softment.ecde.Models.MyLanguage;
 import in.softment.ecde.R;
 import in.softment.ecde.SeeAllSubcategoryActivity;
-import in.softment.ecde.SingleCategoryActivity;
+import in.softment.ecde.Utils.Services;
 
 public class SeeAllCategoriesAdapter extends RecyclerView.Adapter<SeeAllCategoriesAdapter.ViewHolder> {
 
@@ -46,7 +45,7 @@ public class SeeAllCategoriesAdapter extends RecyclerView.Adapter<SeeAllCategori
         holder.setIsRecyclable(false);
         CategoryModel categoryModel = categoryModels.get(position);
 
-        if (MyLanguage.lang.equalsIgnoreCase("pt"))
+        if (Services.getLocateCode(context).equalsIgnoreCase("pt"))
             holder.cat_name.setText(categoryModel.getTitle_pt());
         else
             holder.cat_name.setText(categoryModel.getTitle_en());
@@ -57,7 +56,7 @@ public class SeeAllCategoriesAdapter extends RecyclerView.Adapter<SeeAllCategori
                 Intent intent = new Intent(context, SeeAllSubcategoryActivity.class);
                 intent.putExtra("cat_id",categoryModel.id);
 
-                if (MyLanguage.lang.equalsIgnoreCase("pt"))
+                if (Services.getLocateCode(context).equalsIgnoreCase("pt"))
                     intent.putExtra("cat_name",categoryModel.getTitle_pt());
                 else
                     intent.putExtra("cat_name",categoryModel.getTitle_en());

@@ -1,12 +1,9 @@
 package in.softment.ecde.Utils;
-import android.Manifest;
 import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
-import android.content.pm.PackageManager;
 import android.content.res.Configuration;
-import android.graphics.Shader;
 import android.util.Log;
 import android.view.Gravity;
 import android.view.View;
@@ -15,24 +12,20 @@ import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AlertDialog;
-import androidx.core.app.ActivityCompat;
-import androidx.core.content.ContextCompat;
 
 import com.android.volley.AuthFailureError;
 import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.JsonObjectRequest;
-import com.google.android.gms.ads.AdRequest;
-import com.google.android.gms.ads.FullScreenContentCallback;
-import com.google.android.gms.ads.LoadAdError;
-import com.google.android.gms.ads.interstitial.InterstitialAd;
-import com.google.android.gms.ads.interstitial.InterstitialAdLoadCallback;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.UserInfo;
 import com.google.firebase.firestore.DocumentSnapshot;
+import com.google.firebase.firestore.FieldValue;
 import com.google.firebase.firestore.FirebaseFirestore;
 
+import org.jetbrains.annotations.NotNull;
 import org.json.JSONException;
 import org.json.JSONObject;
 import org.jsoup.Jsoup;
@@ -49,17 +42,14 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.Locale;
 import java.util.Map;
+import java.util.Objects;
 
-import in.softment.ecde.ChatScreenActivity;
 import in.softment.ecde.CreateNewAccount;
 import in.softment.ecde.MainActivity;
-import in.softment.ecde.Models.MyLanguage;
-import in.softment.ecde.Models.ProductModel;
 import in.softment.ecde.Models.UserModel;
 import in.softment.ecde.R;
 
 import in.softment.ecde.SignInActivity;
-import in.softment.ecde.ViewProductActivity;
 
 import static android.content.Context.MODE_PRIVATE;
 
@@ -137,12 +127,18 @@ public class Services {
     }
 
     public static void loadLocale(Context context){
-        SharedPreferences sharedPreferences = context.getSharedPreferences("lang",MODE_PRIVATE);
-        String code = sharedPreferences.getString("mylang","pt");
-        MyLanguage.lang = code;
+        String code = getLocateCode(context);
         setLocale(context,code);
     }
 
+
+
+
+
+    public static String getLocateCode(Context context){
+        SharedPreferences sharedPreferences = context.getSharedPreferences("lang",MODE_PRIVATE);
+        return sharedPreferences.getString("mylang","pt");
+    }
     private static  void setLocale(Context context,String code){
         Locale locale = new Locale(code);
         Locale.setDefault(locale);
@@ -323,7 +319,13 @@ public class Services {
                 }
             }
         });
-        alertDialog.show();
+
+        if(!((Activity) context).isFinishing())
+        {
+            alertDialog.show();
+
+        }
+
     }
 
     public static void sentEmailVerificationLink(Context context){
@@ -348,6 +350,28 @@ public class Services {
         }
     }
 
+
+
+    public static void addUserDataOnServer(Context context,String uid,String fullName, String emailAddress, String imageUrl){
+        Map<String,Object> user = new HashMap<>();
+        user.put("uid",uid);
+        user.put("fullName",fullName);
+        user.put("emailAddress",emailAddress);
+        user.put("profileImage",imageUrl);
+        user.put("registrationDate", FieldValue.serverTimestamp());
+
+        ProgressHud.show(context,"");
+        FirebaseFirestore.getInstance().collection("User").document(uid).set(user).addOnCompleteListener(new OnCompleteListener<Void>() {
+            @Override
+            public void onComplete(@NonNull Task<Void> task) {
+                ProgressHud.dialog.dismiss();
+                if (task.isSuccessful()) {
+                    Services.getCurrentUserData(context,FirebaseAuth.getInstance().getCurrentUser().getUid());
+                }
+            }
+        });
+    }
+
     public static void getCurrentUserData(Context context,String uid) {
 
         ProgressHud.show(context,"");
@@ -355,12 +379,6 @@ public class Services {
             @Override
             public void onComplete(@NonNull Task<DocumentSnapshot> task) {
 
-                try {
-                    ProgressHud.dialog.dismiss();
-                }
-                catch (Exception ignored){
-
-                }
 
                 ProgressHud.dialog.dismiss();
                 if (task.isSuccessful()) {
@@ -370,9 +388,7 @@ public class Services {
 
                         if (UserModel.data != null) {
                                 Intent intent = null;
-
-                                     intent = new Intent(context, MainActivity.class);
-
+                                intent = new Intent(context, MainActivity.class);
                                 intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
                                 context.startActivity(intent);
 
@@ -382,8 +398,23 @@ public class Services {
                         }
                     }
                     else {
-                        FirebaseAuth.getInstance().signOut();
-                        showCenterToast(context,context.getString(R.string.your_record_deleted));
+
+                        String imageURL =  "https://firebasestorage.googleapis.com/v0/b/ecde-24c9c.appspot.com/o/ProfilePicture%2Fman1.jpeg?alt=media&token=d834925f-114d-4aec-a3d1-3c4234b5d082";
+                        if (FirebaseAuth.getInstance().getCurrentUser().getPhotoUrl() != null) {
+                            imageURL = FirebaseAuth.getInstance().getCurrentUser().getPhotoUrl().toString();
+                        }
+
+                        String sEmail = FirebaseAuth.getInstance().getCurrentUser().getDisplayName()+"@ecde.com";
+                        sEmail = sEmail.replaceAll(" ","");
+                        for (UserInfo user: Objects.requireNonNull(FirebaseAuth.getInstance().getCurrentUser()).getProviderData()) {
+
+                            if (user.getEmail() != null) {
+                                sEmail = user.getEmail();
+
+                            }
+                        }
+                        addUserDataOnServer(context,FirebaseAuth.getInstance().getCurrentUser().getUid(),FirebaseAuth.getInstance().getCurrentUser().getDisplayName(), sEmail,imageURL);
+
                     }
                 }
                 else {
@@ -393,4 +424,6 @@ public class Services {
             }
         });
     }
+
+
 }

@@ -78,12 +78,21 @@ public class ProductAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder
                 Glide.with(context).load(productModel.getImages().get("0")).override(Target.SIZE_ORIGINAL, Target.SIZE_ORIGINAL).diskCacheStrategy(DiskCacheStrategy.DATA).placeholder(R.drawable.placeholder1).into(productViewHolder.roundedImageView);
             }
             productViewHolder.productTitle.setText(Services.toUpperCase(productModel.title));
-            productViewHolder.productPrice.setText("R$"+productModel.price);
+
+            if (productModel.getPrice() == 0) {
+                productViewHolder.card_price.setVisibility(View.GONE);
+            }
+            else {
+                productViewHolder.card_price.setVisibility(View.VISIBLE);
+                productViewHolder.productPrice.setText("R$"+productModel.price);
+
+            }
 
             productViewHolder.view.setOnClickListener(view -> {
 
                 Intent intent = new Intent(context, ViewProductActivity.class);
                 intent.putExtra("product",productModel);
+                intent.putExtra("fromDeepLink",false);
                 context.startActivity(intent);
             });
 
@@ -147,6 +156,7 @@ public class ProductAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder
         private TextView productTitle, productPrice;
         private View view;
         private CardView adsCard;
+        private CardView card_price;
         public ProductViewHolder(@NonNull View itemView) {
             super(itemView);
             view = itemView;
@@ -154,6 +164,7 @@ public class ProductAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder
             productPrice = itemView.findViewById(R.id.product_price);
             productTitle = itemView.findViewById(R.id.product_title);
             adsCard = itemView.findViewById(R.id.adsCard);
+            card_price = itemView.findViewById(R.id.price_card_view);
         }
     }
 

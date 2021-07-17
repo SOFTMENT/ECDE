@@ -13,6 +13,7 @@ import android.app.Service;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.net.Uri;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
@@ -31,8 +32,14 @@ import com.google.android.gms.ads.LoadAdError;
 import com.google.android.gms.ads.interstitial.InterstitialAd;
 import com.google.android.gms.ads.interstitial.InterstitialAdLoadCallback;
 import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.OnFailureListener;
+import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.dynamiclinks.DynamicLink;
+import com.google.firebase.dynamiclinks.FirebaseDynamicLinks;
+import com.google.firebase.dynamiclinks.PendingDynamicLinkData;
+import com.google.firebase.dynamiclinks.ShortDynamicLink;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.makeramen.roundedimageview.RoundedImageView;
 
@@ -40,6 +47,7 @@ import org.jetbrains.annotations.NotNull;
 import org.w3c.dom.Text;
 
 import java.util.ArrayList;
+import java.util.Objects;
 
 import de.hdodenhof.circleimageview.CircleImageView;
 import in.softment.ecde.Adapters.MyHeaderPagerAdapter;
@@ -55,6 +63,7 @@ public class ViewProductActivity extends AppCompatActivity {
     private int current_pos = 0;
     private LinearLayout dotlayout;
     private ProductModel productModel;
+    private boolean fromDeepLink = false;
     private  ImageView[] dots;
     private int previouspos = 0;
     private ImageView more;
@@ -72,9 +81,12 @@ public class ViewProductActivity extends AppCompatActivity {
         //MOREACTION
         more = findViewById(R.id.more);
 
-        if (!UserModel.data.emailAddress.equalsIgnoreCase("ecde.app@gmail.com")){
+        if (UserModel.data.emailAddress.equalsIgnoreCase("ecde.app@gmail.com")){
             more.setVisibility(View.VISIBLE);
 
+        }
+        else {
+            more.setVisibility(View.GONE);
         }
 
 
@@ -86,10 +98,17 @@ public class ViewProductActivity extends AppCompatActivity {
             }
         });
 
+
+
+
         productModel = (ProductModel)getIntent().getSerializableExtra("product");
+        fromDeepLink = getIntent().getBooleanExtra("fromDeepLink",false);
+
         if (productModel == null) {
+
             finish();
         }
+
         if (productModel.getImages().size() < 1) {
             finish();
         }
@@ -108,10 +127,10 @@ public class ViewProductActivity extends AppCompatActivity {
         TextView description = findViewById(R.id.description);
         TextView seller = findViewById(R.id.sellerName);
         LinearLayout deliveryLL = findViewById(R.id.deliveryLL);
-        TextView deliveryFee = findViewById(R.id.deliveryFee);
         TextView deliveryDay = findViewById(R.id.deliveryDays);
         TextView condition = findViewById(R.id.condition);
         TextView quantity = findViewById(R.id.quantity);
+        TextView city = findViewById(R.id.city);
         CircleImageView storeImage = findViewById(R.id.storeImage);
         if (productModel.getStoreImage() != null && !productModel.getStoreImage().isEmpty()) {
             Glide.with(this).load(productModel.getStoreImage()).placeholder(R.drawable.placeholder).into(storeImage);
@@ -119,14 +138,29 @@ public class ViewProductActivity extends AppCompatActivity {
 
 
         title.setText(Services.toUpperCase(productModel.title));
-        category.setText(CategoryModel.getCategoryNameById(productModel.getCat_id()));
+        category.setText(CategoryModel.getCategoryNameById(this,productModel.getCat_id()));
         description.setText(productModel.description);
-        price.setText("R$ "+productModel.getPrice());
+        if (productModel.getPrice() == 0) {
+            price.setVisibility(View.GONE);
+        }
+        else {
+            price.setVisibility(View.VISIBLE);
+            price.setText("R$ "+productModel.getPrice());
+        }
+
         seller.setText(Services.toUpperCase(productModel.sellerName));
         findViewById(R.id.back).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                finish();
+                if (fromDeepLink) {
+                    Intent intent = new Intent(ViewProductActivity.this,MainActivity.class);
+                    intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_NEW_TASK);
+                    startActivity(intent);
+                    finish();
+                }
+                else {
+                    finish();
+                }
             }
         });
 
@@ -138,11 +172,11 @@ public class ViewProductActivity extends AppCompatActivity {
         }
 
         quantity.setText(String.valueOf(productModel.quantity));
-
+        city.setText(productModel.storeCity);
 
         if (productModel.isDeliverProduct()) {
             deliveryLL.setVisibility(View.VISIBLE);
-            deliveryFee.setText("R$ "+productModel.deliveryCharge);
+         //   deliveryFee.setText("R$ "+productModel.deliveryCharge);
             int days = productModel.maxDeliverDay;
             if (productModel.isSameDayDeliver()) {
                 deliveryDay.setText(getString(R.string.day1));
@@ -158,19 +192,32 @@ public class ViewProductActivity extends AppCompatActivity {
 
 
         CardView contactSellerBtn = findViewById(R.id.contactSeller);
-        if (productModel.getUid().equals(FirebaseAuth.getInstance().getCurrentUser().getUid())) {
-            contactSellerBtn.setVisibility(View.GONE);
-        }
+
 
         //ContactSeller
         contactSellerBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                if (mInterstitialAd == null)
-                    gotoChatScreen();
-                else
-               showInterstitialsAds(ViewProductActivity.this);
 
+                if (productModel.getUid().equals(FirebaseAuth.getInstance().getCurrentUser().getUid())) {
+                    Services.showCenterToast(ViewProductActivity.this,getString(R.string.you_can_not_contact));
+                }
+                else {
+                    if (mInterstitialAd == null)
+                        gotoChatScreen();
+                    else
+                        showInterstitialsAds(ViewProductActivity.this);
+                }
+
+
+            }
+        });
+
+        //ShareProduct
+        findViewById(R.id.shareProduct).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                createProductURL();
             }
         });
 
@@ -199,6 +246,45 @@ public class ViewProductActivity extends AppCompatActivity {
 
             }
         });
+    }
+
+
+
+    private void createProductURL(){
+
+        ProgressHud.show(ViewProductActivity.this, "");
+        String productLinkText = "https://ecde.page.link/?"+
+                "link=https://www.softment.in/?productId="+productModel.getId()+
+                "&apn="+getPackageName()+
+                "&st="+productModel.getTitle()+
+                "&sd="+productModel.getDescription()+
+                "&si="+productModel.getImages().get("0");
+
+
+
+                FirebaseDynamicLinks.getInstance().createDynamicLink()
+                .setLongLink(Uri.parse(productLinkText)).buildShortDynamicLink().addOnCompleteListener(new OnCompleteListener<ShortDynamicLink>() {
+                    @Override
+                    public void onComplete(@NonNull @NotNull Task<ShortDynamicLink> task) {
+                        ProgressHud.dialog.dismiss();
+                        if (task.isSuccessful()) {
+                            Uri shortLink = task.getResult().getShortLink();
+                            Uri flowchartLink = task.getResult().getPreviewLink();
+                            Log.e("main ", "short link "+ shortLink.toString());
+                            // share app dialog
+                            Intent intent = new Intent();
+                            intent.setAction(Intent.ACTION_SEND);
+                            intent.putExtra(Intent.EXTRA_TEXT,  shortLink.toString());
+                            intent.setType("text/plain");
+                            startActivity(intent);
+                        }
+                        else {
+                            Services.showDialog(ViewProductActivity.this,"ERROR", Objects.requireNonNull(task.getException()).getLocalizedMessage());
+                        }
+                    }
+                });
+
+
     }
 
     private void showPopupMenu(){
@@ -280,6 +366,7 @@ public class ViewProductActivity extends AppCompatActivity {
 
     }
 
+
     public void gotoChatScreen(){
         Intent intent = new Intent(ViewProductActivity.this, ChatScreenActivity.class);
         intent.putExtra("sellerId",productModel.getUid());
@@ -291,7 +378,7 @@ public class ViewProductActivity extends AppCompatActivity {
 
     public void showInterstitialsAds(Activity context){
         if (mInterstitialAd != null)
-        mInterstitialAd.show(context);
+            mInterstitialAd.show(context);
 
     }
 
@@ -331,4 +418,16 @@ public class ViewProductActivity extends AppCompatActivity {
 
     }
 
+    @Override
+    public void onBackPressed() {
+        if (fromDeepLink) {
+            Intent intent = new Intent(ViewProductActivity.this,MainActivity.class);
+            intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_NEW_TASK);
+            startActivity(intent);
+            finish();
+        }
+        else {
+            finish();
+        }
+    }
 }

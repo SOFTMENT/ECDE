@@ -44,7 +44,6 @@ public class HomeFragment extends Fragment {
        this.context = context;
     }
 
-
     public HomeFragment(){
 
     }

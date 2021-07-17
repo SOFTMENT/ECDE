@@ -53,6 +53,7 @@ import in.softment.ecde.Models.UserModel;
 import in.softment.ecde.R;
 import in.softment.ecde.SellerStoreInformationActivity;
 import in.softment.ecde.Utils.Cities;
+import in.softment.ecde.Utils.Const;
 import in.softment.ecde.Utils.ProgressHud;
 import in.softment.ecde.Utils.Services;
 
@@ -106,7 +107,7 @@ public class SellerStoreInformation extends Fragment {
         city.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
             public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
-                Toast.makeText(context, ""+position, Toast.LENGTH_SHORT).show();
+
                 city.setText(cities[position]);
             }
 
@@ -251,6 +252,8 @@ public class SellerStoreInformation extends Fragment {
 
 
     public void cropUrl(Uri uri){
+
+
         resultUri = uri;
         Bitmap bitmap = null;
         try {
@@ -267,7 +270,8 @@ public class SellerStoreInformation extends Fragment {
 
         if (requestCode == 1 && data != null && data.getData() != null) {
             Uri filepath = data.getData();
-            CropImage.activity(filepath).setOutputCompressQuality(60).start((MainActivity)context);
+            Const.changeImageActivity = "sellerstore";
+            CropImage.activity(filepath).setOutputCompressQuality(60).setAspectRatio(1,1).start((MainActivity)context);
         }
 
     }
