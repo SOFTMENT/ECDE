@@ -19,7 +19,7 @@ import androidx.cardview.widget.CardView;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.bumptech.glide.Glide;
-import com.bumptech.glide.load.engine.DiskCacheStrategy;
+
 import com.bumptech.glide.request.target.Target;
 
 import com.google.android.ads.nativetemplates.NativeTemplateStyle;
@@ -67,16 +67,29 @@ public class ProductAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder
     }
 
     @Override
+    public void onViewAttachedToWindow(@NonNull RecyclerView.ViewHolder holder) {
+        super.onViewAttachedToWindow(holder);
+        if (holder.getItemViewType() == product_view) {
+            int index = holder.getAdapterPosition();
+            int newIndex = index - (index / 10);
+            ProductViewHolder productViewHolder = (ProductViewHolder) holder;
+            if (productModels.get(newIndex).images.size() > 0) {
+
+                Glide.with(context).load(productModels.get(newIndex).getImages().get("0")).override(Target.SIZE_ORIGINAL, Target.SIZE_ORIGINAL).placeholder(R.drawable.placeholder1).into(productViewHolder.roundedImageView);
+            }
+        }
+    }
+
+    @Override
     public void onBindViewHolder(@NonNull RecyclerView.ViewHolder holder, int position) {
         holder.setIsRecyclable(false);
 
         if (holder.getItemViewType() == product_view) {
-            ProductViewHolder productViewHolder = (ProductViewHolder) holder;
+
             int newIndex = position - (position / 10);
             ProductModel productModel = productModels.get(newIndex);
-            if (productModel.images.size() > 0) {
-                Glide.with(context).load(productModel.getImages().get("0")).override(Target.SIZE_ORIGINAL, Target.SIZE_ORIGINAL).diskCacheStrategy(DiskCacheStrategy.DATA).placeholder(R.drawable.placeholder1).into(productViewHolder.roundedImageView);
-            }
+
+            ProductViewHolder productViewHolder = (ProductViewHolder) holder;
             productViewHolder.productTitle.setText(Services.toUpperCase(productModel.title));
 
             if (productModel.getPrice() == 0) {
@@ -180,7 +193,7 @@ public class ProductAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder
         ArrayList<ProductModel> newproductModels = new ArrayList<>();
 
         for (ProductModel productModel : mainProductModels) {
-            if (productModel.title.toLowerCase().contains(text.toLowerCase()) || productModel.storeCity.toLowerCase().contains(text.toLowerCase()) ) {
+            if (productModel.title.toLowerCase().contains(text.toLowerCase()) || productModel.storeCity.toLowerCase().contains(text.toLowerCase()) || productModel.description.toLowerCase().contains(text.toLowerCase())) {
                 newproductModels.add(productModel);
             }
         }

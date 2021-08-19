@@ -17,6 +17,7 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -27,6 +28,7 @@ import com.canhub.cropper.CropImageView;
 import com.google.android.gms.tasks.Continuation;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
+import com.google.firebase.BuildConfig;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.SetOptions;
@@ -41,9 +43,7 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Objects;
 
-import de.hdodenhof.circleimageview.CircleImageView;
 import in.softment.ecde.Adapters.MyProductAdapter;
-import in.softment.ecde.BuildConfig;
 import in.softment.ecde.MainActivity;
 import in.softment.ecde.Models.ProductModel;
 import in.softment.ecde.Models.UserModel;
@@ -55,16 +55,13 @@ import in.softment.ecde.Utils.Services;
 public class GigFragment extends Fragment {
 
 
-    private Context context;
     private TextView message;
     private RecyclerView recyclerView;
     private MyProductAdapter myProductAdapter;
-    private CircleImageView profile_image;
+    private ImageView profile_image;
     private TextView name,mobileNumber;
     private RelativeLayout topRR;
-    public GigFragment(Context context) {
-        this.context = context;
-    }
+    private Context context;
 
     public GigFragment(){
 
@@ -100,7 +97,7 @@ public class GigFragment extends Fragment {
         topRR = view.findViewById(R.id.topRR);
 
         if (UserModel.data.isSeller()) {
-            Glide.with(this).load(UserModel.data.storeImage).placeholder(R.drawable.placeholder).into(profile_image);
+            Glide.with(this).load(UserModel.data.storeImage).placeholder(R.drawable.man1).into(profile_image);
             name.setText(UserModel.data.storeName);
             mobileNumber.setText(UserModel.data.phoneNumber);
             topRR.setVisibility(View.VISIBLE); //CHNAGE PLEASE
@@ -149,6 +146,7 @@ public class GigFragment extends Fragment {
     @Override
     public void onAttach(@NonNull Context context) {
         super.onAttach(context);
+        this.context = context;
         ((MainActivity)context).initializeGigFragment(this);
     }
 
@@ -218,5 +216,6 @@ public class GigFragment extends Fragment {
             }
         });
     }
+
 
 }

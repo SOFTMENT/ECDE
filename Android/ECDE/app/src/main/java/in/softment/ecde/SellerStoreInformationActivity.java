@@ -45,7 +45,7 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Objects;
 
-import de.hdodenhof.circleimageview.CircleImageView;
+
 import in.softment.ecde.Utils.ProgressHud;
 import in.softment.ecde.Utils.Services;
 import io.grpc.Compressor;

@@ -1,4 +1,29 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
-  <component name="ProjectRootManager" version="2" languageLevel="JDK_11" default="true" project-jdk-name="11" project-jdk-type="JavaSDK" />
+  <component name="DesignSurface">
+    <option name="filePathToZoomLevelMap">
+      <map>
+        <entry key="../../../../../../layout/custom_preview.xml" value="0.24166666666666667" />
+        <entry key="app/src/main/res/drawable/circle_back.xml" value="0.24427083333333333" />
+        <entry key="app/src/main/res/layout/activity_chat_screen.xml" value="0.1" />
+        <entry key="app/src/main/res/layout/activity_create_new_account.xml" value="0.33" />
+        <entry key="app/src/main/res/layout/activity_manage_category.xml" value="0.11094224924012158" />
+        <entry key="app/src/main/res/layout/activity_see_all_category.xml" value="0.11854103343465046" />
+        <entry key="app/src/main/res/layout/activity_sign_in.xml" value="0.25" />
+        <entry key="app/src/main/res/layout/activity_view_product.xml" value="0.18" />
+        <entry key="app/src/main/res/layout/categories_layout_view.xml" value="0.21" />
+        <entry key="app/src/main/res/layout/chat_home_layout_view.xml" value="0.1234375" />
+        <entry key="app/src/main/res/layout/fragment_account.xml" value="0.1234375" />
+        <entry key="app/src/main/res/layout/fragment_chat.xml" value="0.14270833333333333" />
+        <entry key="app/src/main/res/layout/fragment_gig.xml" value="0.1234375" />
+        <entry key="app/src/main/res/layout/fragment_home.xml" value="0.25" />
+        <entry key="app/src/main/res/layout/fragment_seller_store_information.xml" value="0.1453125" />
+        <entry key="app/src/main/res/layout/left_message.xml" value="0.1234375" />
+        <entry key="app/src/main/res/layout/myproduct_view_layout.xml" value="0.25" />
+        <entry key="app/src/main/res/layout/product_layout_view.xml" value="0.14447463768115942" />
+        <entry key="app/src/main/res/layout/see_all_categories_layout.xml" value="0.18" />
+      </map>
+    </option>
+  </component>
+  <component name="ProjectRootManager" version="2" languageLevel="JDK_1_8" project-jdk-name="11" project-jdk-type="JavaSDK" />
 </project>

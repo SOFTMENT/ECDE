@@ -24,6 +24,7 @@ public class SeeAllSubcategoryAdapter extends RecyclerView.Adapter<SeeAllSubcate
     public SeeAllSubcategoryAdapter(Context context, ArrayList<SubcategoryModel> subcategoryModels){
         this.context = context;
         this.subcategoryModels = subcategoryModels;
+
     }
 
     @NonNull

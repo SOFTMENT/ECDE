@@ -45,7 +45,7 @@ public class ChatHomeAdapter extends RecyclerView.Adapter<ChatHomeAdapter.ViewHo
     public void onBindViewHolder(@NonNull ViewHolder holder, int position) {
             holder.setIsRecyclable(false);
             LastMessageModel lastMessageModel = lastMessageModels.get(position);
-           Glide.with(context).load(lastMessageModel.getSenderImage()).diskCacheStrategy(DiskCacheStrategy.DATA).placeholder(R.drawable.man).into(holder.profile_image);
+           Glide.with(context).load(lastMessageModel.getSenderImage()).placeholder(R.drawable.man).into(holder.profile_image);
            holder.username.setText(lastMessageModel.getSenderName());
            holder.message.setText(lastMessageModel.getMessage());
            holder.time.setText(Services.convertDateToTimeString(lastMessageModel.getDate()));

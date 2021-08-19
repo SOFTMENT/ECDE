@@ -49,7 +49,7 @@ public class SeeAllCategoriesAdapter extends RecyclerView.Adapter<SeeAllCategori
             holder.cat_name.setText(categoryModel.getTitle_pt());
         else
             holder.cat_name.setText(categoryModel.getTitle_en());
-        Glide.with(context).load(categoryModel.image).diskCacheStrategy(DiskCacheStrategy.DATA).placeholder(R.drawable.placeholder1).into(holder.cat_image);
+        Glide.with(context).load(categoryModel.image).placeholder(R.drawable.placeholder1).into(holder.cat_image);
         holder.view.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {

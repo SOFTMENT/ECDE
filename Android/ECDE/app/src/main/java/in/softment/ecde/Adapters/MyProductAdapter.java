@@ -53,7 +53,7 @@ public class MyProductAdapter extends RecyclerView.Adapter<MyProductAdapter.View
         holder.setIsRecyclable(false);
         ProductModel productModel = productModels.get(position);
         if (productModel.getImages().size() > 0) {
-            Glide.with(context).load(productModel.getImages().get("0")).diskCacheStrategy(DiskCacheStrategy.DATA).placeholder(R.drawable.placeholder1).into(holder.imageView);
+            Glide.with(context).load(productModel.getImages().get("0")).placeholder(R.drawable.placeholder1).into(holder.imageView);
 
         }
         holder.title.setText(productModel.title);

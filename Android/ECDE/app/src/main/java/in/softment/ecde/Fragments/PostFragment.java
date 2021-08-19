@@ -21,6 +21,7 @@ import android.widget.AutoCompleteTextView;
 import android.widget.EditText;
 import android.widget.LinearLayout;
 import android.widget.RadioGroup;
+import android.widget.Toast;
 
 import com.canhub.cropper.CropImage;
 import com.google.android.gms.tasks.Continuation;
@@ -60,7 +61,7 @@ import in.softment.ecde.Utils.Services;
 
 public class PostFragment extends Fragment {
 
-    private Map<String, Uri> images = new HashMap<>();
+    private final Map<String, Uri> images = new HashMap<>();
     private int clickedImageViewPosition = 0;
     private RoundedImageView oneImage, twoImage, threeImage, fourImage;
     private LinearLayout oneLL, twoLL, threeLL, fourLL;
@@ -76,9 +77,7 @@ public class PostFragment extends Fragment {
     private LinearLayout canYouDeliverSameDayLL;
     private int selectedCategoryIndex = -1;
     private int selectedSubCategoryIndex = -1;
-    public PostFragment(Context context) {
-        this.context = context;
-    }
+
     private ArrayList<SubcategoryModel> subcategoryModels;
     private AutoCompleteTextView chooseCategory, chooseSubcategory;
 
@@ -92,6 +91,7 @@ public class PostFragment extends Fragment {
                              Bundle savedInstanceState) {
 
         View view = inflater.inflate(R.layout.fragment_post, container, false);
+
 
 
 
@@ -182,11 +182,11 @@ public class PostFragment extends Fragment {
                     Services.showCenterToast(context,getString(R.string.enter_product_quantity));
                     return;
                 }
-                else if (category.isEmpty()) {
+                else if (category.isEmpty() || selectedCategoryIndex == -1) {
                     Services.showCenterToast(context,getString(R.string.choose_product_category));
                     return;
                 }
-                else if (sSubCategory.isEmpty()) {
+                else if (sSubCategory.isEmpty() || selectedSubCategoryIndex == -1) {
                     Services.showCenterToast(context,getString(R.string.choose_product_subcategory));
                     return;
                 }
@@ -357,6 +357,7 @@ public class PostFragment extends Fragment {
                 public Task<Uri> then(@NonNull Task<UploadTask.TaskSnapshot> task) throws Exception {
                     if (!task.isSuccessful()) {
                         ProgressHud.dialog.dismiss();
+                        Log.d("VIJAYERROR",task.getException().getLocalizedMessage());
                         throw  task.getException();
                     }
                     return storageReference.getDownloadUrl();
@@ -368,6 +369,7 @@ public class PostFragment extends Fragment {
 
                     if (task.isSuccessful()) {
                         String downloadUri = String.valueOf(task.getResult());
+
                         sImages.put(key,downloadUri);
                         Map<String, Object> map = new HashMap<>();
                         map.put("images",sImages);
@@ -382,6 +384,9 @@ public class PostFragment extends Fragment {
                                     }
                             }
                         });
+                    }
+                    else {
+                        Log.d("VIJAYERROR",task.getException().getLocalizedMessage());
                     }
 
 
@@ -476,7 +481,7 @@ public class PostFragment extends Fragment {
         if (requestCode == 1 && data != null && data.getData() != null) {
             Uri filepath = data.getData();
             Const.changeImageActivity = "post";
-            CropImage.activity(filepath).setOutputCompressQuality(60).start((MainActivity)context);
+            CropImage.activity(filepath).setOutputCompressQuality(40).start((MainActivity)context);
         }
 
     }
@@ -643,6 +648,7 @@ public class PostFragment extends Fragment {
     @Override
     public void onAttach(@NonNull Context context) {
         super.onAttach(context);
+        this.context = context;
         ((MainActivity)context).initializePostFragment(this);
     }
 }

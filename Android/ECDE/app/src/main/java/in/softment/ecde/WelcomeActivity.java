@@ -115,13 +115,13 @@ public class WelcomeActivity extends AppCompatActivity {
                            }
                            else {
                                FirebaseUser firebaseUser = FirebaseAuth.getInstance().getCurrentUser();
-                               Services.getCurrentUserData(WelcomeActivity.this, firebaseUser.getUid());
+                               Services.getCurrentUserData(WelcomeActivity.this, firebaseUser.getUid(),false);
                            }
 
                         }
                         else {
                             FirebaseUser firebaseUser = FirebaseAuth.getInstance().getCurrentUser();
-                            Services.getCurrentUserData(WelcomeActivity.this, firebaseUser.getUid());
+                            Services.getCurrentUserData(WelcomeActivity.this, firebaseUser.getUid(),false);
                         }
 
                     }
@@ -130,7 +130,7 @@ public class WelcomeActivity extends AppCompatActivity {
                     @Override
                     public void onFailure(@NonNull Exception e) {
                         FirebaseUser firebaseUser = FirebaseAuth.getInstance().getCurrentUser();
-                        Services.getCurrentUserData(WelcomeActivity.this, firebaseUser.getUid());
+                        Services.getCurrentUserData(WelcomeActivity.this, firebaseUser.getUid(),false);
                     }
                 });
     }
@@ -151,12 +151,12 @@ public class WelcomeActivity extends AppCompatActivity {
                     }
                     else {
                         FirebaseUser firebaseUser = FirebaseAuth.getInstance().getCurrentUser();
-                        Services.getCurrentUserData(WelcomeActivity.this, firebaseUser.getUid());
+                        Services.getCurrentUserData(WelcomeActivity.this, firebaseUser.getUid(),false);
                     }
                 }
                 else {
                     FirebaseUser firebaseUser = FirebaseAuth.getInstance().getCurrentUser();
-                    Services.getCurrentUserData(WelcomeActivity.this, firebaseUser.getUid());
+                    Services.getCurrentUserData(WelcomeActivity.this, firebaseUser.getUid(),false);
                 }
             }
         });

@@ -30,16 +30,11 @@ import in.softment.ecde.R;
 
 public class ChatFragment extends Fragment {
 
-
-    private Context context;
     private ChatHomeAdapter chatHomeAdapter;
     private TextView message;
     private ArrayList<LastMessageModel> lastMessageModels;
     private RecyclerView recyclerView;
-    public ChatFragment(Context context) {
-        this.context = context;
-    }
-
+    private Context context;
 
     public ChatFragment(){
 
@@ -139,6 +134,7 @@ public class ChatFragment extends Fragment {
     @Override
     public void onAttach(@NonNull @NotNull Context context) {
         super.onAttach(context);
+        this.context = context;
         ((MainActivity)context).initializeChatFragment(this);
 
     }

@@ -258,4 +258,6 @@ public class ProductModel implements Serializable {
     public void setSellerName(String sellerName) {
         this.sellerName = sellerName;
     }
+
+
 }

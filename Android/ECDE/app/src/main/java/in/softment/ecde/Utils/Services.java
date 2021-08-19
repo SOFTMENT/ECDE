@@ -135,10 +135,15 @@ public class Services {
 
 
 
-    public static String getLocateCode(Context context){
-        SharedPreferences sharedPreferences = context.getSharedPreferences("lang",MODE_PRIVATE);
-        return sharedPreferences.getString("mylang","pt");
+    public static String getLocateCode(Context context) {
+        if (context != null) {
+            SharedPreferences sharedPreferences = context.getSharedPreferences("lang", MODE_PRIVATE);
+            return sharedPreferences.getString("mylang", "pt");
+        }
+
+        return "pt";
     }
+
     private static  void setLocale(Context context,String code){
         Locale locale = new Locale(code);
         Locale.setDefault(locale);
@@ -366,21 +371,27 @@ public class Services {
             public void onComplete(@NonNull Task<Void> task) {
                 ProgressHud.dialog.dismiss();
                 if (task.isSuccessful()) {
-                    Services.getCurrentUserData(context,FirebaseAuth.getInstance().getCurrentUser().getUid());
+                    Services.getCurrentUserData(context,FirebaseAuth.getInstance().getCurrentUser().getUid(),true);
                 }
             }
         });
     }
 
-    public static void getCurrentUserData(Context context,String uid) {
+    public static void getCurrentUserData(Context context,String uid, Boolean showProgress) {
 
-        ProgressHud.show(context,"");
+        if (showProgress) {
+            ProgressHud.show(context,"");
+        }
+
         FirebaseFirestore.getInstance().collection("User").document(uid).get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
             @Override
             public void onComplete(@NonNull Task<DocumentSnapshot> task) {
 
 
-                ProgressHud.dialog.dismiss();
+                if (showProgress) {
+                    ProgressHud.dialog.dismiss();
+                }
+
                 if (task.isSuccessful()) {
                     DocumentSnapshot documentSnapshot = task.getResult();
                     if (documentSnapshot != null && documentSnapshot.exists()) {

@@ -20,7 +20,6 @@ import com.bumptech.glide.load.engine.DiskCacheStrategy;
 
 import java.util.List;
 
-import de.hdodenhof.circleimageview.CircleImageView;
 import in.softment.ecde.Models.AllMessagesModel;
 import in.softment.ecde.R;
 import in.softment.ecde.Utils.Services;
@@ -57,7 +56,7 @@ public class LiveChatAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
         if (holder.getItemViewType() == LEFT_MESSAGE) {
             MyHolderLeft myHolderLeft  = (MyHolderLeft)holder;
             myHolderLeft.name.setText(chatModels.get(position).getSenderName());
-            Glide.with(context).load(chatModels.get(position).getSenderImage()).diskCacheStrategy(DiskCacheStrategy.DATA).placeholder(R.drawable.placeholder1).into(myHolderLeft.imageView);
+            Glide.with(context).load(chatModels.get(position).getSenderImage()).placeholder(R.drawable.man1).into(myHolderLeft.imageView);
 
             if (chatModels.get(position).getDate() != null) {
                 myHolderLeft.dateandtime.setText(Services.convertDateToTimeString(chatModels.get(position).getDate()));
@@ -113,7 +112,7 @@ public class LiveChatAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
 
     static class MyHolderLeft extends RecyclerView.ViewHolder {
         private TextView message;
-        private CircleImageView imageView;
+        private ImageView imageView;
         private TextView name;
         private View view;
         private TextView dateandtime;

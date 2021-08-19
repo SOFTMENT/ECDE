@@ -1,13 +1,17 @@
 package in.softment.ecde;
 
 import androidx.annotation.NonNull;
+import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
 
 import android.Manifest;
+import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
+import android.content.res.Configuration;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
@@ -46,6 +50,7 @@ import com.google.firebase.firestore.FirebaseFirestore;
 
 import java.util.Arrays;
 import java.util.HashMap;
+import java.util.Locale;
 import java.util.Map;
 import java.util.Objects;
 
@@ -139,6 +144,47 @@ public class SignInActivity extends AppCompatActivity {
             }
         });
 
+        String code = Services.getLocateCode(this);
+
+
+        TextView langName = findViewById(R.id.languageCode);
+        if (code.equalsIgnoreCase("pt")) {
+            langName.setText("Pt");
+        }
+        else {
+            langName.setText("En");
+        }
+
+
+        //Language
+        findViewById(R.id.langaugeCard).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                final String[] listItems = {"English","Portuguese"};
+                AlertDialog.Builder builder = new AlertDialog.Builder(SignInActivity.this);
+                builder.setTitle("Choose Language");
+                builder.setSingleChoiceItems(listItems, -1, new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        if (which == 0) {
+                            setLocale("en");
+                            restart();
+                        }
+                        else if (which == 1){
+                            setLocale("pt");
+                            restart();
+                        }
+                        dialog.dismiss();
+                    }
+                });
+
+                AlertDialog alertDialog = builder.create();
+                alertDialog.show();
+
+
+            }
+        });
+
         //SignIn
         findViewById(R.id.login).setOnClickListener(new View.OnClickListener() {
             @Override
@@ -164,7 +210,7 @@ public class SignInActivity extends AppCompatActivity {
                                                     Services.sentEmailVerificationLink(SignInActivity.this);
                                             }
                                             else {
-                                                Services.getCurrentUserData(SignInActivity.this, FirebaseAuth.getInstance().getCurrentUser().getUid());
+                                                Services.getCurrentUserData(SignInActivity.this, FirebaseAuth.getInstance().getCurrentUser().getUid(),true);
                                             }
 
                                         }
@@ -219,7 +265,7 @@ public class SignInActivity extends AppCompatActivity {
                             // Sign in success, update UI with the signed-in user's information
                             if (mAuth.getCurrentUser() != null){
 
-                                Services.getCurrentUserData(SignInActivity.this,mAuth.getCurrentUser().getUid());
+                                Services.getCurrentUserData(SignInActivity.this,mAuth.getCurrentUser().getUid(),true);
 
                             }
 
@@ -251,6 +297,24 @@ public class SignInActivity extends AppCompatActivity {
            mCallbackManager.onActivityResult(requestCode, resultCode, data);
         }
 
+    }
+
+    private void restart() {
+        Intent intent = new Intent(this, WelcomeActivity.class);
+        intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_NEW_TASK);
+        startActivity(intent);
+    }
+    private void setLocale(String code){
+        Locale locale = new Locale(code);
+        Locale.setDefault(locale);
+        Configuration configuration = new Configuration();
+        configuration.locale = locale;
+        getResources().updateConfiguration(configuration,this.getResources().getDisplayMetrics());
+
+        //SharedPref
+        SharedPreferences.Editor sharedPreferences = getSharedPreferences("lang", MODE_PRIVATE).edit();
+        sharedPreferences.putString("mylang",code);
+        sharedPreferences.apply();
     }
 
 

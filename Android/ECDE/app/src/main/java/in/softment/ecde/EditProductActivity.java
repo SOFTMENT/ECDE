@@ -74,6 +74,7 @@ public class EditProductActivity extends AppCompatActivity {
         int index = getIntent().getIntExtra("index",-1);
         if (index == -1) {
             finish();
+            return;
         }
         productModel = ProductModel.myproductsModels.get(index);
         if (productModel == null) {
@@ -152,10 +153,17 @@ public class EditProductActivity extends AppCompatActivity {
 
                 }
 
+
+
                 if (FirebaseAuth.getInstance().getCurrentUser() != null) {
+
                     if (price.isEmpty()) {
                         price = "0";
                     }
+                    if (sQuantity.isEmpty()) {
+                        sQuantity = "0";
+                    }
+
                     updateProduct(title,description,Integer.parseInt(price),Integer.parseInt(sQuantity),willYouDeliver,sameDay,Integer.parseInt(maxDayDelivery));
 
                 } else {
@@ -400,7 +408,7 @@ public class EditProductActivity extends AppCompatActivity {
         if (requestCode == 1 && data != null && data.getData() != null) {
 
             Uri filepath = data.getData();
-            CropImage.activity(filepath).setOutputCompressQuality(60).start(EditProductActivity.this);
+            CropImage.activity(filepath).setOutputCompressQuality(40).start(EditProductActivity.this);
         }
         else if (requestCode == CropImage.CROP_IMAGE_ACTIVITY_REQUEST_CODE) {
             CropImage.ActivityResult result = CropImage.getActivityResult(data);

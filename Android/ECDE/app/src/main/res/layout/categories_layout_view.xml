@@ -12,14 +12,34 @@
 
     >
 
-    <de.hdodenhof.circleimageview.CircleImageView
-        android:id="@+id/cat_image"
-        android:src="@drawable/category_placeholder"
+
+
+
+    <FrameLayout
+        android:layout_centerInParent="true"
+        android:layout_marginTop="6dp"
+        android:layout_marginStart="4dp"
+        android:id="@+id/frame"
         android:layout_width="64dp"
         android:layout_height="64dp"
-        android:layout_centerInParent="true"
-        />
+        >
 
+        <ImageView
+            android:scaleType="centerCrop"
+            android:id="@+id/cat_image"
+            android:layout_width="64dp"
+            android:layout_height="64dp"
+            android:src="@drawable/category_placeholder"/>
+
+        <ImageView
+
+            android:layout_width="64dp"
+            android:layout_height="64dp"
+
+
+            android:src="@drawable/circleimageview" />
+
+    </FrameLayout>
 
 </RelativeLayout>
     <TextView

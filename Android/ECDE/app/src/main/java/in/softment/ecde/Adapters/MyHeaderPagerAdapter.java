@@ -50,7 +50,7 @@ public class MyHeaderPagerAdapter extends PagerAdapter {
         View itemview = layoutInflater.inflate(R.layout.headerrow,container, false);
 
         ImageView imageView = itemview.findViewById(R.id.imageview);
-        Glide.with(context).load(images.get(position)).diskCacheStrategy(DiskCacheStrategy.DATA).placeholder(R.drawable.placeholder1).into(imageView);
+        Glide.with(context).load(images.get(position)).placeholder(R.drawable.placeholder1).into(imageView);
 
         container.addView(itemview);
         return itemview;

@@ -2,14 +2,18 @@ package in.softment.ecde.Fragments;
 
 import android.Manifest;
 import android.app.Activity;
+
 import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
 import android.net.Uri;
+import android.os.Build;
 import android.os.Bundle;
 
 import androidx.annotation.NonNull;
+
+import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
 import androidx.fragment.app.Fragment;
 
@@ -22,6 +26,7 @@ import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.AutoCompleteTextView;
 import android.widget.EditText;
+import android.widget.ImageView;
 import android.widget.Toast;
 
 import com.canhub.cropper.CropImage;
@@ -46,7 +51,7 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Objects;
 
-import de.hdodenhof.circleimageview.CircleImageView;
+
 import in.softment.ecde.MainActivity;
 import in.softment.ecde.Models.CitiesModel;
 import in.softment.ecde.Models.UserModel;
@@ -67,21 +72,19 @@ public class SellerStoreInformation extends Fragment {
     private AutoCompleteTextView city;
     private final int PICK_IMAGE_REQUEST = 1;
     private Uri resultUri = null;
-    private CircleImageView profile_image;
+    private ImageView profile_image;
     private boolean isProfilePicSelected = false;
     String sStoreName;
     String sAddress;
     String sCity;
     String sPhoneNumber;
     String sAboutStore;
-    private final int STORE_LOCATION_MAP = 120;
-
     private Context context;
 
-    public SellerStoreInformation(Context context) {
-        this.context = context;
-    }
+    
+    public SellerStoreInformation() {
 
+    }
 
 
     @Override
@@ -122,9 +125,18 @@ public class SellerStoreInformation extends Fragment {
             @Override
             public void onClick(View view) {
 
-                 ShowFileChooser();
+                if (checkPermissionForReadExtertalStorage()) {
+                    ShowFileChooser();
+                }
+                else {
+                    requestStoragePermission();
+                }
+
+
+
             }
         });
+
 
         //CreateAccount
         view.findViewById(R.id.createSeller).setOnClickListener(new View.OnClickListener() {
@@ -147,7 +159,7 @@ public class SellerStoreInformation extends Fragment {
                             Services.showCenterToast(context, "Enter Store Address");
                         } else {
                             if (sCity.isEmpty()) {
-                                Services.showCenterToast(context, "Enter Postal Code");
+                                Services.showCenterToast(context, "Enter City Name");
                             }
                             else {
                                 if (sPhoneNumber.isEmpty()) {
@@ -172,6 +184,23 @@ public class SellerStoreInformation extends Fragment {
 
         
         return view;
+    }
+    public void requestStoragePermission() {
+
+        if (ContextCompat.checkSelfPermission(context, Manifest.permission.WRITE_EXTERNAL_STORAGE) == PackageManager.PERMISSION_GRANTED)
+            return;
+
+        ActivityCompat.shouldShowRequestPermissionRationale((Activity) context, Manifest.permission.WRITE_EXTERNAL_STORAGE);//If the user has denied the permission previously your code will come to this block
+
+        ActivityCompat.requestPermissions((Activity) context, new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE}, 101);
+    }
+
+    public boolean checkPermissionForReadExtertalStorage() {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+            int result = context.checkSelfPermission(Manifest.permission.READ_EXTERNAL_STORAGE);
+            return result == PackageManager.PERMISSION_GRANTED;
+        }
+        return false;
     }
 
     private void uploadImageOnFirebase() {
@@ -218,7 +247,7 @@ public class SellerStoreInformation extends Fragment {
 
 
 
-       FirebaseFirestore.getInstance().collection("User").document(UserModel.data.uid).set(user, SetOptions.merge()).addOnCompleteListener(new OnCompleteListener<Void>() {
+       FirebaseFirestore.getInstance().collection("User").document(FirebaseAuth.getInstance().getCurrentUser().getUid()).set(user, SetOptions.merge()).addOnCompleteListener(new OnCompleteListener<Void>() {
             @Override
             public void onComplete(@NonNull Task<Void> task) {
                 ProgressHud.dialog.dismiss();
@@ -276,8 +305,9 @@ public class SellerStoreInformation extends Fragment {
 
     }
     @Override
-    public void onAttach(@NonNull @NotNull Context context) {
+    public void onAttach(@NonNull Context context) {
         super.onAttach(context);
+        this.context = context;
         ((MainActivity)context).initializeSellerFragment(this);
     }
 }

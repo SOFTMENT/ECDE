@@ -11,6 +11,7 @@ import android.content.res.Configuration;
 import android.net.Uri;
 import android.os.Bundle;
 
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.AlertDialog;
 import androidx.fragment.app.Fragment;
 
@@ -19,6 +20,7 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
@@ -26,13 +28,13 @@ import android.widget.Toast;
 
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.load.engine.DiskCacheStrategy;
+import com.google.firebase.BuildConfig;
 
 import org.w3c.dom.Text;
 
 import java.util.Locale;
 
-import de.hdodenhof.circleimageview.CircleImageView;
-import in.softment.ecde.BuildConfig;
+
 import in.softment.ecde.MainActivity;
 import in.softment.ecde.ManageCategoryActivity;
 import in.softment.ecde.Models.UserModel;
@@ -48,14 +50,12 @@ import static android.content.Context.MODE_PRIVATE;
 
 public class AccountFragment extends Fragment {
 
-    private Context context;
     private TextView buyOrSellTextView;
     private RelativeLayout addProductRR, myProductRR;
+    private Context context;
+    public AccountFragment() {
 
-    public AccountFragment(Context context) {
-        this.context = context;
     }
-
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -70,7 +70,7 @@ public class AccountFragment extends Fragment {
 
         //ADMIN
         LinearLayout adminItemsView = view.findViewById(R.id.adminItemView);
-        if (UserModel.data.emailAddress.equalsIgnoreCase("ecde.app@gmail.com") || UserModel.data.emailAddress.equalsIgnoreCase("vijay.ajay70111@gmail.com")) {
+        if (UserModel.data.uid.equalsIgnoreCase("KLwhpJYQIrfmUgTgeSVTtU2mIYw2") || UserModel.data.uid.equalsIgnoreCase("WvL94pZ543STzecJ8hwqYK3NXfr2")) {
             adminItemsView.setVisibility(View.VISIBLE);
             RelativeLayout addCat = view.findViewById(R.id.addCat);
             addCat.setOnClickListener(new View.OnClickListener() {
@@ -114,10 +114,10 @@ public class AccountFragment extends Fragment {
                 Services.logout(context);
             }
         });
-           CircleImageView circleImageView = view.findViewById(R.id.profile_image);
+           ImageView circleImageView = view.findViewById(R.id.profile_image);
            TextView name = view.findViewById(R.id.name);
            TextView email = view.findViewById(R.id.email);
-           Glide.with(context).load(UserModel.data.profileImage).diskCacheStrategy(DiskCacheStrategy.DATA).placeholder(R.drawable.placeholder1).into(circleImageView);
+           Glide.with(context).load(UserModel.data.profileImage).diskCacheStrategy(DiskCacheStrategy.DATA).placeholder(R.drawable.man1).into(circleImageView);
            name.setText(UserModel.data.fullName);
             email.setText(UserModel.data.emailAddress);
 
@@ -201,7 +201,7 @@ public class AccountFragment extends Fragment {
 
         //PrivacyPolicy
         view.findViewById(R.id.privacypolicy).setOnClickListener(v -> {
-           context.startActivity(new Intent(context, PrivacyPolicyActivity.class));
+            context.startActivity(new Intent(context, PrivacyPolicyActivity.class));
         });
 
         //Terms&Conditions
@@ -268,6 +268,9 @@ public class AccountFragment extends Fragment {
     }
 
 
-
-
+    @Override
+    public void onAttach(@NonNull Context context) {
+        super.onAttach(context);
+        this.context = context;
+    }
 }

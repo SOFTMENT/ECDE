@@ -2,13 +2,17 @@ package in.softment.ecde;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.app.ActivityCompat;
+import androidx.core.content.ContextCompat;
 
+import android.Manifest;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
 import android.net.Uri;
+import android.os.Build;
 import android.os.Bundle;
 import android.provider.MediaStore;
 import android.util.Log;
@@ -16,6 +20,7 @@ import android.view.Gravity;
 import android.view.View;
 import android.view.inputmethod.EditorInfo;
 import android.widget.EditText;
+import android.widget.ImageView;
 import android.widget.RadioGroup;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -41,7 +46,6 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Objects;
 
-import de.hdodenhof.circleimageview.CircleImageView;
 import in.softment.ecde.Utils.ProgressHud;
 import in.softment.ecde.Utils.Services;
 import io.grpc.Compressor;
@@ -51,7 +55,7 @@ public class CreateNewAccount extends AppCompatActivity {
     private EditText fullName, emailAddress, password;
     private final int PICK_IMAGE_REQUEST = 1;
     private  Uri resultUri = null;
-    private CircleImageView profile_image;
+    private ImageView profile_image;
     private boolean isProfilePicSelected = false;
 
     @Override
@@ -69,10 +73,26 @@ public class CreateNewAccount extends AppCompatActivity {
         findViewById(R.id.taptochange).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                ShowFileChooser();
+
+                if (checkPermissionForReadExtertalStorage()) {
+                    ShowFileChooser();
+                }
+                else {
+                    requestStoragePermission();
+                }
+
             }
         });
 
+        TextView versionName = findViewById(R.id.versionName);
+        try {
+            PackageInfo pInfo = getPackageManager().getPackageInfo(getPackageName(), 0);
+            String version = pInfo.versionName;
+            versionName.setText(version);
+        } catch (PackageManager.NameNotFoundException e) {
+            e.printStackTrace();
+        }
+        
         //CreateAccount
         findViewById(R.id.createAccountBtn).setOnClickListener(new View.OnClickListener() {
             @Override
@@ -125,6 +145,13 @@ public class CreateNewAccount extends AppCompatActivity {
         });
     }
 
+    public boolean checkPermissionForReadExtertalStorage() {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+            int result = checkSelfPermission(Manifest.permission.READ_EXTERNAL_STORAGE);
+            return result == PackageManager.PERMISSION_GRANTED;
+        }
+        return false;
+    }
     private void createAccount(String sFullName,String sEmail, String sPassword){
         ProgressHud.show(CreateNewAccount.this, getString(R.string.creating_account));
 
@@ -136,7 +163,7 @@ public class CreateNewAccount extends AppCompatActivity {
                     uploadImageOnFirebase(Objects.requireNonNull(FirebaseAuth.getInstance().getCurrentUser()).getUid(),Services.toUpperCase(sFullName),sEmail);
                 } else {
                     ProgressHud.dialog.dismiss();
-                    Services.handleFirebaseERROR(CreateNewAccount.this, ((FirebaseAuthException) Objects.requireNonNull(task.getException())).getErrorCode());
+                    Services.showDialog(CreateNewAccount.this, getString(R.string.error), Objects.requireNonNull(task.getException()).getLocalizedMessage());
                 }
             }
         });
@@ -171,7 +198,15 @@ public class CreateNewAccount extends AppCompatActivity {
             }
         });
     }
+    public void requestStoragePermission() {
 
+        if (ContextCompat.checkSelfPermission(this, Manifest.permission.WRITE_EXTERNAL_STORAGE) == PackageManager.PERMISSION_GRANTED)
+            return;
+
+        ActivityCompat.shouldShowRequestPermissionRationale(this, Manifest.permission.WRITE_EXTERNAL_STORAGE);//If the user has denied the permission previously your code will come to this block
+
+        ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE}, 101);
+    }
     public void addUserDataOnServer(String uid,String fullName, String emailAddress, String imageUrl){
         Map<String,Object> user = new HashMap<>();
         user.put("uid",uid);
@@ -231,11 +266,3 @@ public class CreateNewAccount extends AppCompatActivity {
 
 
 
-//        TextView versionName = findViewById(R.id.versionName);
-//        try {
-//            PackageInfo pInfo = getPackageManager().getPackageInfo(getPackageName(), 0);
-//            String version = pInfo.versionName;
-//            versionName.setText(version);
-//        } catch (PackageManager.NameNotFoundException e) {
-//            e.printStackTrace();
-//        }

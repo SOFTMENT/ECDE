@@ -6,35 +6,51 @@
 
     tools:context=".Fragments.HomeFragment">
 
-    <EditText
-        android:maxLines="1"
-        android:imeOptions="actionDone"
-        android:inputType="textPersonName"
-        android:singleLine="true"
-        android:id="@+id/searchEditText"
+    <RelativeLayout
+        android:id="@+id/rr"
         android:layout_marginStart="16dp"
-        android:layout_marginEnd="16dp"
         android:layout_marginTop="20dp"
-        android:layout_width="match_parent"
-        android:layout_height="40dp"
-        android:background="@drawable/edittext_back"
-        android:hint="@string/search_by_title_city_name"
-        android:fontFamily="@font/sfpromedium"
-        android:textSize="13sp"
-       android:drawableStart="@drawable/ic_baseline_search_24"
-        android:paddingStart="10dp"
-        android:paddingEnd="10dp"
-        android:drawablePadding="4dp"
-        />
+        android:layout_marginEnd="16dp"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        >
 
+        <EditText
+            android:id="@+id/searchEditText"
+            android:layout_width="match_parent"
+            android:layout_height="40dp"
+            android:layout_marginEnd="8dp"
+            android:layout_toStartOf="@+id/cancel_search"
+            android:background="@drawable/edittext_back"
+            android:drawableStart="@drawable/ic_baseline_search_24"
+            android:drawablePadding="4dp"
+            android:fontFamily="@font/sfpromedium"
+            android:hint="@string/search_by_title_city_name"
+            android:imeOptions="actionDone"
+            android:inputType="textPersonName"
+            android:maxLines="1"
+            android:paddingStart="10dp"
+            android:paddingEnd="10dp"
+            android:singleLine="true"
+            android:textSize="13sp" />
 
+        <ImageView
+
+            android:id="@+id/cancel_search"
+            android:layout_width="20dp"
+            android:layout_height="20dp"
+            android:layout_alignParentEnd="true"
+            android:layout_centerVertical="true"
+            android:src="@drawable/ic_baseline_cancel_24" />
+
+    </RelativeLayout>
 
     <TextView
         android:id="@+id/categoriesText"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_below="@+id/searchEditText"
-        android:layout_alignStart="@+id/searchEditText"
+        android:layout_below="@+id/rr"
+        android:layout_alignStart="@+id/rr"
         android:textSize="18sp"
         android:text="@string/categories"
         android:layout_marginTop="24dp"
@@ -46,7 +62,7 @@
         android:id="@+id/seeAllText"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_below="@+id/searchEditText"
+        android:layout_below="@+id/rr"
         android:layout_marginEnd="16dp"
         android:textSize="13sp"
         android:text="@string/see_all"
@@ -77,6 +93,7 @@
     <RelativeLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content">
+
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/product_recyclerview"
         android:clipToPadding="false"
@@ -85,10 +102,17 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="horizontal"
-
         />
+        <ProgressBar
+            android:id="@+id/progressbar"
+            android:layout_above="@+id/bottomRR"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerHorizontal="true"
+            android:visibility="gone" />
 
     <RelativeLayout
+        android:id="@+id/bottomRR"
         android:layout_below="@+id/product_recyclerview"
         android:layout_width="match_parent"
         android:layout_height="50dp"

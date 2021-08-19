@@ -49,7 +49,6 @@ import org.w3c.dom.Text;
 import java.util.ArrayList;
 import java.util.Objects;
 
-import de.hdodenhof.circleimageview.CircleImageView;
 import in.softment.ecde.Adapters.MyHeaderPagerAdapter;
 import in.softment.ecde.Models.CategoryModel;
 import in.softment.ecde.Models.ProductModel;
@@ -81,7 +80,7 @@ public class ViewProductActivity extends AppCompatActivity {
         //MOREACTION
         more = findViewById(R.id.more);
 
-        if (UserModel.data.emailAddress.equalsIgnoreCase("ecde.app@gmail.com")){
+        if (UserModel.data.uid.equalsIgnoreCase("KLwhpJYQIrfmUgTgeSVTtU2mIYw2") || UserModel.data.uid.equalsIgnoreCase("WvL94pZ543STzecJ8hwqYK3NXfr2")){
             more.setVisibility(View.VISIBLE);
 
         }
@@ -131,9 +130,9 @@ public class ViewProductActivity extends AppCompatActivity {
         TextView condition = findViewById(R.id.condition);
         TextView quantity = findViewById(R.id.quantity);
         TextView city = findViewById(R.id.city);
-        CircleImageView storeImage = findViewById(R.id.storeImage);
+        ImageView storeImage = findViewById(R.id.storeImage);
         if (productModel.getStoreImage() != null && !productModel.getStoreImage().isEmpty()) {
-            Glide.with(this).load(productModel.getStoreImage()).placeholder(R.drawable.placeholder).into(storeImage);
+            Glide.with(this).load(productModel.getStoreImage()).placeholder(R.drawable.man1).into(storeImage);
         }
 
 

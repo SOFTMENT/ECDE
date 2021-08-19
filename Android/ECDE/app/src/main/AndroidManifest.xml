@@ -6,11 +6,12 @@
     <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
     <uses-permission android:name="android.permission.INTERNET" />
     <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
-    <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
+
 
     <application
+
         android:name=".MyApplication"
-        android:allowBackup="true"
+        android:allowBackup="false"
         android:hardwareAccelerated="true"
         android:largeHeap="true"
         android:icon="@mipmap/ic_launcher"
@@ -19,18 +20,31 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/Theme.EsquerdaCompraDaEsquerda"
-        android:usesCleartextTraffic="true">
-        <activity android:name=".EditSubcategoryActivity"></activity>
-        <activity android:name=".StripeCheckoutActivity" />
-        <activity android:name=".SupportActivity" />
+        >
+        <activity android:name=".EditSubcategoryActivity"
+            android:screenOrientation="portrait"
+            />
+        <activity android:name=".StripeCheckoutActivity"
+            android:screenOrientation="portrait"
+            />
+        <activity android:name=".SupportActivity"
+            android:screenOrientation="portrait"
+            />
         <activity
             android:name=".SeeAllSubcategoryActivity"
+            android:screenOrientation="portrait"
             android:label="@string/title_activity_see_all_subcategory"
             android:theme="@style/Theme.EsquerdaCompraDaEsquerda.NoActionBar" />
-        <activity android:name=".AddSubcategoryActivity" />
-        <activity android:name=".ManageSubcategoryActivity" />
+        <activity android:name=".AddSubcategoryActivity"
+            android:screenOrientation="portrait"
+            />
+        <activity android:name=".ManageSubcategoryActivity"
+            android:screenOrientation="portrait"
+            />
 
-        <activity android:name=".SellerStoreInformationActivity" />
+        <activity android:name=".SellerStoreInformationActivity"
+            android:screenOrientation="portrait"
+            />
         <activity
             android:name=".EditCategoriesActivity"
             android:screenOrientation="portrait" />

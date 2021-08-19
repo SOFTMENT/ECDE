@@ -8,11 +8,10 @@
     tools:context=".ViewProductActivity">
 
     <androidx.viewpager.widget.ViewPager
-    android:background="@drawable/header_back_view"
+        android:id="@+id/headerviewpager"
         android:layout_width="match_parent"
         android:layout_height="250dp"
-        android:id="@+id/headerviewpager"
-        />
+        android:background="@drawable/header_back_view" />
     <LinearLayout
         android:layout_alignBottom="@+id/headerviewpager"
         android:orientation="horizontal"
@@ -41,15 +40,31 @@
             android:layout_marginBottom="8dp"
             >
 
-            <de.hdodenhof.circleimageview.CircleImageView
+
+
+            <FrameLayout
+                android:layout_alignParentEnd="true"
+                android:id="@+id/frame"
                 android:layout_width="54dp"
                 android:layout_height="54dp"
-                android:layout_alignParentEnd="true"
-                android:src="@drawable/placeholder"
-                app:civ_border_width="0.3dp"
-                app:civ_border_color="#444444"
-                android:id="@+id/storeImage"
-                />
+                >
+
+                <ImageView
+
+                    android:id="@+id/storeImage"
+                    android:layout_width="54dp"
+                    android:layout_height="54dp"
+                    android:src="@drawable/man1" />
+
+                <ImageView
+
+                    android:layout_width="54dp"
+                    android:layout_height="54dp"
+                    android:background="@drawable/circle_back"
+
+                    android:src="@drawable/circleimageview" />
+
+            </FrameLayout>
 
             <LinearLayout
 

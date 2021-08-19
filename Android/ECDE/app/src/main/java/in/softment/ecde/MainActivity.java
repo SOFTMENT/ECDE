@@ -21,6 +21,8 @@ import com.google.android.gms.ads.MobileAds;
 import com.google.android.gms.ads.RequestConfiguration;
 import com.google.android.gms.ads.initialization.InitializationStatus;
 import com.google.android.gms.ads.initialization.OnInitializationCompleteListener;
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.Task;
 import com.google.android.material.snackbar.Snackbar;
 import com.google.android.play.core.appupdate.AppUpdateManager;
 import com.google.android.play.core.appupdate.AppUpdateManagerFactory;
@@ -81,7 +83,7 @@ public class MainActivity extends AppCompatActivity implements Function1<MeowBot
 
     private AppUpdateManager mAppUpdateManager;
     private static final int RC_APP_UPDATE = 11;
-    int updateCode = AppUpdateType.FLEXIBLE;
+    int updateCode = AppUpdateType.IMMEDIATE;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -97,9 +99,6 @@ public class MainActivity extends AppCompatActivity implements Function1<MeowBot
                 MobileAds.setRequestConfiguration(configuration);
             }
         });
-
-
-
 
         mAppUpdateManager = AppUpdateManagerFactory.create(this);
         mAppUpdateManager.registerListener(installStateUpdatedListener);
@@ -145,7 +144,6 @@ public class MainActivity extends AppCompatActivity implements Function1<MeowBot
                     if (error == null){
                         if (value != null && value.exists()){
                             UpdateType updateType = value.toObject(UpdateType.class);
-                            Log.d("VIJAYCODE", Objects.requireNonNull(updateType).updateCode+" WAAH VIJAY");
                             updateCode = updateType.updateCode;
                         }
                     }
@@ -204,50 +202,65 @@ public class MainActivity extends AppCompatActivity implements Function1<MeowBot
 
     }
 
-
-
     public void getLatestProduct() {
-        FirebaseFirestore.getInstance().collection("Products").orderBy("date", Query.Direction.DESCENDING).limitToLast(999).addSnapshotListener(MetadataChanges.INCLUDE,new EventListener<QuerySnapshot>() {
+        FirebaseFirestore.getInstance().collection("Products").orderBy("date", Query.Direction.DESCENDING).limit(200).get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
             @Override
-            public void onEvent(@Nullable QuerySnapshot value, @Nullable FirebaseFirestoreException error) {
+            public void onComplete(@NonNull Task<QuerySnapshot> task) {
                 ProgressHud.dialog.dismiss();
-                if (error == null) {
+                if (task.isSuccessful()) {
                     ProductModel.latestproductModels.clear();
-                    if (value != null && !value.isEmpty()) {
-                        for (DocumentSnapshot documentSnapshot : value.getDocuments()) {
+                    if (task.getResult() != null && !task.getResult().getDocuments().isEmpty()) {
+
+                        int i = 0;
+                        for (DocumentSnapshot documentSnapshot : task.getResult().getDocuments()) {
+                            i = i + 1;
                             ProductModel productModel = documentSnapshot.toObject(ProductModel.class);
-                            ProductModel.latestproductModels.add(productModel);
-                        }
+                            if (productModel.getImages().get("0") != null) {
 
-                    }
+                                ProductModel.latestproductModels.add(productModel);
+                               // Log.d("VIJAYDATE", productModel.date.toString());
+//
+//                                Map map = new HashMap();
+//                                map.put("productNo",i);
+//                                FirebaseFirestore.getInstance().collection("Products").document(productModel.id).set(map,SetOptions.merge());
+                            }
 
-                    ArrayList<ProductModel> featuredModels = new ArrayList<>();
-
-                    int y = 0;
-
-
-                    for(y = 0 ; y < ProductModel.latestproductModels.size() ; y++) {
-                        if (Services.isPromoting(ProductModel.latestproductModels.get(y).adLastDate)) {
-                            featuredModels.add(ProductModel.latestproductModels.get(y));
-                            ProductModel.latestproductModels.remove(y);
 
                         }
-                    }
 
-                    Collections.shuffle(featuredModels);
-                    int x = 0;
-                    for (ProductModel featuredModel : featuredModels) {
-                        if (x >= 2) {
-                            break;
+
+                        ArrayList<ProductModel> featuredModels = new ArrayList<>();
+
+                        int y = 0;
+
+
+                        for (y = 0; y < ProductModel.latestproductModels.size(); y++) {
+                            if (Services.isPromoting(ProductModel.latestproductModels.get(y).adLastDate)) {
+                                featuredModels.add(ProductModel.latestproductModels.get(y));
+                                //ProductModel.latestproductModels.remove(y);
+
+                            }
                         }
-                        ProductModel.latestproductModels.add(x,featuredModel);
-                        x = x +1;
+
+                        Collections.shuffle(featuredModels);
+                        int x = 0;
+                        for (ProductModel featuredModel : featuredModels) {
+                            if (x >= 2) {
+                                break;
+                            }
+
+                            ProductModel.latestproductModels.remove(featuredModel);
+
+                            ProductModel.latestproductModels.add(x, featuredModel);
+                            x = x + 1;
+
+                        }
 
                     }
                     homeFragment.notifyProductAdapter();
                 }
                 else {
-                    Services.showDialog(MainActivity.this,"ERROR",error.getLocalizedMessage());
+                    Services.showDialog(MainActivity.this,"ERROR",task.getException().getLocalizedMessage());
                 }
             }
         });
@@ -345,21 +358,21 @@ public class MainActivity extends AppCompatActivity implements Function1<MeowBot
     private void setupViewPager(ViewPager viewPager) {
 
         viewPagerAdapter = new ViewPagerAdapter(getSupportFragmentManager());
-        viewPagerAdapter.addFrag(new HomeFragment(this));
-        viewPagerAdapter.addFrag(new ChatFragment(this));
+        viewPagerAdapter.addFrag(new HomeFragment());
+        viewPagerAdapter.addFrag(new ChatFragment());
         if (UserModel.data.isSeller()){
 
-            viewPagerAdapter.addFrag(new PostFragment(this));
+            viewPagerAdapter.addFrag(new PostFragment());
         }
 
         else {
 
-            viewPagerAdapter.addFrag(new SellerStoreInformation(this));
+            viewPagerAdapter.addFrag(new SellerStoreInformation());
 
         }
 
-        viewPagerAdapter.addFrag(new GigFragment(this));
-        viewPagerAdapter.addFrag(new AccountFragment(this));
+        viewPagerAdapter.addFrag(new GigFragment());
+        viewPagerAdapter.addFrag(new AccountFragment());
 
         viewPager.setAdapter(viewPagerAdapter);
 
@@ -390,10 +403,10 @@ public class MainActivity extends AppCompatActivity implements Function1<MeowBot
         public Fragment getItem(int position) {
             if (position == 2) {
                 if (UserModel.data.isSeller())  {
-                    return new PostFragment(MainActivity.this);
+                    return new PostFragment();
                 }
                 else {
-                    return new SellerStoreInformation(MainActivity.this);
+                    return new SellerStoreInformation();
                 }
             }
 
@@ -515,6 +528,7 @@ public class MainActivity extends AppCompatActivity implements Function1<MeowBot
     @Override
     protected void onStart() {
         super.onStart();
+
         Services.loadLocale(this);
     }
 

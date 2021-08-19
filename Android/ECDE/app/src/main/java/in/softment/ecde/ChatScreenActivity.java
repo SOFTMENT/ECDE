@@ -35,6 +35,7 @@ import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.EventListener;
+import com.google.firebase.firestore.FieldValue;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.FirebaseFirestoreException;
 import com.google.firebase.firestore.QuerySnapshot;
@@ -53,7 +54,7 @@ import java.util.Map;
 import java.util.Objects;
 import java.util.UUID;
 
-import de.hdodenhof.circleimageview.CircleImageView;
+
 import in.softment.ecde.Adapters.LiveChatAdapter;
 import in.softment.ecde.Models.AllMessagesModel;
 import in.softment.ecde.Models.LastMessageModel;
@@ -100,10 +101,10 @@ public class ChatScreenActivity extends AppCompatActivity {
         });
 
         TextView name = findViewById(R.id.name);
-        CircleImageView profile_image = findViewById(R.id.profile_image);
+        ImageView profile_image = findViewById(R.id.profile_image);
 
         name.setText(senderName);
-        Glide.with(this).load(senderImage).placeholder(R.drawable.placeholder1).into(profile_image);
+        Glide.with(this).load(senderImage).placeholder(R.drawable.man1).into(profile_image);
 
         Map<String,Object> isReadMap = new HashMap<>();
         isReadMap.put("isRead",true);
@@ -119,6 +120,7 @@ public class ChatScreenActivity extends AppCompatActivity {
 
         final ImageView sent = findViewById(R.id.sent);
         editText = findViewById(R.id.message);
+        editText.requestFocus();
         sent.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -191,7 +193,7 @@ public class ChatScreenActivity extends AppCompatActivity {
         String messageId = FirebaseFirestore.getInstance().collection("Chats").document().getId();
         hashMap.put("messageId",messageId);
         hashMap.put("senderImage",UserModel.data.getProfileImage());
-        hashMap.put("date",new Date());
+        hashMap.put("date", FieldValue.serverTimestamp());
         hashMap.put("senderName", UserModel.data.fullName);
 
 
@@ -203,7 +205,7 @@ public class ChatScreenActivity extends AppCompatActivity {
             hashMap12.put("senderUid",senderId);
             hashMap12.put("isRead",true);
             hashMap12.put("senderImage",senderImage);
-            hashMap12.put("date",new Date());
+            hashMap12.put("date",FieldValue.serverTimestamp());
             hashMap12.put("senderName", senderName);
             hashMap12.put("senderToken",senderToken);
 
@@ -214,7 +216,7 @@ public class ChatScreenActivity extends AppCompatActivity {
             hashMap1.put("senderUid",uid);
             hashMap1.put("isRead",false);
             hashMap1.put("senderImage",UserModel.data.getProfileImage());
-            hashMap1.put("date",new Date());
+            hashMap1.put("date",FieldValue.serverTimestamp());
             hashMap1.put("senderName", UserModel.data.getFullName());
             hashMap1.put("senderToken", UserModel.data.token);
             FirebaseFirestore.getInstance().collection("Chats").document(senderId).collection("LastMessage").document(uid).set(hashMap1);
@@ -234,6 +236,7 @@ public class ChatScreenActivity extends AppCompatActivity {
                 AlertDialog alertDialog = builder.create();
                 alertDialog.setView(view1);
                 final EditText message = view1.findViewById(R.id.entermessage);
+
                 CardView report = view1.findViewById(R.id.sentnotification);
                 report.setOnClickListener(v -> {
 

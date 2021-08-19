@@ -41,6 +41,6 @@
         <module name="Esquerda_compra_da_esquerda.MeowBottomNavigation" />
       </profile>
     </annotationProcessing>
-    <bytecodeTargetLevel target="11" />
+    <bytecodeTargetLevel target="1.8" />
   </component>
 </project>

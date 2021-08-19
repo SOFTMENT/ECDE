@@ -11,16 +11,16 @@
     android:background="@drawable/transparent_back"
     android:layout_width="match_parent"
     android:layout_height="match_parent">
+
     <com.makeramen.roundedimageview.RoundedImageView
+        android:id="@+id/profile_image"
         android:layout_width="60dp"
         android:layout_height="60dp"
         android:layout_centerVertical="true"
         android:layout_marginStart="8dp"
-        android:src="@drawable/de"
         android:padding="1dp"
-        app:riv_corner_radius="6dp"
-        android:id="@+id/profile_image"
-        />
+        android:src="@drawable/man1"
+        app:riv_corner_radius="6dp" />
     <TextView
         android:id="@+id/username"
         android:layout_width="wrap_content"

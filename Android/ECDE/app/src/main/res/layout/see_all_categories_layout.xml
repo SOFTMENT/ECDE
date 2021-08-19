@@ -15,9 +15,10 @@
             android:layout_height="36dp"
             android:layout_centerVertical="true"
             android:layout_marginStart="8dp"
-            android:src="@drawable/de"
+            android:src="@drawable/placeholder"
             android:padding="1dp"
             app:riv_corner_radius="6dp"
+            android:scaleType="centerCrop"
             android:id="@+id/categoryImage"
             />
         <TextView

@@ -26,11 +26,11 @@ import in.softment.ecde.Utils.Services;
 public class CategoriesAdaper  extends RecyclerView.Adapter<CategoriesAdaper.ViewHolder> {
 
    private Context context;
-   private ArrayList<Drawable> categories_back_view;
+  // private ArrayList<Drawable> categories_back_view;
     private ArrayList<CategoryModel> categoryModels;
-    public CategoriesAdaper(Context context, ArrayList<Drawable> categories_back_view, ArrayList<CategoryModel> categoryModels){
+    public CategoriesAdaper(Context context,  ArrayList<CategoryModel> categoryModels){
         this.context = context;
-        this.categories_back_view = categories_back_view;
+      //  this.categories_back_view = categories_back_view;
         this.categoryModels = categoryModels;
     }
     @NonNull
@@ -44,7 +44,7 @@ public class CategoriesAdaper  extends RecyclerView.Adapter<CategoriesAdaper.Vie
 
         CategoryModel categoryModel = categoryModels.get(position);
         //holder.cat_image_rr.setBackground(categories_back_view.get(position % categories_back_view.size()));
-        Glide.with(context).load(categoryModel.image).diskCacheStrategy(DiskCacheStrategy.DATA).placeholder(R.drawable.category_placeholder).into(holder.cat_image);
+        Glide.with(context).load(categoryModel.image).placeholder(R.drawable.category_placeholder).into(holder.cat_image);
         if (Services.getLocateCode(context).equalsIgnoreCase("pt"))
            holder.cat_title.setText(categoryModel.getTitle_pt());
         else
